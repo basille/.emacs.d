@@ -197,6 +197,7 @@ repositories. We first list these packages:
 		     powerline
 		     smex
                      toc-org
+                     web-mode
                      yaml-mode
 		     ))
 #+END_SRC
@@ -924,6 +925,72 @@ Useful commands:
 
 
 ** Web-mode
+
+=[[http://web-mode.org/][web-mode]]= is a major mode to edit Web files ([s]HTML, CSS, PHP,
+etc.). Here is a standard configuration, with auto-pairing, CSS
+colorization and a broad list of file extensions and engines
+associated to =web-mode=:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.[s]html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jinga\\'" . web-mode))
+(setq
+ web-mode-enable-auto-pairing t
+ web-mode-enable-css-colorization t
+ web-mode-engines-alist
+     '(("php"    . "\\.phtml\\'")
+       ("django" . "\\.jinja\\'")
+       ("blade"  . "\\.blade\\.")))
+#+END_SRC
+
+# (provide 'init-web-mode)
+
+Spell check with flyspell can be [[http://blog.binchen.org/?p=950][integrated to web-mode]]:
+
+#+BEGIN_SRC emacs-lisp
+(defun web-mode-flyspell-verify ()
+  (let* ((f (get-text-property (- (point) 1) 'face))
+         rlt)
+    (cond
+     ;; Check the words with these font faces, possibly.
+     ;; this *blacklist* will be tweaked in next condition
+     ((not (memq f '(web-mode-html-attr-value-face
+                     web-mode-html-tag-face
+                     web-mode-html-attr-name-face
+                     web-mode-constant-face
+                     web-mode-doctype-face
+                     web-mode-keyword-face
+                     web-mode-comment-face ;; focus on get html label right
+                     web-mode-function-name-face
+                     web-mode-variable-name-face
+                     web-mode-css-property-name-face
+                     web-mode-css-selector-face
+                     web-mode-css-color-face
+                     web-mode-type-face
+                     web-mode-block-control-face)))
+      (setq rlt t))
+     ;; check attribute value under certain conditions
+     ((memq f '(web-mode-html-attr-value-face))
+      (save-excursion
+        (search-backward-regexp "=['\"]" (line-beginning-position) t)
+        (backward-char)
+        (setq rlt (string-match "^\\(value\\|class\\|ng[A-Za-z0-9-]*\\)$"
+                                (thing-at-point 'symbol)))))
+     ;; finalize the blacklist
+     (t
+      (setq rlt nil)))
+    rlt))
+(put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspell-verify)
+#+END_SRC
 
 
 
