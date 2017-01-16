@@ -20,6 +20,7 @@
    - [[#file-saving][File saving]]
  - [[#major-modes][Major modes]]
    - [[#polymode][Polymode]]
+   - [[#yaml][YAML]]
    - [[#org-mode][Org mode]]
    - [[#latex][LaTeX]]
    - [[#markdown][Markdown]]
@@ -186,6 +187,7 @@ repositories. We first list these packages:
                      markdown-mode
                      markdown-toc
 		     multiple-cursors
+                     polymode
                      project-explorer
 		     projectile
 		     org
@@ -193,6 +195,7 @@ repositories. We first list these packages:
 		     powerline
 		     smex
                      toc-org
+                     yaml-mode
 		     ))
 #+END_SRC
 
@@ -569,7 +572,6 @@ this mode):
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'aggressive-indent-mode)
-(diminish 'aggressive-indent-mode)
 #+END_SRC
 
 Automatically break long lines (by default after 70 characters, as set
@@ -699,6 +701,49 @@ silently:
 
 
 ** Polymode
+
+=[[https://github.com/vitoshka/polymode][Polymode]]= allows multiple major modes in the same document (e.g. R +
+Markdown in =.Rmd= files). It is setup for Mardown and LateX files
+with R:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+#+END_SRC
+
+# How to use markdown+r+yaml?
+# https://github.com/vspinu/polymode#markdownryaml
+
+# Diminish them?
+# (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
+# (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
+# (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
+
+
+
+	       # (setq 
+	       # 	pm-weaver "knitR-ESS"		; Default weaver
+	       # 	pm-exporter "pandoc")		; Default exporter
+	       # (bind-keys :map polymode-mode-map
+	       # 		  ([(C-prior)] . polymode-previous-chunk) ; C-PageUp to move to the previous chunk (code or comment)
+	       # 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
+	       # 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
+	       # 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
+	       # 		  ([(f8)] . polymode-weave)       ; F7 to weave
+	       # 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
+
+
+
+
+** YAML
+
+=YAML-mode= for YAML headers/files:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+#+END_SRC
 
 
 ** Org mode
@@ -897,6 +942,7 @@ bound to =C-F5=). Project-explorer is set to a width of 20 characters:
 
 #+BEGIN_SRC emacs-lisp
 (projectile-global-mode)
+(diminish 'projectile-mode "Proj")
 (require 'project-explorer)
 (setq pe/width 20)
 (global-set-key [(control f5)] 'project-explorer-open)
