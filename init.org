@@ -29,6 +29,7 @@
  - [[#utilities][Utilities]]
    - [[#file-manager][File manager]]
    - [[#git][GIT]]
+   - [[#shell][Shell]]
 
 * Getting started
 
@@ -172,6 +173,7 @@ repositories. We first list these packages:
 		     company
 		     color-theme-sanityinc-tomorrow 
 		     diminish
+                     eshell-git-prompt
 		     ess
 		     ess-smart-underscore
 		     expand-region
@@ -968,4 +970,20 @@ Magit (=magit-gitflow=, started with =C-f= from within Magit):
 
 (require 'magit-gitflow)
 (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+#+END_SRC
+
+** Shell
+
+Emacs provide different possibilities to embed a Shell (for instance,
+=M-x shell=, =M-x ansi-term=), with different advantages and
+drawbacks. Here I setup Eshell (the Emacs shell, =M-x eshell=), with
+short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
+case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= enables detection of Git repositories and
+brings a nice powerline:
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ eshell-buffer-shorthand t
+ eshell-cmpl-ignore-case t)
+(eshell-git-prompt-use-theme 'powerline)
 #+END_SRC
