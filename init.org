@@ -219,7 +219,7 @@ Display line and column number in the mode line:
 (column-number-mode 1)
 #+END_SRC
 
-=[[https://github.com/syohex/emacs-anzu][Anzu]]=: display current match and total matches information in the
+[[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
 mode-line, and show replacement interactively. Replace is bound to
 =C-r=, and replace using a RegExp is bound to =C-M-r=:
 
