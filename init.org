@@ -33,6 +33,7 @@
    - [[#ess][ESS]]
    - [[#sql][SQL]]
    - [[#web][Web]]
+ - [[#to-do][To-do]]
 
 * Getting started
 
@@ -116,17 +117,17 @@ generated at every modification of =init.org= (precisely every time
 =init.org= is saved):
 
 #+BEGIN_SRC emacs-lisp
-(defun tangle-init ()
-  "If the current buffer is 'init.org' the code-blocks are
-tangled, and the tangled file is compiled."
-  (when (equal (buffer-file-name)
-	       (expand-file-name (concat user-emacs-directory "init.org")))
-    ;; Avoid running hooks when tangling.
-    (let ((prog-mode-hook nil))
-      (org-babel-tangle)
-      (byte-compile-file (concat user-emacs-directory "init.el")))))
-
-(add-hook 'after-save-hook 'tangle-init)
+  (defun tangle-init ()
+    "If the current buffer is 'init.org' the code-blocks are
+  tangled, and the tangled file is compiled."
+    (when (equal (buffer-file-name)
+		 (expand-file-name (concat user-emacs-directory "init.org")))
+      ;; Avoid running hooks when tangling.
+      (let ((prog-mode-hook nil))
+	(org-babel-tangle)
+	(byte-compile-file (concat user-emacs-directory "init.el")))))
+  
+  (add-hook 'after-save-hook 'tangle-init)
 #+END_SRC
 
 
@@ -136,84 +137,84 @@ Emacs now provide an entire ecosystem of packages, in various
 repositories, and handles them through the =package= utility:
 
 #+BEGIN_SRC emacs-lisp
-(require 'package)
+  (require 'package)
 #+END_SRC
 
 Emacs packages can come from different repositories. We only activate
 the official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]]:
 
 #+BEGIN_SRC emacs-lisp
-(setq package-archives 
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")
-        ("org" . "http://orgmode.org/elpa/")
-        )
-      package-archive-priorities
-      '(("org"          . 20)
-        ("melpa-stable" . 10)
-        ("gnu"          . 5)
-        ("melpa"        . 0)
-        ))
+  (setq package-archives 
+	'(("gnu" . "https://elpa.gnu.org/packages/")
+	  ("melpa-stable" . "https://stable.melpa.org/packages/")
+	  ("melpa" . "https://melpa.org/packages/")
+	  ("org" . "http://orgmode.org/elpa/")
+	  )
+	package-archive-priorities
+	'(("org"          . 20)
+	  ("melpa-stable" . 10)
+	  ("gnu"          . 5)
+	  ("melpa"        . 0)
+	  ))
 #+END_SRC
 
 We now load it and make sure Emacs does not load it automatically 
 a second time at startup, after all configuration is loaded:
 
 #+BEGIN_SRC emacs-lisp
-(package-initialize)
-(setq package-enable-at-startup nil)
+  (package-initialize)
+  (setq package-enable-at-startup nil)
 #+END_SRC
 
 We can now automatically install the packages that are not in Debian
 repositories. We first list these packages:
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(
-                     aggressive-indent
-		     anzu
-		     col-highlight
-		     company
-		     color-theme-sanityinc-tomorrow 
-		     diminish
-                     eshell-git-prompt
-		     ess
-		     ess-smart-underscore
-		     expand-region
-		     flx-ido
-		     hideshow-org
-		     highlight 
-		     highlight-indent-guides
-		     ido-completing-read+
-		     ido-ubiquitous
-		     ido-vertical-mode
-                     magit
-                     magit-gitflow
-                     markdown-mode
-                     markdown-toc
-		     multiple-cursors
-                     polymode
-                     project-explorer
-		     projectile
-		     org
-		     org-bullets
-		     powerline
-		     smex
-                     toc-org
-                     web-mode
-                     yaml-mode
-		     ))
+  (setq package-list '(
+		       aggressive-indent
+		       anzu
+		       col-highlight
+		       company
+		       color-theme-sanityinc-tomorrow 
+		       diminish
+		       eshell-git-prompt
+		       ess
+		       ess-smart-underscore
+		       expand-region
+		       flx-ido
+		       hideshow-org
+		       highlight 
+		       highlight-indent-guides
+		       ido-completing-read+
+		       ido-ubiquitous
+		       ido-vertical-mode
+		       magit
+		       magit-gitflow
+		       markdown-mode
+		       markdown-toc
+		       multiple-cursors
+		       polymode
+		       project-explorer
+		       projectile
+		       org
+		       org-bullets
+		       powerline
+		       smex
+		       toc-org
+		       web-mode
+		       yaml-mode
+		       ))
 #+END_SRC
 
 Then fetch the list of packages available and install the missing
 packages:
 
 #+BEGIN_SRC emacs-lisp
-(unless package-archive-contents
-  (package-refresh-contents))
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
+  (unless package-archive-contents
+    (package-refresh-contents))
+  (dolist (package package-list)
+    (unless (package-installed-p package)
+      (package-install package)))
 #+END_SRC
 
 
@@ -223,7 +224,7 @@ Frames (generally called windows) have a title instead of
 =emacs25@<computer>=:
 
 #+BEGIN_SRC emacs-lisp
-(setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+  (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
 #+END_SRC
 
 
@@ -233,12 +234,11 @@ Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomor
 in the terminal:
 
 #+BEGIN_SRC emacs-lisp
-(require 'color-theme-sanityinc-tomorrow)
-
-(if (display-graphic-p) 
-    (load-theme 'sanityinc-tomorrow-eighties t)
-  (load-theme 'zenburn t)
-)
+  (require 'color-theme-sanityinc-tomorrow)
+  
+  (if (display-graphic-p) 
+      (load-theme 'sanityinc-tomorrow-eighties t)
+    (load-theme 'zenburn t))
 #+END_SRC
 
 
@@ -247,14 +247,14 @@ in the terminal:
 Use a Power line:
 
 #+BEGIN_SRC emacs-lisp
-(require 'powerline)
-(powerline-default-theme)
+  (require 'powerline)
+  (powerline-default-theme)
 #+END_SRC
 
 Display line and column number in the mode line:
 
 #+BEGIN_SRC emacs-lisp
-(column-number-mode 1)
+  (column-number-mode 1)
 #+END_SRC
 
 [[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
@@ -262,12 +262,12 @@ mode-line, and show replacement interactively. Replace is bound to
 =C-r=, and replace using a RegExp is bound to =C-M-r=:
 
 #+BEGIN_SRC emacs-lisp
-(require 'anzu)
-(global-anzu-mode 1)
-(anzu-mode 1)
-(with-eval-after-load 'anzu (diminish 'anzu-mode))
-(global-set-key (kbd "C-r") 'anzu-query-replace)
-(global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
+  (require 'anzu)
+  (global-anzu-mode 1)
+  (anzu-mode 1)
+  (with-eval-after-load 'anzu (diminish 'anzu-mode))
+  (global-set-key (kbd "C-r") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
 #+END_SRC
 
 
@@ -278,13 +278,13 @@ content), =visual-line-mode= (word wrapping at the end of long lines),
 Interaction (replaced with just "Lisp"):
 
 #+BEGIN_SRC emacs-lisp
-(diminish 'auto-fill-function)
-(diminish 'auto-revert-mode)
-(diminish 'visual-line-mode)
-(diminish 'eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook 
-  (lambda()
-    (setq mode-name "Lisp"))) 
+  (diminish 'auto-fill-function)
+  (diminish 'auto-revert-mode)
+  (diminish 'visual-line-mode)
+  (diminish 'eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook 
+	    (lambda()
+	      (setq mode-name "Lisp"))) 
 #+END_SRC
 
 Note: check modes in a buffer with =C-h m=.
@@ -295,53 +295,53 @@ Note: check modes in a buffer with =C-h m=.
 Emacs starts split horizontaly in the middle:
 
 #+BEGIN_SRC emacs-lisp
-(split-window-horizontally)
+  (split-window-horizontally)
 #+END_SRC
 
 Visible bells (flashes the frame):
 
 #+BEGIN_SRC emacs-lisp
-visible-bell t
+  visible-bell t
 #+END_SRC
 
 Use =M-<arrows>= to move between windows (package =windmove=, built in
 Emacs):
 
 #+BEGIN_SRC emacs-lisp
-(windmove-default-keybindings 'meta)
+  (windmove-default-keybindings 'meta)
 #+END_SRC
 
 Mouse wheel does not accelerate:
 
 #+BEGIN_SRC emacs-lisp
-(setq mouse-wheel-progressive-speed nil)
+  (setq mouse-wheel-progressive-speed nil)
 #+END_SRC
 
 Scroll 2 lines from the edge:
 
 #+BEGIN_SRC emacs-lisp
-(setq scroll-margin 2)
+  (setq scroll-margin 2)
 #+END_SRC
 
 Prevent lateral scrolling from touchpad to beep:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<mouse-7>")
-		(lambda () (interactive)))
-(global-set-key (kbd "<mouse-6>")
-		(lambda () (interactive)))
+  (global-set-key (kbd "<mouse-7>")
+		  (lambda () (interactive)))
+  (global-set-key (kbd "<mouse-6>")
+		  (lambda () (interactive)))
 #+END_SRC
 
 Open a file in the other window:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
+  (global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
 #+END_SRC
 
 Next window with C-<key above Tab>:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [C-dead-grave] 'other-window)
+  (global-set-key [C-dead-grave] 'other-window)
 #+END_SRC
 
 
@@ -350,7 +350,7 @@ Next window with C-<key above Tab>:
 Disable the splash screen:
 
 #+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t)
 #+END_SRC
 
  # ;; Use system font (set to Monospace 11):
@@ -360,47 +360,47 @@ Highlight regions (=highlight=): F9 to highlight, C-F9 to move to the
 next highlighted text, C-S-F9 to unhighlight everything.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(f9)] 'hlt-highlight)
-(global-set-key [(ctrl f9)] 'hlt-next-highlight)
-(global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
+  (global-set-key [(f9)] 'hlt-highlight)
+  (global-set-key [(ctrl f9)] 'hlt-next-highlight)
+  (global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
 #+END_SRC
 
 Lines soft wrapped at word boundary (with fringe indicators):
 
 #+BEGIN_SRC emacs-lisp
-(global-visual-line-mode 1)
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+  (global-visual-line-mode 1)
+  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 
 =F10= to (in)activate line wrapping:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(f10)] 'toggle-truncate-lines)
+  (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
 
 Highlight columns (=col-highlight=): C-F10 to toggle column highlight mode.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(ctrl f10)] 'column-highlight-mode)
+  (global-set-key [(ctrl f10)] 'column-highlight-mode)
 #+END_SRC
 
 Highlight indentation in Programming mode (=highlight-indent-guides=):
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-(setq highlight-indent-guides-method 'character) ; use 'column for more visible guides
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'character) ; use 'column for more visible guides
 #+END_SRC
 
 Count words in region using =C-+=:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-+") 'count-words)
+  (global-set-key (kbd "C-+") 'count-words)
 #+END_SRC
 
 Kill THIS buffer with =C-x k=:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+END_SRC
 
 
@@ -409,58 +409,58 @@ Kill THIS buffer with =C-x k=:
 Backward search with =C-S-s=:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-S-s") 'isearch-backward)
-(define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
+  (global-set-key (kbd "C-S-s") 'isearch-backward)
+  (define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
 #+END_SRC
 
 Expand region with =C-\== (then continue to expand by pressing =\== or
 contract by pressing =-=):
 
 #+BEGIN_SRC emacs-lisp
-(require 'expand-region)
+  (require 'expand-region)
 #+END_SRC
 
 HideShow (fold or unfold functions/regions with =C-S-F10=) for
 Programming mode:
 
 #+BEGIN_SRC emacs-lisp
-(require 'hideshow-org)
-(add-hook 'prog-mode-hook
-	  (lambda()
-	    (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-	    (hs-minor-mode t)
-	    (diminish 'hs-minor-mode)
-	    (hs-org/minor-mode)))
+  (require 'hideshow-org)
+  (add-hook 'prog-mode-hook
+	    (lambda()
+	      (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+	      (hs-minor-mode t)
+	      (diminish 'hs-minor-mode)
+	      (hs-org/minor-mode)))
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
 (save positions in =.emacs.d/cache/saved-places=):
 
 #+BEGIN_SRC emacs-lisp
-(save-place-mode 1)
-(setq save-place-file "~/.emacs.d/cache/saved-places")
+  (save-place-mode 1)
+  (setq save-place-file "~/.emacs.d/cache/saved-places")
 #+END_SRC
 
 Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
 =C-F4= to save a register, =F1= to =F4= to jump to a saved register:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(f1)]
-		'(lambda () (interactive) (jump-to-register 1 nil)))
-(global-set-key [(ctrl f1)]
-		'(lambda () (interactive) (point-to-register 1 nil)))
-(global-set-key [(f2)]
-		'(lambda () (interactive) (jump-to-register 2 nil)))
-(global-set-key [(ctrl f2)]
-		'(lambda () (interactive) (point-to-register 2 nil)))
-(global-set-key [(f3)]
-		'(lambda () (interactive) (jump-to-register 3 nil)))
-(global-set-key [(ctrl f3)]
-		'(lambda () (interactive) (point-to-register 3 nil)))
-(global-set-key [(f4)]
-		'(lambda () (interactive) (jump-to-register 4 nil)))
-(global-set-key [(ctrl f4)]
-		'(lambda () (interactive) (point-to-register 4 nil)))
+  (global-set-key [(f1)]
+		  '(lambda () (interactive) (jump-to-register 1 nil)))
+  (global-set-key [(ctrl f1)]
+		  '(lambda () (interactive) (point-to-register 1 nil)))
+  (global-set-key [(f2)]
+		  '(lambda () (interactive) (jump-to-register 2 nil)))
+  (global-set-key [(ctrl f2)]
+		  '(lambda () (interactive) (point-to-register 2 nil)))
+  (global-set-key [(f3)]
+		  '(lambda () (interactive) (jump-to-register 3 nil)))
+  (global-set-key [(ctrl f3)]
+		  '(lambda () (interactive) (point-to-register 3 nil)))
+  (global-set-key [(f4)]
+		  '(lambda () (interactive) (jump-to-register 4 nil)))
+  (global-set-key [(ctrl f4)]
+		  '(lambda () (interactive) (point-to-register 4 nil)))
 #+END_SRC
 
 
@@ -534,17 +534,17 @@ Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
 Answer with y/n instead of yes/no:
 
 #+BEGIN_SRC emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
+  (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
 Enhanced M-x: SMEX (SMEX states saved in the =cache= subfolder):
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-(setq smex-save-file "~/.emacs.d/cache/smex-items")
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  ;; This is your old M-x.
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+  (setq smex-save-file "~/.emacs.d/cache/smex-items")
 #+END_SRC
 
 
@@ -558,23 +558,23 @@ prompt using =C-f=).
 Initialize it, and make it work everywhere:
 
 #+BEGIN_SRC emacs-lisp
-(require 'ido)
-(ido-mode 1)
-(ido-everywhere 1)
+  (require 'ido)
+  (ido-mode 1)
+  (ido-everywhere 1)
 #+END_SRC
 
 Set up IDO with almost anything that uses completion:
 
 #+BEGIN_SRC emacs-lisp
-(require 'ido-ubiquitous)
-(ido-ubiquitous-mode 1)
+  (require 'ido-ubiquitous)
+  (ido-ubiquitous-mode 1)
 #+END_SRC
 
 Use IDO in vertical mode:
 
 #+BEGIN_SRC emacs-lisp
-(require 'ido-vertical-mode)
-(ido-vertical-mode 1)
+  (require 'ido-vertical-mode)
+  (ido-vertical-mode 1)
 #+END_SRC
 
 Use "flex" matching (i.e. typing a few characters will select items
@@ -582,8 +582,8 @@ containing these characters in the given order, but not necessarily in
 a sequence) with =flx-ido=:
 
 #+BEGIN_SRC emacs-lisp
-(require 'flx-ido)
-(flx-ido-mode 1)
+  (require 'flx-ido)
+  (flx-ido-mode 1)
 #+END_SRC
 
 Other settings: IDO uses flexible matching, find file at point
@@ -591,13 +591,11 @@ intelligently, always create new buffers with =C-x b=, and saves its
 state in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
-(setq
- ;ido-enable-flex-matching t
- ido-use-filename-at-point 'guess
- ido-create-new-buffer 'always
- ;; ido-file-extensions-order '(".Rmd" ".R" ".tex" ".el") ; extension order
- ;; ido-use-faces nil
- ido-save-directory-list-file "~/.emacs.d/cache/ido")
+  (setq
+   ido-use-filename-at-point 'guess
+   ido-create-new-buffer 'always
+   ;; ido-file-extensions-order '(".Rmd" ".R" ".tex" ".el") ; extension order
+   ido-save-directory-list-file "~/.emacs.d/cache/ido")
 #+END_SRC
 
 
@@ -606,34 +604,34 @@ state in the =cache= folder:
 Delete selection mode (replace a selection):
 
 #+BEGIN_SRC emacs-lisp
-(delete-selection-mode 1)
+  (delete-selection-mode 1)
 #+END_SRC
 
 Undo with C-z:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-z") 'undo)
+  (global-set-key (kbd "C-z") 'undo)
 #+END_SRC
 
 Electric pair mode: Automatically close double quotes, back quotes,
 parentheses, square brackets and curly brackets:
 
 #+BEGIN_SRC emacs-lisp
-(electric-pair-mode 1)
-(setq electric-pair-pairs '(
-                            (?\" . ?\")
-                            (?\` . ?\`)
-                            (?\( . ?\))
-                            (?\[ . ?\])
-                            (?\{ . ?\})
-                            ) )
+  (electric-pair-mode 1)
+  (setq electric-pair-pairs '(
+			      (?\" . ?\")
+			      (?\` . ?\`)
+			      (?\( . ?\))
+			      (?\[ . ?\])
+			      (?\{ . ?\})
+			      ) )
 #+END_SRC
 
 Show matching parentheses and other characters (without any delay):
 
 #+BEGIN_SRC emacs-lisp
-(setq show-paren-delay 0)
-(show-paren-mode 1)
+  (setq show-paren-delay 0)
+  (show-paren-mode 1)
 #+END_SRC
 
 [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] in Programming mode to indent automatically all
@@ -642,22 +640,22 @@ blocks when a part is moved (add modes to
 this mode):
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook #'aggressive-indent-mode)
+  (add-hook 'prog-mode-hook #'aggressive-indent-mode)
 #+END_SRC
 
 Automatically break long lines (by default after 70 characters, as set
 in the variable =fill-column=): 
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 
 Consider CamelCase as two words in programming modes (but don't show
 it with "," in the mode line):
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'subword-mode)
-(with-eval-after-load 'subword (diminish 'subword-mode))
+  (add-hook 'prog-mode-hook 'subword-mode)
+  (with-eval-after-load 'subword (diminish 'subword-mode))
 #+END_SRC
 
 Complete anything (=company=), with =TAB= (=(kbd "TAB")= for terminal;
@@ -665,18 +663,18 @@ Complete anything (=company=), with =TAB= (=(kbd "TAB")= for terminal;
 aggressive completion:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook 'global-company-mode)
-(with-eval-after-load 'company
-  (define-key company-active-map (kbd "TAB") #'company-complete-common)
-  (define-key company-active-map [tab] #'company-complete-common)
-  (diminish 'company-mode))
-(setq company-idle-delay 0
-      company-echo-delay 0
-      company-dabbrev-downcase nil
-      company-minimum-prefix-length 2
-      company-selection-wrap-around t
-      company-transformers '(company-sort-by-occurrence
-                             company-sort-by-backend-importance))
+  (add-hook 'after-init-hook 'global-company-mode)
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "TAB") #'company-complete-common)
+    (define-key company-active-map [tab] #'company-complete-common)
+    (diminish 'company-mode))
+  (setq company-idle-delay 0
+	company-echo-delay 0
+	company-dabbrev-downcase nil
+	company-minimum-prefix-length 2
+	company-selection-wrap-around t
+	company-transformers '(company-sort-by-occurrence
+			       company-sort-by-backend-importance))
 #+END_SRC
 
 Multiple cursors (=multiple-cursors=), choices are saved in the
@@ -686,11 +684,11 @@ region; =C-F11= tries to be smart about marking everything you want
 the selection (use then arrows to select more/less):
 
 #+BEGIN_SRC emacs-lisp
-(require 'multiple-cursors)
-(setq mc/list-file "~/.emacs.d/cache/mc-lists.el")
-(global-set-key [(f11)] 'mc/edit-lines)
-(global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
-(global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
+  (require 'multiple-cursors)
+  (setq mc/list-file "~/.emacs.d/cache/mc-lists.el")
+  (global-set-key [(f11)] 'mc/edit-lines)
+  (global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
+  (global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
 #+END_SRC
 
 
@@ -703,15 +701,15 @@ is enabled by default in all text files, and in programming mode
 (only in the comments) in programming files.
 
 #+BEGIN_SRC emacs-lisp
-(setq ispell-program-name "hunspell"
-      ispell-local-dictionary "en_US")
+  (setq ispell-program-name "hunspell"
+	ispell-local-dictionary "en_US")
 
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-(global-set-key [f12] 'flyspell-correct-word-before-point)
-(global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
-(global-set-key [C-S-f12] 'ispell-change-dictionary)
+  (global-set-key [f12] 'flyspell-correct-word-before-point)
+  (global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
+  (global-set-key [C-S-f12] 'ispell-change-dictionary)
 #+END_SRC
 
 Flycheck
@@ -722,24 +720,24 @@ Flycheck
 Default language environment is UTF-8:
 
 #+BEGIN_SRC emacs-lisp
-(setq current-language-environment "UTF-8")
+  (setq current-language-environment "UTF-8")
 #+END_SRC
 
 Don't lock files and accepts simultaneous editing (no [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html][interlocking]],
 which creates tmp lockfiles):
 
 #+BEGIN_SRC emacs-lisp
-(setq create-lockfiles nil)
+  (setq create-lockfiles nil)
 #+END_SRC
 
 [[http://www.emacswiki.org/emacs/AutoSave][Auto-save]] in =~/.emacs.d/save= (after 10 seconds or 100 characters):
 
 #+BEGIN_SRC emacs-lisp
-(setq
- auto-save-file-name-transforms `((".*" ,"~/.emacs.d/save/\\1" t))
- auto-save-list-file-name "~/.emacs.d/cache/save-list"
- auto-save-interval 100
- auto-save-timeout 10)
+  (setq
+   auto-save-file-name-transforms `((".*" ,"~/.emacs.d/save/\\1" t))
+   auto-save-list-file-name "~/.emacs.d/cache/save-list"
+   auto-save-interval 100
+   auto-save-timeout 10)
 #+END_SRC
 
 [[http://www.emacswiki.org/emacs/BackupDirectory][Backups]] in =~/.emacs.d/save= (a backup happens everytime a file is
@@ -748,13 +746,13 @@ versioned (numbered) backup, and only keep the first 2 and last 2
 versions of each backup:
 
 #+BEGIN_SRC emacs-lisp
-(setq
- backup-directory-alist `((".*" . "~/.emacs.d/save"))
- backup-by-copying t
- version-control t
- kept-new-versions 2
- kept-old-versions 2
- delete-old-versions t)
+  (setq
+   backup-directory-alist `((".*" . "~/.emacs.d/save"))
+   backup-by-copying t
+   version-control t
+   kept-new-versions 2
+   kept-old-versions 2
+   delete-old-versions t)
 #+END_SRC
 
 Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
@@ -763,8 +761,8 @@ way. I tell Emacs to save abbreviations in the cache directory
 silently:
 
 #+BEGIN_SRC emacs-lisp
-(setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
-(setq save-abbrevs 'silently)
+  (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
+  (setq save-abbrevs 'silently)
 #+END_SRC
 
 
@@ -776,7 +774,7 @@ silently:
 =Dired= list directories first:
 
 #+BEGIN_SRC emacs-lisp
-(setq dired-listing-switches "-aBhl  --group-directories-first")
+  (setq dired-listing-switches "-aBhl  --group-directories-first")
 #+END_SRC
 
 Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
@@ -784,12 +782,12 @@ bound to =F5=). Project-explorer is set to a width of 20
 characters, and saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
-(projectile-global-mode)
-(diminish 'projectile-mode "Proj")
-(require 'project-explorer)
-(setq pe/width 20)
-(setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
-(global-set-key [(f5)] 'project-explorer-toggle)
+  (projectile-global-mode)
+  (diminish 'projectile-mode "Proj")
+  (require 'project-explorer)
+  (setq pe/width 20)
+  (setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
+  (global-set-key [(f5)] 'project-explorer-toggle)
 #+END_SRC
 
 
@@ -804,14 +802,14 @@ file save). We also bound Magit to =F5=, and integrate Git-flow to
 Magit (=magit-gitflow=, started with =C-f= from within Magit):
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(ctrl f5)] 'magit-status)
-(setq vc-handled-backends (delq 'Git vc-handled-backends))
-(setq magit-completing-read-function 'magit-ido-completing-read)
-(setq magit-view-git-manual-method 'man)
-(add-hook 'after-save-hook 'magit-after-save-refresh-status)
+  (global-set-key [(ctrl f5)] 'magit-status)
+  (setq vc-handled-backends (delq 'Git vc-handled-backends))
+  (setq magit-completing-read-function 'magit-ido-completing-read)
+  (setq magit-view-git-manual-method 'man)
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status)
 
-(require 'magit-gitflow)
-(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+  (require 'magit-gitflow)
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC
 
 ** Shell
@@ -824,10 +822,10 @@ case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= e
 brings a nice powerline:
 
 #+BEGIN_SRC emacs-lisp
-(setq
- eshell-buffer-shorthand t
- eshell-cmpl-ignore-case t)
-(eshell-git-prompt-use-theme 'powerline)
+  (setq
+   eshell-buffer-shorthand t
+   eshell-cmpl-ignore-case t)
+  (eshell-git-prompt-use-theme 'powerline)
 #+END_SRC
 
 ** PDF
@@ -868,10 +866,13 @@ Markdown in =.Rmd= files). It is setup for Mardown and LateX files
 with R:
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+  (require 'poly-org)
+  
+  (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
 #+END_SRC
 
 # How to use markdown+r+yaml?
@@ -903,7 +904,7 @@ with R:
 =YAML-mode= for YAML headers/files:
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 #+END_SRC
 
 
@@ -911,19 +912,18 @@ with R:
 
 
 
-
 Org mode comes with its own keybindings, ([[http://orgmode.org/manual/Conflicts.html][which can easily conflict
 with other settings]]).
 
 #+BEGIN_SRC emacs-lisp
-(setq org-replace-disputed-keys t)
+  (setq org-replace-disputed-keys t)
 #+END_SRC
 
 Make nice UTF-8 bullet points:
 
 #+BEGIN_SRC emacs-lisp
-(require 'org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (require 'org-bullets)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
 
 # [not working]
@@ -944,8 +944,29 @@ header, and the table of contents will be automatically updated on
 file save):
 
 #+BEGIN_SRC emacs-lisp
-(require 'toc-org)
-(add-hook 'org-mode-hook 'toc-org-enable)
+  (require 'toc-org)
+  (add-hook 'org-mode-hook 'toc-org-enable)
+#+END_SRC
+
+
+Org-babel can recognize code blocks [[http://orgmode.org/manual/Languages.html][from many different languages]] (Lisp,
+Bash, R, etc.) and provides a way to edit them in their respective
+mode (=C-c '=; and same keybinding to close). However,  =polymode=
+provides an even better integration directly in the Org file. We load
+a few languages:
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((css . t)
+     (ditaa . t)
+     (emacs-lisp . t)
+     (latex . t)
+     (lilypond . t)
+     (org . t)
+     (sh . t)
+     (sql . t)
+     (R . t)))
 #+END_SRC
 
 
@@ -1018,13 +1039,6 @@ file save):
 # 		   (org-todo (if (= n-not-done 0) "DONE" "SOMEDAY"))))
 # 	       ;; Insert TODO at point
 # 	       (load-library "org-insert-todo-here")
-# 	       ;; Org-babel to activate languages
-# 	       (org-babel-do-load-languages
-# 		'org-babel-load-languages
-# 		'((R . t)
-# 		  (org . t)
-# 		  (latex . t)
-# 		  (ditaa . t)))
 # 	       ;; DISPLAY
 # 	       (font-lock-add-keywords 'org-mode	; Real bullets
 # 				       '(("^ +\\([-*+]\\) "
@@ -1138,7 +1152,7 @@ and is loaded automatically. We simply enable Math:
 # of contents at point):
 
 #+BEGIN_SRC emacs-lisp
-(setq markdown-enable-math t)
+  (setq markdown-enable-math t)
 #+END_SRC
 
 
@@ -1161,72 +1175,71 @@ ESS to use R, edit R script, edit R documentation (Roxygen) and
 prepare packages. ESS is simply loaded with:
 
 #+BEGIN_SRC emacs-lisp
-(require 'ess-site)
+  (require 'ess-site)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq
-; ess-default-style 'RRR+  ; Use RRR+ style
- inferior-ess-same-window nil	; Run R in inferior window
- ess-ask-for-ess-directory nil      ; Use current directory as working directory
- inferior-R-args "--quiet --no-save" ; No save on exit
- ess-nuke-trailing-whitespace-p t	; Remove trailing spaces
- comint-scroll-to-bottom-on-input t	; Always scroll to the end of the R buffer
- comint-scroll-to-bottom-on-output t ; Scroll automatically when output reaches bottom
- ;; comint-move-point-for-output t
- ess-eval-visibly 'nowait		; Does not wait for R
- ess-swv-processor 'knitr	; Use knitr instead of Sweave as ESS processor
- ess-roxy-fontify-examples t	; Syntax highlighting in Roxygen examples
- )
+  (setq
+					; ess-default-style 'RRR+  ; Use RRR+ style
+   inferior-ess-same-window nil	; Run R in inferior window
+   ess-ask-for-ess-directory nil      ; Use current directory as working directory
+   inferior-R-args "--quiet --no-save" ; No save on exit
+   ess-nuke-trailing-whitespace-p t	; Remove trailing spaces
+   comint-scroll-to-bottom-on-input t	; Always scroll to the end of the R buffer
+   comint-scroll-to-bottom-on-output t ; Scroll automatically when output reaches bottom
+   ;; comint-move-point-for-output t
+   ess-eval-visibly 'nowait		; Does not wait for R
+   ess-swv-processor 'knitr	; Use knitr instead of Sweave as ESS processor
+   ess-roxy-fontify-examples t	; Syntax highlighting in Roxygen examples
+   )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+  (defun myindent-ess-hook ()
+    (setq 
+     ess-indent-offset 4
+     ess-offset-arguments 'prev-line
+     ess-offset-arguments-newline 'prev-line
+     ess-offset-block 'prev-line
+     ess-offset-continued nil
+     ess-align-nested-calls nil
+     ess-align-arguments-in-calls nil
+     ess-align-continuations-in-calls nil
+     ess-align-blocks nil
+     ess-indent-from-lhs nil
+     ess-indent-from-chain-start nil
+     ess-indent-with-fancy-comments t
+     ))
 
-(defun myindent-ess-hook ()
-  (setq 
-   ess-indent-offset 4
-   ess-offset-arguments 'prev-line
-   ess-offset-arguments-newline 'prev-line
-   ess-offset-block 'prev-line
-   ess-offset-continued nil
-   ess-align-nested-calls nil
-   ess-align-arguments-in-calls nil
-   ess-align-continuations-in-calls nil
-   ess-align-blocks nil
-   ess-indent-from-lhs nil
-   ess-indent-from-chain-start nil
-   ess-indent-with-fancy-comments t
-))
-
-(add-hook 'ess-mode-hook 
-	  (lambda ()
-	    (flyspell-prog-mode)
-	    (highlight-indent-guides-mode) ; Highlight indentation using
+  (add-hook 'ess-mode-hook 
+	    (lambda ()
+	      (flyspell-prog-mode)
+	      (highlight-indent-guides-mode) ; Highlight indentation using
 					; 'highlight-indent-guides'
-	    (subword-mode)	        ; Consider CamelCase as two words
+	      (subword-mode)	        ; Consider CamelCase as two words
 
-	    (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-	    (hs-minor-mode t)
-	    (diminish 'hs-minor-mode)
-	    (hs-org/minor-mode)
+	      (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+	      (hs-minor-mode t)
+	      (diminish 'hs-minor-mode)
+	      (hs-org/minor-mode)
 
-	    (aggressive-indent-mode)
-	    (myindent-ess-hook)
+	      (aggressive-indent-mode)
+	      (myindent-ess-hook)
 
-	    (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
-		      (lambda ()
-			(ess-nuke-trailing-whitespace)))
-	    ))
+	      (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
+			(lambda ()
+			  (ess-nuke-trailing-whitespace)))
+	      ))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require 'ess-smart-underscore)
+  (require 'ess-smart-underscore)
 #+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'ess-R-post-run-hook 
-	  'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
+  (add-hook 'ess-R-post-run-hook 
+	    'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
 					; buffer on startup
 #+END_SRC
 
@@ -1311,24 +1324,24 @@ colorization and a broad list of file extensions and engines
 associated to =web-mode=:
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.[s]html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jinga\\'" . web-mode))
-(setq
- web-mode-enable-auto-pairing t
- web-mode-enable-css-colorization t
- web-mode-engines-alist
-     '(("php"    . "\\.phtml\\'")
-       ("django" . "\\.jinja\\'")
-       ("blade"  . "\\.blade\\.")))
+  (add-to-list 'auto-mode-alist '("\\.[s]html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jinga\\'" . web-mode))
+  (setq
+   web-mode-enable-auto-pairing t
+   web-mode-enable-css-colorization t
+   web-mode-engines-alist
+   '(("php"    . "\\.phtml\\'")
+     ("django" . "\\.jinja\\'")
+     ("blade"  . "\\.blade\\.")))
 #+END_SRC
 
 # (provide 'init-web-mode)
@@ -1336,41 +1349,49 @@ associated to =web-mode=:
 Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integrated to web-mode]]:
 
 #+BEGIN_SRC emacs-lisp
-(defun web-mode-flyspell-verify ()
-  (let* ((f (get-text-property (- (point) 1) 'face))
-         rlt)
-    (cond
-     ;; Check the words with these font faces, possibly.
-     ;; this *blacklist* will be tweaked in next condition
-     ((not (memq f '(web-mode-html-attr-value-face
-                     web-mode-html-tag-face
-                     web-mode-html-attr-name-face
-                     web-mode-constant-face
-                     web-mode-doctype-face
-                     web-mode-keyword-face
-                     web-mode-comment-face ;; focus on get html label right
-                     web-mode-function-name-face
-                     web-mode-variable-name-face
-                     web-mode-css-property-name-face
-                     web-mode-css-selector-face
-                     web-mode-css-color-face
-                     web-mode-type-face
-                     web-mode-block-control-face)))
-      (setq rlt t))
-     ;; check attribute value under certain conditions
-     ((memq f '(web-mode-html-attr-value-face))
-      (save-excursion
-        (search-backward-regexp "=['\"]" (line-beginning-position) t)
-        (backward-char)
-        (setq rlt (string-match "^\\(value\\|class\\|ng[A-Za-z0-9-]*\\)$"
-                                (thing-at-point 'symbol)))))
-     ;; finalize the blacklist
-     (t
-      (setq rlt nil)))
-    rlt))
-(put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspell-verify)
+  (defun web-mode-flyspell-verify ()
+    (let* ((f (get-text-property (- (point) 1) 'face))
+	   rlt)
+      (cond
+       ;; Check the words with these font faces, possibly.
+       ;; this *blacklist* will be tweaked in next condition
+       ((not (memq f '(web-mode-html-attr-value-face
+		       web-mode-html-tag-face
+		       web-mode-html-attr-name-face
+		       web-mode-constant-face
+		       web-mode-doctype-face
+		       web-mode-keyword-face
+		       web-mode-comment-face ;; focus on get html label right
+		       web-mode-function-name-face
+		       web-mode-variable-name-face
+		       web-mode-css-property-name-face
+		       web-mode-css-selector-face
+		       web-mode-css-color-face
+		       web-mode-type-face
+		       web-mode-block-control-face)))
+	(setq rlt t))
+       ;; check attribute value under certain conditions
+       ((memq f '(web-mode-html-attr-value-face))
+	(save-excursion
+	  (search-backward-regexp "=['\"]" (line-beginning-position) t)
+	  (backward-char)
+	  (setq rlt (string-match "^\\(value\\|class\\|ng[A-Za-z0-9-]*\\)$"
+				  (thing-at-point 'symbol)))))
+       ;; finalize the blacklist
+       (t
+	(setq rlt nil)))
+      rlt))
+  (put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspell-verify)
 #+END_SRC
 
 
 
 
+
+
+* To-do
+
+- R indentation
+- Integrate Markdown-toc (bug)
+- Remove =require= for packages?
+  
