@@ -183,6 +183,8 @@ repositories. We first list these packages:
 		     ido-vertical-mode
                      magit
                      magit-gitflow
+                     markdown-mode
+                     markdown-toc
 		     multiple-cursors
                      project-explorer
 		     projectile
@@ -745,6 +747,32 @@ file save):
 
 
 ** Markdown
+
+=[[http://jblevins.org/projects/markdown-mode/][Markdown-mode]]= is used to edit Markdown files (=.md= or =.markdown=)
+and is loaded automatically. We simply enable Math:
+
+# BUG with markdown-toc; see bug report with M-x markdown-toc-bug-report
+# 
+# , and integrate
+# =[[https://github.com/ardumont/markdown-toc][markdown-toc]]= (type =M-x markdown-toc-generate-toc= to generate Table
+# of contents at point):
+
+#+BEGIN_SRC emacs-lisp
+(setq markdown-enable-math t)
+#+END_SRC
+
+
+	       # (load-library "rmd-R-insert-code") ; In (R)Markdown, add a new R
+	       # 				; chunk with C-return and
+	       # 				; inline R code with C-S-return
+	       # (add-hook 'markdown-mode-hook 
+	       # 		 (lambda ()
+	       # 		   (imenu-add-menubar-index) ; Add imenu
+	       # 		   (local-set-key [C-return] 'rmd-R-fenced-code-block) ; C-return to 
+	       # 				; insert a new R chunk
+	       # 		   (local-set-key [C-S-return] 'rmd-R-inline-code)))) ; C-S-return to 
+	       # 				; insert inline R code
+
 
 
 ** ESS
