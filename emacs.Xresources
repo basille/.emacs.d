@@ -1,0 +1,13 @@
+! Emacs geometry
+!
+emacs.fullscreen: maximized
+emacs.geometry: 250x250
+emacs.toolBar: off
+emacs.verticalScrollBars: off
+emacs.horizontalScrollbars: off
+emacs24.fullscreen: maximized
+emacs24.geometry: 250x250
+emacs24.toolBar: off
+emacs24.verticalScrollBars: off
+emacs24.horizontalScrollbars: off
+

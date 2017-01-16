@@ -1,0 +1,854 @@
+#+TITLE: Emacs literate configuration 
+#+AUTHOR: Mathieu Basille
+#+EMAIL: basille@ufl.edu
+#+BABEL: :cache yes
+#+PROPERTY: header-args :tangle yes
+
+
+* Getting started
+
+This is a configuration for Emacs on Debian Testing (currently
+Stretch). While most of it should work pretty much on any platform,
+the first steps of installing Emacs (Emacs 25.1 at the time of
+writing) is Debian specific.
+
+So we start by install emacs:
+
+#+BEGIN_SRC sh :tangle no
+sudo apt install emacs25
+#+END_SRC
+
+To configure Emacs, the easiest is simply to clone this repository in
+the =home= directory :
+
+#+BEGIN_SRC sh :tangle no
+git clone https://github.com/basille/.emacs.d ~
+#+END_SRC
+
+Opening Emacs will then do the magic!
+
+
+** A note on the use of =org-mode= for literate configuration
+
+The idea is that configuration bits are embeded into a Org file, which
+makes it a lot easier to navigate and configure. Emacs, with the use
+of =org-babel= is able to extract all configuration bits and compile
+them in a standard =init.el= file. The trick is that there is already
+an initial =init.el= file provided with this repository, which does
+the job the first time Emacs is loaded. 
+
+The initial =init.el= file also adjust Xresources for Emacs (start
+maximized and without scrollbards), and create the folder structure
+necessary for the rest of the configuration.
+
+This file looks like that:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; This file replaces itself with the actual configuration at first run.
+
+;; Add X options to ~/.Xresources and initialize them
+(write-region "
+! Emacs geometry
+!
+emacs.fullscreen: maximized
+emacs.geometry: 250x250
+emacs.toolBar: off
+emacs.verticalScrollBars: off
+emacs.horizontalScrollbars: off
+emacs25.fullscreen: maximized
+emacs25.geometry: 250x250
+emacs25.toolBar: off
+emacs25.verticalScrollBars: off
+emacs25.horizontalScrollbars: off
+
+" nil "~/..Xresources" 'append)
+(shell-command "xrdb -merge ~/.Xresources")
+
+;; Create necessary directories and save abbrev silently
+(mkdir "~/.emacs.d/cache/" 1)
+(mkdir "~/.emacs.d/save/" 1)
+(setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
+(setq save-abbrevs 'silently)
+
+;; We can't tangle without org!
+(require 'org)
+;; Open the configuration
+(find-file (concat user-emacs-directory "init.org"))
+;; tangle it
+(org-babel-tangle)
+;; load it
+(load-file (concat user-emacs-directory "init.el"))
+;; finally byte-compile it
+(byte-compile-file (concat user-emacs-directory "init.el"))
+#+END_SRC
+
+After this initial load, a function ensures that a new =init.el= is
+generated at every modification of =init.org= (precisely every time
+=init.org= is saved):
+
+#+BEGIN_SRC emacs-lisp
+(defun tangle-init ()
+  "If the current buffer is 'init.org' the code-blocks are
+tangled, and the tangled file is compiled."
+  (when (equal (buffer-file-name)
+	       (expand-file-name (concat user-emacs-directory "init.org")))
+    ;; Avoid running hooks when tangling.
+    (let ((prog-mode-hook nil))
+      (org-babel-tangle)
+      (byte-compile-file (concat user-emacs-directory "init.el")))))
+
+(add-hook 'after-save-hook 'tangle-init)
+#+END_SRC
+
+
+** Emacs packages
+
+Emacs now provide an entire ecosystem of packages, in various
+repositories, and handles them through the =package= utility:
+
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+#+END_SRC
+
+Emacs packages can come from different repositories. We only activate
+the official GNU repository, as well as
+[MELPA-stable](http://melpa-stable.milkbox.net/):
+
+#+BEGIN_SRC emacs-lisp
+(setq package-archives 
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")
+        )
+      package-archive-priorities
+      '(("org"          . 20)
+        ("melpa-stable" . 10)
+        ("gnu"          . 5)
+        ("melpa"        . 0)
+        ))
+#+END_SRC
+
+We now load it and make sure Emacs does not load it automatically 
+a second time at startup, after all configuration is loaded:
+
+#+BEGIN_SRC emacs-lisp
+(package-initialize)
+(setq package-enable-at-startup nil)
+#+END_SRC
+
+We can now automatically install the packages that are not in Debian
+repositories. We first list these packages:
+
+#+BEGIN_SRC emacs-lisp
+(setq package-list '(
+                     aggressive-indent
+		     anzu
+		     col-highlight
+		     company
+		     color-theme-sanityinc-tomorrow 
+		     diminish
+		     ess
+		     ess-smart-underscore
+		     expand-region
+		     flx-ido
+		     hideshow-org
+		     highlight 
+		     highlight-indent-guides
+		     ido-completing-read+
+		     ido-ubiquitous
+		     ido-vertical-mode
+                     magit
+                     magit-gitflow
+		     multiple-cursors
+		     org
+		     org-bullets
+		     powerline
+		     smex
+		     ))
+#+END_SRC
+
+Then fetch the list of packages available and install the missing
+packages:
+
+#+BEGIN_SRC emacs-lisp
+(unless package-archive-contents
+  (package-refresh-contents))
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+#+END_SRC
+
+
+* Interface
+
+Frames (generally called windows) have a title instead of
+=emacs25@<computer>=:
+
+#+BEGIN_SRC emacs-lisp
+(setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+#+END_SRC
+
+
+** Color theme
+
+Use the theme Tomorrow-eighties for Emacs GUI, and Zenburn for Emacs
+in the terminal:
+
+#+BEGIN_SRC emacs-lisp
+(require 'color-theme-sanityinc-tomorrow)
+
+(if (display-graphic-p) 
+    (load-theme 'sanityinc-tomorrow-eighties t)
+  (load-theme 'zenburn t)
+)
+#+END_SRC
+
+
+** Mode line
+
+Use a Power line:
+
+#+BEGIN_SRC emacs-lisp
+(require 'powerline)
+(powerline-default-theme)
+#+END_SRC
+
+Display line and column number in the mode line:
+
+#+BEGIN_SRC emacs-lisp
+(column-number-mode 1)
+#+END_SRC
+
+=[Anzu](https://github.com/syohex/emacs-anzu)=: display current match
+and total matches information in the mode-line, and show replacement
+interactively. Replace is bound to =C-r=, and replace using a RegExp
+is bound to =C-M-r=:
+
+#+BEGIN_SRC emacs-lisp
+(require 'anzu)
+(global-anzu-mode 1)
+(anzu-mode 1)
+(with-eval-after-load 'anzu (diminish 'anzu-mode))
+(global-set-key (kbd "C-r") 'anzu-query-replace)
+(global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
+#+END_SRC
+
+
+"Diminish" =auto-fill= (automatically break long lines while typing),
+=visual-line-mode= (word wrapping at the end of long lines), =eldoc=
+(display function arguments in the minibuffer), Lisp Interaction
+(replaced with just "Lisp"):
+
+#+BEGIN_SRC emacs-lisp
+(diminish 'auto-fill-function)
+(diminish 'visual-line-mode)
+(diminish 'eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 
+  (lambda()
+    (setq mode-name "Lisp"))) 
+#+END_SRC
+
+\[note: check modes in a buffer with =C-h m=\].
+
+
+** Windows
+
+Emacs starts split horizontaly in the middle:
+
+#+BEGIN_SRC emacs-lisp
+(split-window-horizontally)
+#+END_SRC
+
+Visible bells (flashes the frame):
+
+#+BEGIN_SRC emacs-lisp
+visible-bell t
+#+END_SRC
+
+Use =M-<arrows>= to move between windows (package =windmove=, built in
+Emacs):
+
+#+BEGIN_SRC emacs-lisp
+(windmove-default-keybindings 'meta)
+#+END_SRC
+
+Mouse wheel does not accelerate:
+
+#+BEGIN_SRC emacs-lisp
+(setq mouse-wheel-progressive-speed nil)
+#+END_SRC
+
+Scroll 2 lines from the edge:
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-margin 2)
+#+END_SRC
+
+Prevent lateral scrolling from touchpad to beep:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<mouse-7>")
+		(lambda () (interactive)))
+(global-set-key (kbd "<mouse-6>")
+		(lambda () (interactive)))
+#+END_SRC
+
+Open a file in the other window:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
+#+END_SRC
+
+Next window with C-<key above Tab>:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [C-dead-grave] 'other-window)
+#+END_SRC
+
+
+** Buffers
+
+Disable the splash screen:
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+ # ;; Use system font (set to Monospace 11):
+ # font-use-system-font t
+
+Highlight regions (=highlight=): F9 to highlight, C-F9 to move to the
+next highlighted text, C-S-F9 to unhighlight everything.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(f9)] 'hlt-highlight)
+(global-set-key [(ctrl f9)] 'hlt-next-highlight)
+(global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
+#+END_SRC
+
+Lines soft wrapped at word boundary (with fringe indicators):
+
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode 1)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+#+END_SRC
+
+=F10= to (in)activate line wrapping:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(f10)] 'toggle-truncate-lines)
+#+END_SRC
+
+Highlight columns (=col-highlight=): C-F10 to toggle column highlight mode.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(ctrl f10)] 'column-highlight-mode)
+#+END_SRC
+
+Highlight indentation in Programming mode (=highlight-indent-guides=):
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character) ; use 'column for more visible guides
+#+END_SRC
+
+Count words in region using =C-+=:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-+") 'count-words)
+#+END_SRC
+
+Kill THIS buffer with =C-x k=:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+#+END_SRC
+
+
+*** Navigation
+
+Backward search with =C-S-s=:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-S-s") 'isearch-backward)
+(define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
+#+END_SRC
+
+Expand region with =C-\== (then continue to expand by pressing =\== or
+contract by pressing =-=):
+
+#+BEGIN_SRC emacs-lisp
+(require 'expand-region)
+#+END_SRC
+
+HideShow (fold or unfold functions/regions with =C-S-F10=) for
+Programming mode:
+
+#+BEGIN_SRC emacs-lisp
+(require 'hideshow-org)
+(add-hook 'prog-mode-hook
+	  (lambda()
+	    (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+	    (hs-minor-mode t)
+	    (diminish 'hs-minor-mode)
+	    (hs-org/minor-mode)))
+#+END_SRC
+
+Saveplace: Go back to last position where the point was in a file
+(save positions in =.emacs.d/cache/saved-places=):
+
+#+BEGIN_SRC emacs-lisp
+(save-place-mode 1)
+(setq save-place-file "~/.emacs.d/cache/saved-places")
+#+END_SRC
+
+Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
+=C-F4= to save a register, =F1= to =F4= to jump to a saved register:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(f1)]
+		'(lambda () (interactive) (jump-to-register 1 nil)))
+(global-set-key [(ctrl f1)]
+		'(lambda () (interactive) (point-to-register 1 nil)))
+(global-set-key [(f2)]
+		'(lambda () (interactive) (jump-to-register 2 nil)))
+(global-set-key [(ctrl f2)]
+		'(lambda () (interactive) (point-to-register 2 nil)))
+(global-set-key [(f3)]
+		'(lambda () (interactive) (jump-to-register 3 nil)))
+(global-set-key [(ctrl f3)]
+		'(lambda () (interactive) (point-to-register 3 nil)))
+(global-set-key [(f4)]
+		'(lambda () (interactive) (jump-to-register 4 nil)))
+(global-set-key [(ctrl f4)]
+		'(lambda () (interactive) (point-to-register 4 nil)))
+#+END_SRC
+
+
+** Minibuffer
+
+Answer with y/n instead of yes/no:
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Enhanced M-x: SMEX (SMEX states saved in the =cache= subfolder):
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(setq smex-save-file "~/.emacs.d/cache/smex-items")
+#+END_SRC
+
+
+*** IDO: Interactively Do Things
+
+IDO allows to Interactively Do Things, more precisely to give
+interactively lists of possibilities when opening a file, executing a
+function, etc. (note that it is possible to fall back to a normal
+prompt using =C-f=).
+
+Initialize it, and make it work everywhere:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ido)
+(ido-mode 1)
+(ido-everywhere 1)
+#+END_SRC
+
+Set up IDO with almost anything that uses completion:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
+#+END_SRC
+
+Use IDO in vertical mode:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ido-vertical-mode)
+(ido-vertical-mode 1)
+#+END_SRC
+
+Use "flex" matching (i.e. typing a few characters will select items
+containing these characters in the given order, but not necessarily in
+a sequence) with =flx-ido=:
+
+#+BEGIN_SRC emacs-lisp
+(require 'flx-ido)
+(flx-ido-mode 1)
+#+END_SRC
+
+Other settings: IDO uses flexible matching, find file at point
+intelligently, always create new buffers with =C-x b=, and saves its
+state in the =cache= folder:
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ ;ido-enable-flex-matching t
+ ido-use-filename-at-point 'guess
+ ido-create-new-buffer 'always
+ ;; ido-file-extensions-order '(".Rmd" ".R" ".tex" ".el") ; extension order
+ ;; ido-use-faces nil
+ ido-save-directory-list-file "~/.emacs.d/cache/ido")
+#+END_SRC
+
+
+* Buffer editing
+
+Delete selection mode (replace a selection):
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+Undo with C-z:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+Electric pair mode: Automatically close double quotes, back quotes,
+parentheses, square brackets and curly brackets:
+
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode 1)
+(setq electric-pair-pairs '(
+                            (?\" . ?\")
+                            (?\` . ?\`)
+                            (?\( . ?\))
+                            (?\[ . ?\])
+                            (?\{ . ?\})
+                            ) )
+#+END_SRC
+
+Show matching parentheses and other characters (without any delay):
+
+#+BEGIN_SRC emacs-lisp
+(setq show-paren-delay 0)
+(show-paren-mode 1)
+#+END_SRC
+
+[Aggressive
+indent](https://github.com/Malabarba/aggressive-indent-mode) in
+Programming mode to indent automatically all blocks when a part is
+moved (add modes to =aggressive-indent-excluded-modes= to NOT start
+aggressive indent in this mode):
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook #'aggressive-indent-mode)
+(diminish 'aggressive-indent-mode)
+#+END_SRC
+
+Automatically break long lines (by default after 70 characters, as set
+in the variable =fill-column=): 
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+
+Consider CamelCase as two words in programming modes (but don't show
+it with "," in the mode line):
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'subword-mode)
+(with-eval-after-load 'subword (diminish 'subword-mode))
+#+END_SRC
+
+Complete anything (=company=), with =TAB= (=(kbd "TAB")= for terminal;
+=[tab]= for graphical mode) to complete immediately, no delay and
+aggressive completion:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'global-company-mode)
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "TAB") #'company-complete-common)
+  (define-key company-active-map [tab] #'company-complete-common)
+  (diminish 'company-mode))
+(setq company-idle-delay 0
+      company-echo-delay 0
+      company-dabbrev-downcase nil
+      company-minimum-prefix-length 2
+      company-selection-wrap-around t
+      company-transformers '(company-sort-by-occurrence
+                             company-sort-by-backend-importance))
+#+END_SRC
+
+Multiple cursors (=multiple-cursors=), choices are saved in the
+=cache= folder; =F11= to have multiple cursors in all lines of a
+region; =C-F11= tries to be smart about marking everything you want
+(can be pressed multiple times); =C-S-F11= marks the next item like
+the selection (use then arrows to select more/less):
+
+#+BEGIN_SRC emacs-lisp
+(require 'multiple-cursors)
+(setq mc/list-file "~/.emacs.d/cache/mc-lists.el")
+(global-set-key [(f11)] 'mc/edit-lines)
+(global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
+(global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
+#+END_SRC
+
+
+** Spell check and syntax check
+
+Emacs built-in spell check package is Ispell. A good approach is to
+use =Hunspell= as the spell check engine (needs to be installed), with
+"en_US" as the default dictionary. =Flyspell= (spell check on the fly)
+is enabled by default in all text files, and in programming mode
+(only in the comments) in programming files.
+
+#+BEGIN_SRC emacs-lisp
+(setq ispell-program-name "hunspell"
+      ispell-local-dictionary "en_US")
+
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(global-set-key [f12] 'flyspell-correct-word-before-point)
+(global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
+(global-set-key [C-S-f12] 'ispell-change-dictionary)
+#+END_SRC
+
+Flycheck
+
+
+** File saving
+
+Default language environment is UTF-8:
+
+#+BEGIN_SRC emacs-lisp
+(setq current-language-environment "UTF-8")
+#+END_SRC
+
+Don't lock files and accepts simultaneous editing (no
+[interlocking](https://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html),
+which creates tmp lockfiles):
+
+#+BEGIN_SRC emacs-lisp
+(setq create-lockfiles nil)
+#+END_SRC
+
+[Auto-save](http://www.emacswiki.org/emacs/AutoSave) in
+=~/.emacs.d/save= (after 10 seconds or 100 characters):
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ auto-save-file-name-transforms `((".*" ,"~/.emacs.d/save/\\1" t))
+ auto-save-list-file-name "~/.emacs.d/cache/save-list"
+ auto-save-interval 100
+ auto-save-timeout 10)
+#+END_SRC
+
+[Backups](http://www.emacswiki.org/emacs/BackupDirectory) in
+=~/.emacs.d/save= (a backup happens everytime a file is open, and then
+on each subsequent saves). Copy backup files, keep a versioned
+(numbered) backup, and only keep the first 2 and last 2 versions of
+each backup:
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ backup-directory-alist `((".*" . "~/.emacs.d/save"))
+ backup-by-copying t
+ version-control t
+ kept-new-versions 2
+ kept-old-versions 2
+ delete-old-versions t)
+#+END_SRC
+
+Abbreviations
+([Abbrevs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html)
+are a way to save keystrokes by expanding words into longer
+text. Since I don't use it, it gets slightly in the way. I tell Emacs
+to save abbreviations in the cache directory silently:
+
+#+BEGIN_SRC emacs-lisp
+(setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
+(setq save-abbrevs 'silently)
+#+END_SRC
+
+
+* Major modes
+
+
+** Polymode
+
+
+** Org mode
+
+
+
+
+ Org mode comes with its own keybindings, [which can easily conflict
+ with other settings](http://orgmode.org/manual/Conflicts.html). 
+
+ #+BEGIN_SRC emacs-lisp
+ (setq org-replace-disputed-keys t)
+ #+END_SRC
+
+ Make nice UTF-8 bullet points:
+
+ #+BEGIN_SRC emacs-lisp
+ (require 'org-bullets)
+ (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+ #+END_SRC
+
+ # [not working]
+ #
+ # To make windmove active in locations where Org mode does not have
+ # special functionality on M-<cursor>:
+ #
+ # #+BEGIN_SRC emacs-lisp
+ # (add-hook 'org-metaup-final-hook 'windmove-up)
+ # (add-hook 'org-metaleft-final-hook 'windmove-left)
+ # (add-hook 'org-metadown-final-hook 'windmove-down)
+ # (add-hook 'org-metaright-final-hook 'windmove-right)
+ # #+END_SRC
+
+
+
+
+
+** LaTeX
+
+
+** Markdown
+
+
+** ESS
+
+ESS to use R, edit R script, edit R documentation (Roxygen) and
+prepare packages. ESS is simply loaded with:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ess-site)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq
+; ess-default-style 'RRR+  ; Use RRR+ style
+ inferior-ess-same-window nil	; Run R in inferior window
+ ess-ask-for-ess-directory nil      ; Use current directory as working directory
+ inferior-R-args "--quiet --no-save" ; No save on exit
+ ess-nuke-trailing-whitespace-p t	; Remove trailing spaces
+ comint-scroll-to-bottom-on-input t	; Always scroll to the end of the R buffer
+ comint-scroll-to-bottom-on-output t ; Scroll automatically when output reaches bottom
+ ;; comint-move-point-for-output t
+ ess-eval-visibly 'nowait		; Does not wait for R
+ ess-swv-processor 'knitr	; Use knitr instead of Sweave as ESS processor
+ ess-roxy-fontify-examples t	; Syntax highlighting in Roxygen examples
+ )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+(defun myindent-ess-hook ()
+  (setq 
+   ess-indent-offset 4
+   ess-offset-arguments 'prev-line
+   ess-offset-arguments-newline 'prev-line
+   ess-offset-block 'prev-line
+   ess-offset-continued nil
+   ess-align-nested-calls nil
+   ess-align-arguments-in-calls nil
+   ess-align-continuations-in-calls nil
+   ess-align-blocks nil
+   ess-indent-from-lhs nil
+   ess-indent-from-chain-start nil
+   ess-indent-with-fancy-comments t
+))
+
+(add-hook 'ess-mode-hook 
+	  (lambda ()
+	    (flyspell-prog-mode)
+	    (highlight-indent-guides-mode) ; Highlight indentation using
+					; 'highlight-indent-guides'
+	    (subword-mode)	        ; Consider CamelCase as two words
+
+	    (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+	    (hs-minor-mode t)
+	    (diminish 'hs-minor-mode)
+	    (hs-org/minor-mode)
+
+	    (aggressive-indent-mode)
+	    (myindent-ess-hook)
+
+	    (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
+		      (lambda ()
+			(ess-nuke-trailing-whitespace)))
+	    ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'ess-smart-underscore)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'ess-R-post-run-hook 
+	  'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
+					; buffer on startup
+#+END_SRC
+
+Useful commands:
+
+- =C-c C-r=: move cursor to the previous command line and place it at
+  the top of the window;
+- =C-c C-o= delete everything from the last command to the current
+  prompt.
+
+- Bug with =company=
+
+    (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
+					; (C-M-\ ou 'M-x indent-region')
+					; http://www.emacswiki.org/emacs/ESSRParser
+    (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
+					; .emacs.d/config/config.pandoc
+    (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
+      (interactive) (ess-remote nil "R"))
+    (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
+					; the width of the R buffer
+    (bind-keys :map ess-mode-map
+	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
+					; should jump to the next block and C-M-x evaluates
+					; and stays in place)
+	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
+	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
+	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
+
+
+company
+
+
+** Web-mode
+
+
+
+
+* Utilities
+
+
+** File manager
+
+
+** GIT
+
+Magit
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends (delq 'Git vc-handled-backends)) ; Remove git from the list of 
+					; backends handled by vc
+(setq magit-completing-read-function 'magit-ido-completing-read) ; Use IDO to complete for branches
+
+(setq magit-view-git-manual-method 'man) ; Links to git-man
+
+(global-set-key [(f5)] 'magit-status) ; F5 to start Magit (magit-status)
+
+(add-hook 'after-save-hook 'magit-after-save-refresh-status) ; Automatically refresh repository's status after save
+
+(require 'magit-gitflow) ; Started with C-f from Magit
+(add-hook 'magit-mode-hook 'turn-on-magit-gitflow) ; Integrate GitFlow into Magit
+#+END_SRC
