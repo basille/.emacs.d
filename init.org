@@ -826,7 +826,7 @@ Useful commands:
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 #+END_SRC
 
-Manage projects with =[[http://batsov.com/projectile/][projectile]]= and [[https://github.com/sabof/project-explorer][project-explorer]] (the later
+Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
 bound to =C-F5=). Project-explorer is set to a width of 20 characters:
 
 #+BEGIN_SRC emacs-lisp
@@ -837,10 +837,9 @@ bound to =C-F5=). Project-explorer is set to a width of 20 characters:
 #+END_SRC
 
 
-
 ** GIT
 
-[[https://magit.vc/][Magit]] is a interface to Git completely integrated to Emacs. Once
+=[[https://magit.vc/][Magit]]= is a interface to Git completely integrated to Emacs. Once
 installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
 of backends handled by Emacs version control; use IDO to complete;
