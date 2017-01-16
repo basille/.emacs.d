@@ -1,3 +1,7 @@
+#+TITLE: Emacs literate configuration 
+#+AUTHOR: Mathieu Basille
+#+EMAIL: basille@ufl.edu
+
 * Emacs literate configuration
 
 All explanations are in the [init file](init.org).
