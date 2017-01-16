@@ -111,8 +111,7 @@ repositories, and handles them through the =package= utility:
 #+END_SRC
 
 Emacs packages can come from different repositories. We only activate
-the official GNU repository, as well as
-[MELPA-stable](http://melpa-stable.milkbox.net/):
+the official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]]:
 
 #+BEGIN_SRC emacs-lisp
 (setq package-archives 
@@ -220,10 +219,9 @@ Display line and column number in the mode line:
 (column-number-mode 1)
 #+END_SRC
 
-=[Anzu](https://github.com/syohex/emacs-anzu)=: display current match
-and total matches information in the mode-line, and show replacement
-interactively. Replace is bound to =C-r=, and replace using a RegExp
-is bound to =C-M-r=:
+=[[https://github.com/syohex/emacs-anzu][Anzu]]=: display current match and total matches information in the
+mode-line, and show replacement interactively. Replace is bound to
+=C-r=, and replace using a RegExp is bound to =C-M-r=:
 
 #+BEGIN_SRC emacs-lisp
 (require 'anzu)
@@ -249,7 +247,7 @@ is bound to =C-M-r=:
     (setq mode-name "Lisp"))) 
 #+END_SRC
 
-\[note: check modes in a buffer with =C-h m=\].
+Note: check modes in a buffer with =C-h m=.
 
 
 ** Windows
@@ -533,11 +531,10 @@ Show matching parentheses and other characters (without any delay):
 (show-paren-mode 1)
 #+END_SRC
 
-[Aggressive
-indent](https://github.com/Malabarba/aggressive-indent-mode) in
-Programming mode to indent automatically all blocks when a part is
-moved (add modes to =aggressive-indent-excluded-modes= to NOT start
-aggressive indent in this mode):
+[[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] in Programming mode to indent automatically all
+blocks when a part is moved (add modes to
+=aggressive-indent-excluded-modes= to NOT start aggressive indent in
+this mode):
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'aggressive-indent-mode)
@@ -624,16 +621,14 @@ Default language environment is UTF-8:
 (setq current-language-environment "UTF-8")
 #+END_SRC
 
-Don't lock files and accepts simultaneous editing (no
-[interlocking](https://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html),
+Don't lock files and accepts simultaneous editing (no [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html][interlocking]],
 which creates tmp lockfiles):
 
 #+BEGIN_SRC emacs-lisp
 (setq create-lockfiles nil)
 #+END_SRC
 
-[Auto-save](http://www.emacswiki.org/emacs/AutoSave) in
-=~/.emacs.d/save= (after 10 seconds or 100 characters):
+[[http://www.emacswiki.org/emacs/AutoSave][Auto-save]] in =~/.emacs.d/save= (after 10 seconds or 100 characters):
 
 #+BEGIN_SRC emacs-lisp
 (setq
@@ -643,11 +638,10 @@ which creates tmp lockfiles):
  auto-save-timeout 10)
 #+END_SRC
 
-[Backups](http://www.emacswiki.org/emacs/BackupDirectory) in
-=~/.emacs.d/save= (a backup happens everytime a file is open, and then
-on each subsequent saves). Copy backup files, keep a versioned
-(numbered) backup, and only keep the first 2 and last 2 versions of
-each backup:
+[[http://www.emacswiki.org/emacs/BackupDirectory][Backups]] in =~/.emacs.d/save= (a backup happens everytime a file is
+open, and then on each subsequent saves). Copy backup files, keep a
+versioned (numbered) backup, and only keep the first 2 and last 2
+versions of each backup:
 
 #+BEGIN_SRC emacs-lisp
 (setq
@@ -659,11 +653,10 @@ each backup:
  delete-old-versions t)
 #+END_SRC
 
-Abbreviations
-([Abbrevs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html)
-are a way to save keystrokes by expanding words into longer
-text. Since I don't use it, it gets slightly in the way. I tell Emacs
-to save abbreviations in the cache directory silently:
+Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
+words into longer text. Since I don't use it, it gets slightly in the
+way. I tell Emacs to save abbreviations in the cache directory
+silently:
 
 #+BEGIN_SRC emacs-lisp
 (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
@@ -682,35 +675,31 @@ to save abbreviations in the cache directory silently:
 
 
 
- Org mode comes with its own keybindings, [which can easily conflict
- with other settings](http://orgmode.org/manual/Conflicts.html). 
+Org mode comes with its own keybindings, ([[http://orgmode.org/manual/Conflicts.html][which can easily conflict
+with other settings]]).
 
- #+BEGIN_SRC emacs-lisp
- (setq org-replace-disputed-keys t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq org-replace-disputed-keys t)
+#+END_SRC
 
- Make nice UTF-8 bullet points:
+Make nice UTF-8 bullet points:
 
- #+BEGIN_SRC emacs-lisp
- (require 'org-bullets)
- (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+END_SRC
 
- # [not working]
- #
- # To make windmove active in locations where Org mode does not have
- # special functionality on M-<cursor>:
- #
- # #+BEGIN_SRC emacs-lisp
- # (add-hook 'org-metaup-final-hook 'windmove-up)
- # (add-hook 'org-metaleft-final-hook 'windmove-left)
- # (add-hook 'org-metadown-final-hook 'windmove-down)
- # (add-hook 'org-metaright-final-hook 'windmove-right)
- # #+END_SRC
-
-
-
-
+# [not working]
+#
+# To make windmove active in locations where Org mode does not have
+# special functionality on M-<cursor>:
+#
+# #+BEGIN_SRC emacs-lisp
+# (add-hook 'org-metaup-final-hook 'windmove-up)
+# (add-hook 'org-metaleft-final-hook 'windmove-left)
+# (add-hook 'org-metadown-final-hook 'windmove-down)
+# (add-hook 'org-metaright-final-hook 'windmove-right)
+# #+END_SRC
 
 ** LaTeX
 
@@ -800,27 +789,23 @@ Useful commands:
 - =C-c C-o= delete everything from the last command to the current
   prompt.
 
-- Bug with =company=
 
-    (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
-					; (C-M-\ ou 'M-x indent-region')
-					; http://www.emacswiki.org/emacs/ESSRParser
-    (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
-					; .emacs.d/config/config.pandoc
-    (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
-      (interactive) (ess-remote nil "R"))
-    (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
-					; the width of the R buffer
-    (bind-keys :map ess-mode-map
-	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
-					; should jump to the next block and C-M-x evaluates
-					; and stays in place)
-	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
-	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
-	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
-
-
-company
+    # (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
+    # 					; (C-M-\ ou 'M-x indent-region')
+    # 					; http://www.emacswiki.org/emacs/ESSRParser
+    # (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
+    # 					; .emacs.d/config/config.pandoc
+    # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
+    #   (interactive) (ess-remote nil "R"))
+    # (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
+    # 					; the width of the R buffer
+    # (bind-keys :map ess-mode-map
+    # 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
+    # 					; should jump to the next block and C-M-x evaluates
+    # 					; and stays in place)
+    # 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
+    # 	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
+    # 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
 
 
 ** Web-mode
