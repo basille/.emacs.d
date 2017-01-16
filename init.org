@@ -780,7 +780,7 @@ silently:
 #+END_SRC
 
 Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
-bound to =C-F5=). Project-explorer is set to a width of 20
+bound to =F5=). Project-explorer is set to a width of 20
 characters, and saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
@@ -789,7 +789,7 @@ characters, and saves its cache in the =cache= folder:
 (require 'project-explorer)
 (setq pe/width 20)
 (setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
-(global-set-key [(control f5)] 'project-explorer-toggle)
+(global-set-key [(f5)] 'project-explorer-toggle)
 #+END_SRC
 
 
@@ -804,7 +804,7 @@ file save). We also bound Magit to =F5=, and integrate Git-flow to
 Magit (=magit-gitflow=, started with =C-f= from within Magit):
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(f5)] 'magit-status)
+(global-set-key [(ctrl f5)] 'magit-status)
 (setq vc-handled-backends (delq 'Git vc-handled-backends))
 (setq magit-completing-read-function 'magit-ido-completing-read)
 (setq magit-view-git-manual-method 'man)
