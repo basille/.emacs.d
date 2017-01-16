@@ -160,6 +160,8 @@ repositories. We first list these packages:
                      magit
                      magit-gitflow
 		     multiple-cursors
+                     project-explorer
+		     projectile
 		     org
 		     org-bullets
 		     powerline
@@ -817,6 +819,23 @@ Useful commands:
 
 
 ** File manager
+
+=Dired= list directories first:
+
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-aBhl  --group-directories-first")
+#+END_SRC
+
+Manage projects with =[[http://batsov.com/projectile/][projectile]]= and [[https://github.com/sabof/project-explorer][project-explorer]] (the later
+bound to =C-F5=). Project-explorer is set to a width of 20 characters:
+
+#+BEGIN_SRC emacs-lisp
+(projectile-global-mode)
+(require 'project-explorer)
+(setq pe/width 20)
+(global-set-key [(control f5)] 'project-explorer-open)
+#+END_SRC
+
 
 
 ** GIT
