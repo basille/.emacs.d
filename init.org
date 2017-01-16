@@ -218,7 +218,7 @@ Frames (generally called windows) have a title instead of
 
 ** Color theme
 
-Use the theme Tomorrow-eighties for Emacs GUI, and Zenburn for Emacs
+Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomorrow-eighties]] for Emacs GUI, and [[https://github.com/bbatsov/zenburn-emacs][Zenburn]] for Emacs
 in the terminal:
 
 #+BEGIN_SRC emacs-lisp
