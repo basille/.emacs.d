@@ -5,6 +5,30 @@
 #+PROPERTY: header-args :tangle yes
 
 
+* Table of Contents							:TOC:
+ - [[#getting-started][Getting started]]
+   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
+   - [[#emacs-packages][Emacs packages]]
+ - [[#interface][Interface]]
+   - [[#color-theme][Color theme]]
+   - [[#mode-line][Mode line]]
+   - [[#windows][Windows]]
+   - [[#buffers][Buffers]]
+   - [[#minibuffer][Minibuffer]]
+ - [[#buffer-editing][Buffer editing]]
+   - [[#spell-check-and-syntax-check][Spell check and syntax check]]
+   - [[#file-saving][File saving]]
+ - [[#major-modes][Major modes]]
+   - [[#polymode][Polymode]]
+   - [[#org-mode][Org mode]]
+   - [[#latex][LaTeX]]
+   - [[#markdown][Markdown]]
+   - [[#ess][ESS]]
+   - [[#web-mode][Web-mode]]
+ - [[#utilities][Utilities]]
+   - [[#file-manager][File manager]]
+   - [[#git][GIT]]
+
 * Getting started
 
 This is a configuration for Emacs on Debian Testing (currently
@@ -166,6 +190,7 @@ repositories. We first list these packages:
 		     org-bullets
 		     powerline
 		     smex
+                     toc-org
 		     ))
 #+END_SRC
 
@@ -236,12 +261,14 @@ mode-line, and show replacement interactively. Replace is bound to
 
 
 "Diminish" =auto-fill= (automatically break long lines while typing),
-=visual-line-mode= (word wrapping at the end of long lines), =eldoc=
-(display function arguments in the minibuffer), Lisp Interaction
-(replaced with just "Lisp"):
+=auto-revert= (which is used by Magit to automatically update file
+content), =visual-line-mode= (word wrapping at the end of long lines),
+=eldoc= (display function arguments in the minibuffer), Lisp
+Interaction (replaced with just "Lisp"):
 
 #+BEGIN_SRC emacs-lisp
 (diminish 'auto-fill-function)
+(diminish 'auto-revert-mode)
 (diminish 'visual-line-mode)
 (diminish 'eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 
@@ -702,6 +729,17 @@ Make nice UTF-8 bullet points:
 # (add-hook 'org-metadown-final-hook 'windmove-down)
 # (add-hook 'org-metaright-final-hook 'windmove-right)
 # #+END_SRC
+
+
+Table of contents with =[[https://github.com/snosov1/toc-org][Toc-Org]]= (just add a =:TOC:= tag in the first
+header, and the table of contents will be automatically updated on
+file save):
+
+#+BEGIN_SRC emacs-lisp
+(require 'toc-org)
+(add-hook 'org-mode-hook 'toc-org-enable)
+#+END_SRC
+
 
 ** LaTeX
 
