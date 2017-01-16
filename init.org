@@ -821,19 +821,21 @@ Useful commands:
 
 ** GIT
 
-Magit
+[[https://magit.vc/][Magit]] is a interface to Git completely integrated to Emacs. Once
+installed, it pretty much works out of the box, there are just a
+couple of settings to make it even smoother (remove Git from the list
+of backends handled by Emacs version control; use IDO to complete;
+links to Git-man; automatically refresh the repository's status after
+file save). We also bound Magit to =F5=, and integrate Git-flow to
+Magit (=magit-gitflow=, started with =C-f= from within Magit):
 
 #+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends (delq 'Git vc-handled-backends)) ; Remove git from the list of 
-					; backends handled by vc
-(setq magit-completing-read-function 'magit-ido-completing-read) ; Use IDO to complete for branches
+(global-set-key [(f5)] 'magit-status)
+(setq vc-handled-backends (delq 'Git vc-handled-backends))
+(setq magit-completing-read-function 'magit-ido-completing-read)
+(setq magit-view-git-manual-method 'man)
+(add-hook 'after-save-hook 'magit-after-save-refresh-status)
 
-(setq magit-view-git-manual-method 'man) ; Links to git-man
-
-(global-set-key [(f5)] 'magit-status) ; F5 to start Magit (magit-status)
-
-(add-hook 'after-save-hook 'magit-after-save-refresh-status) ; Automatically refresh repository's status after save
-
-(require 'magit-gitflow) ; Started with C-f from Magit
-(add-hook 'magit-mode-hook 'turn-on-magit-gitflow) ; Integrate GitFlow into Magit
+(require 'magit-gitflow)
+(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC
