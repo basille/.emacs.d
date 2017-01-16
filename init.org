@@ -18,18 +18,21 @@
  - [[#buffer-editing][Buffer editing]]
    - [[#spell-check-and-syntax-check][Spell check and syntax check]]
    - [[#file-saving][File saving]]
- - [[#major-modes][Major modes]]
-   - [[#polymode][Polymode]]
-   - [[#yaml][YAML]]
-   - [[#org-mode][Org mode]]
-   - [[#latex][LaTeX]]
-   - [[#markdown][Markdown]]
-   - [[#ess][ESS]]
-   - [[#web-mode][Web-mode]]
  - [[#utilities][Utilities]]
    - [[#file-manager][File manager]]
    - [[#git][GIT]]
    - [[#shell][Shell]]
+   - [[#pdf][PDF]]
+   - [[#additional-functions][Additional functions]]
+ - [[#major-modes][Major modes]]
+   - [[#polymode][Polymode]]
+   - [[#yaml][YAML]]
+   - [[#org][Org]]
+   - [[#latex][LaTeX]]
+   - [[#markdown][Markdown]]
+   - [[#ess][ESS]]
+   - [[#sql][SQL]]
+   - [[#web][Web]]
 
 * Getting started
 
@@ -461,6 +464,71 @@ Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
 #+END_SRC
 
 
+
+# ;; Table of contents: imenu
+# ;; 
+# ;; imenu+? imenu-anywhere?
+# ;; imenu using ido
+# ;; Don't forget to add that to the specific mode...
+# ;; Need to use M-x idomenu, but then it loses subsections...
+# ;; (autoload 'idomenu "idomenu" nil t)
+# ;; imenu-anywhere with C-.
+# ;; (global-set-key (kbd "C-.") 'imenu-anywhere)
+# (use-package imenu
+# 	     :bind ("C-M-=" . imenu))	      ; C-M-= opens imenu
+
+
+
+
+*** Cycling through buffers
+
+# ;; Buffer menu with C-x C-b
+# (global-set-key (kbd "C-x C-b") 'buffer-menu)
+
+# ;; Put this in a function?
+# ;; 
+# ;; List the buffers to always or never show (always override never)
+# ;; http://scottfrazersblog.blogspot.com/2010/01/emacs-filtered-buffer-switching.html
+# ;; (defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\)\\*")
+# ;; *scratch* / *R* / *help[R](...)* / *[R]vignettes* / *magit:...* /
+# ;; **shell...
+# (defvar my-bs-always-show-regexps '("\\*scratch\\*" "\\*Packages\\*" "\\*R\\*" "^\\*help" "^\\*\\[R\\]vignettes" "^\\*magit:" "\\*shell")
+#   "*Buffer regexps to always show when buffer switching.")
+# (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
+#   "*Buffer regexps to never show when buffer switching.")
+# (defun my-bs-str-in-regexp-list (str regexp-list)
+#   "Return non-nil if str matches anything in regexp-list."
+#   (let ((case-fold-search nil))
+#     (catch 'done
+#       (dolist (regexp regexp-list)
+#         (when (string-match regexp str)
+#           (throw 'done t))))))
+# (defun my-bs-ignore-buffer (name)
+#   "Return non-nil if the named buffer should be ignored."
+#   ;; (or (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
+#   ;;          (my-bs-str-in-regexp-list name my-bs-never-show-regexps))
+#   ;;     (and my-ido-ignore-dired-buffers
+#   ;;          (save-excursion
+#   ;;            (set-buffer name)
+#   ;;            (equal major-mode 'dired-mode)))))
+#   (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
+#        (my-bs-str-in-regexp-list name my-bs-never-show-regexps)))
+
+# ;; Cycle through buffers: iflipb
+# ;; http://www.emacswiki.org/emacs/iflipb
+# (use-package iflipb
+# 	     :config 
+# 	     (progn
+# 	       (setq
+# 		iflipb-wrap-around 1	; Circular list
+# 		iflipb-ignore-buffers 'my-bs-ignore-buffer ; List of buffers to ignore
+# 		))
+# 	     :bind (("<C-tab>" . iflipb-next-buffer) ; C-tab to switch to next buffer
+# 		    ("<C-S-iso-lefttab>" . iflipb-previous-buffer))) ; C-S-tab to switch to previous buffer
+
+
+
+
 ** Minibuffer
 
 Answer with y/n instead of yes/no:
@@ -700,6 +768,96 @@ silently:
 #+END_SRC
 
 
+* Utilities
+
+
+** File manager
+
+=Dired= list directories first:
+
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-aBhl  --group-directories-first")
+#+END_SRC
+
+Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
+bound to =C-F5=). Project-explorer is set to a width of 20
+characters, and saves its cache in the =cache= folder:
+
+#+BEGIN_SRC emacs-lisp
+(projectile-global-mode)
+(diminish 'projectile-mode "Proj")
+(require 'project-explorer)
+(setq pe/width 20)
+(setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
+(global-set-key [(control f5)] 'project-explorer-toggle)
+#+END_SRC
+
+
+** GIT
+
+=[[https://magit.vc/][Magit]]= is a interface to Git completely integrated to Emacs. Once
+installed, it pretty much works out of the box, there are just a
+couple of settings to make it even smoother (remove Git from the list
+of backends handled by Emacs version control; use IDO to complete;
+links to Git-man; automatically refresh the repository's status after
+file save). We also bound Magit to =F5=, and integrate Git-flow to
+Magit (=magit-gitflow=, started with =C-f= from within Magit):
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(f5)] 'magit-status)
+(setq vc-handled-backends (delq 'Git vc-handled-backends))
+(setq magit-completing-read-function 'magit-ido-completing-read)
+(setq magit-view-git-manual-method 'man)
+(add-hook 'after-save-hook 'magit-after-save-refresh-status)
+
+(require 'magit-gitflow)
+(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+#+END_SRC
+
+** Shell
+
+Emacs provide different possibilities to embed a Shell (for instance,
+=M-x shell=, =M-x ansi-term=), with different advantages and
+drawbacks. Here I setup Eshell (the Emacs shell, =M-x eshell=), with
+short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
+case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= enables detection of Git repositories and
+brings a nice powerline:
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ eshell-buffer-shorthand t
+ eshell-cmpl-ignore-case t)
+(eshell-git-prompt-use-theme 'powerline)
+#+END_SRC
+
+** PDF
+
+# ;; Use PDF tools to view PDF
+# (use-package pdf-tools
+# 	     ;; :ensure t				; Installed from APT
+# 	     :config
+# 	     (progn
+# 	       (pdf-tools-install)
+# 	       )
+# 	     )
+
+
+** Additional functions
+
+# ;; Additional functions (.el)
+# ;; 
+# ;; Functions are in ~/.emacs.d/functions/
+# (add-to-list 'load-path "~/.emacs.d/functions/")
+
+# ;; C-S-F3/F4 to prepare the code for Dotclear to insert a photo:
+# (load-library "dc-insert")
+# (global-set-key [(ctrl shift f3)] 'dc-insert-photos)
+# (global-set-key [(ctrl shift f4)] 'dc-insert-videos)
+# ;; ;; C-F8 to start a Shell on Beheaded (ssh Beheaded) with screen capability:
+# ;; (load-library "shell-beheaded")
+# ;; (global-set-key [(ctrl f8)] 'shell-beheaded)
+
+
 * Major modes
 
 
@@ -749,7 +907,7 @@ with R:
 #+END_SRC
 
 
-** Org mode
+** Org
 
 
 
@@ -791,7 +949,181 @@ file save):
 #+END_SRC
 
 
+# ;; Keeping notes and TODO lists: org-mode
+# (use-package org
+# 	     ;; See config at: http://writequit.org/org/settings.html#sec-1-6x
+# 	     :mode (("\\.org$" . org-mode))	; Activate Org for .org files
+# 	     :bind (("C-c l" . org-store-link)
+# 		    ("C-c a" . org-agenda)
+# 		    ("C-c b" . org-iswitchb)
+# 		    ("C-c c" . org-capture)
+# 		    ("C-c M-p" . org-babel-previous-src-block)
+# 		    ("C-c M-n" . org-babel-next-src-block)
+# 		    ("C-c S" . org-babel-previous-src-block)
+# 		    ("C-c s" . org-babel-next-src-block)
+# 		    ([(f6)] . org-todo-list) ; Global TODO list
+# 		    ([(control f6)] . org-ctrl-c-ctrl-c) ; C-c C-c 
+# 		    ([(f7)] . org-insert-todo-here) ; Insert TODO at point
+# 		    ([(control f7)] . org-todo)	 ; Rotate TODO state
+# 		    ([(control shift f7)] . org-show-todo-tree)	 ; Shows TODOs in current buffer
+# 		    ;; (:map org-mode-map		  ; Edit code block in its specific mode
+# 		    ;;       ([(control shift f6)] . org-edit-special))
+# 		    ;; (:map org-src-mode-map		; Exit code block editing
+# 		    ;;       ([(control shift f6)] . org-edit-srv-exit))
+# 		    )
+# 	     :config
+# 	     (progn
+# 	       (org-defkey org-mode-map [(ctrl shift f6)] 'org-edit-special) ; Edit code block in its specific mode
+# 	       (org-defkey org-src-mode-map [(ctrl shift f6)] 'org-edit-src-exit) ; Exit code block editing
+# 	       (setq
+# 		;; Display
+# 		org-hide-emphasis-markers t	; Hide markers
+# 		org-ellipsis "⤵"			; Downward-pointing arrow instead of the usual …
+# 		org-src-fontify-natively t		; Use syntax highlighting in source blocks
+# 		org-src-tab-acts-natively t	; Make TAB act like the language's major mode in source blocks
+# 		;; org-startup-folded 'overview ; Start with top level headlines visible
+# 		org-display-inline-images t	; Enable inline images
+# 		;; org-directory 			; Where Org checks for files
+# 		;; org-archive-location		; Folder for archiving an entry
+# 		org-agenda-files '("~/.emacs.d/org") ; List of files for agenda/TODOs
+# 		;; org-support-shift-select 'always	; Allows shift selection
+# 		org-return-follows-link t		; Follow links by pressing ENTER on them
+# 					; (alternative to C-c C-o / M-x org-open-at-point)
+# 		org-replace-disputed-keys t	; Conflicting keys
+# 					; http://orgmode.org/manual/Conflicts.html
+# 		org-default-notes-file (concat org-directory "/notes.org")
+# 					;
+# 		org-log-done t		   ; Insert dates for changes in TODOs
+# 		org-todo-keywords ; TODO keywords: http://orgmode.org/manual/TODO-extensions.html#TODO-extensions
+# 					; http://orgmode.org/guide/Tracking-TODO-state-changes.html#Tracking-TODO-state-changes
+# 					; @ requires a note
+# 					; ! puts a timestamp (not necessary for DONE)
+# 		;; '((sequence "SOMEDAY(s)" "NOW(n)" "LATER(l)" "WAITING(w@/!)" "NEEDSREVIEW(n@/!)" "|" "DONE(d)")
+# 		'((sequence "SOMEDAY(s)" "NOW(n!)" "LATER(l)" "PROJECT(p)" "CANCELLED(c@/!)" "|" "DONE(d)"))
+# 		;; (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)"))
+# 		org-todo-keyword-faces		; ORG faces
+# 		'(("SOMEDAY" :foreground "purple" :weight bold)
+# 		  ("NOW" :foreground "orange" :weight bold)
+# 		  ("LATER" :foreground "forest green" :weight bold)
+# 		  ("PROJECT" :foreground "blue" :weight bold)
+# 		  ("CANCELLED" :foreground "red" :weight bold)
+# 		  ("DONE" :foreground "gray" :weight bold))
+# 		org-use-fast-todo-selection t	; Menu with selection of TODO keywords
+# 		org-enforce-todo-dependencies t	; Parent can't be marked as done unless all children are done
+# 		org-ditaa-jar-path (expand-file-name "/usr/share/ditaa/ditaa.jar") ; Path to ditaa.jar
+# 		)
+# 	       (defun org-summary-todo (n-done n-not-done)
+# 		 "Switch entry to DONE when all subentries are done, to SOMEDAY otherwise."
+# 		 (let (org-log-done org-log-states)   ; turn off logging
+# 		   (org-todo (if (= n-not-done 0) "DONE" "SOMEDAY"))))
+# 	       ;; Insert TODO at point
+# 	       (load-library "org-insert-todo-here")
+# 	       ;; Org-babel to activate languages
+# 	       (org-babel-do-load-languages
+# 		'org-babel-load-languages
+# 		'((R . t)
+# 		  (org . t)
+# 		  (latex . t)
+# 		  (ditaa . t)))
+# 	       ;; DISPLAY
+# 	       (font-lock-add-keywords 'org-mode	; Real bullets
+# 				       '(("^ +\\([-*+]\\) "
+# 					  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+# 	       ;; Nice headers
+# 	       (let* ((variable-tuple (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+# 					    ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+# 					    ((x-list-fonts "Verdana")         '(:font "Verdana"))
+# 					    ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+# 					    (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+# 		      (base-font-color     (face-foreground 'default nil 'default))
+# 		      (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+# 		 (custom-theme-set-faces 'user
+# 					 `(org-level-8 ((t (,@headline ,@variable-tuple))))
+# 					 `(org-level-7 ((t (,@headline ,@variable-tuple))))
+# 					 `(org-level-6 ((t (,@headline ,@variable-tuple))))
+# 					 `(org-level-5 ((t (,@headline ,@variable-tuple))))
+# 					 `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+# 					 `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+# 					 `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+# 					 `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+# 					 `(org-document-title ((t (,@headline ,@variable-tuple :height 1.5 :underline nil))))))
+# 	       (use-package org-bullets	; Header bullets
+# 					; https://github.com/sabof/org-bullets
+# 			    :config
+# 			    (progn
+# 			      (require 'org-bullets)		; 
+# 			      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+# 	       ))
+
+
+
 ** LaTeX
+
+
+# ;; LaTeX
+# ;; 
+# (use-package tex-site		        ; AUCTeX
+# 	     :ensure auctex		        ; Check and install if necessary
+# 	     :config 
+# 	     (progn
+# 	       (setq
+# 		TeX-parse-self t			; Enable parse on load.
+# 		TeX-auto-save nil			; Do not use folder 'auto' 
+# 		TeX-auto-global nil		;   (useful in case of a master)
+# 		TeX-PDF-mode t			; Compile as PDF
+# 		TeX-show-compilation t		; Show compilation buffer
+# 		TeX-source-correlate-mode t	; Synxtex on (Ctrl+left mouse button 
+# 					;   within a PDF document sends back 
+# 					;   to the corresponding line of the 
+# 					;   .tex source)
+# 		reftex-plug-into-AUCTeX t		; Plug RefTeX to AUCTeX
+# 		reftex-default-bibliography '("~/Work/Biblio/BiblioMB.bib")
+# 					; Define default bib file
+# 		))
+	     
+# 	     ;; (add-hook 'LaTeX-mode-hook 
+# 	     ;; 	      (lambda ()
+# 	     ;; 		(LaTeX-math-mode)	; math mode
+# 	     ;; 		(flyspell-mode)		; Flyspell checking
+# 	     ;; 		(turn-on-reftex)	; RefTeX on
+# 	     ;; 		(TeX-fold-mode 1)	; For outline views (hide/show sections, 
+# 	     ;; 		(outline-minor-mode 1)	;   chapters, etc.)
+# 	     ;; 		;; Clean up intermediary files with LaTeXmk and Beamer
+# 	     ;; 		(add-to-list 'LaTeX-clean-intermediate-suffixes "\\.fdb_latexmk" t)
+# 	     ;; 		(add-to-list 'LaTeX-clean-intermediate-suffixes "\\.vrb" t)
+# 	     ;; 		(setq 
+# 	     ;; 		 TeX-clean-confirm nil ; Clean up intermediary files without confirm
+# 	     ;; 		 TeX-command-default "LatexMk") ; LaTeXmk by default
+# 	     ;; ;; Add the TOC in imenu
+# 	     ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+# 	     ;; (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
+# 	     ;; )
+	     
+# 	     (use-package company-auctex		; Autocompletion using Company
+# 			  :ensure t
+# 			  :config
+# 			  (company-auctex-init)
+# 			  )
+	     
+# 	     (use-package auctex-latexmk		; Integration of LaTeXmk
+# 					; https://github.com/tom-tan/auctex-latexmk
+# 			  :config
+# 			  (progn
+# 			    (require 'auctex-latexmk)		; Load LaTeXmk
+# 			    (auctex-latexmk-setup)
+# 			    (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; Inherit PDF mode from AucTeX
+# 			    ))		; Enable --pvc mode for continuous compilation
+# 					;   Add this to .latexmkrc:
+# 					;   $pdf_mode = 1;
+# 					;   $pdf_previewer = 'start emacsclient';
+	     
+# 	     ;; (use-package latex-preview-pane       ; LaTeX Preview Pane
+# 	     ;; 					; http://www.emacswiki.org/emacs/LaTeXPreviewPane
+# 	     ;;   :init (latex-preview-pane-enable))	; Enable LaTeX Preview Pane
+# 	     ;; ;; Can't make it work when opening a file... Needs to M-x latex-preview-pane-mode
+
+# 	     )
+
 
 
 ** Markdown
@@ -924,7 +1256,54 @@ Useful commands:
     # 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
 
 
-** Web-mode
+** SQL
+
+# ;; SQL (sql-indent + sqlup)
+# ;;
+# (use-package sql-indent
+# 	     :config
+# 	     (progn
+# 	       ;; Capitalize keywords in SQL mode
+# 	       (add-hook 'sql-mode-hook 'sqlup-mode)
+# 	       ;; Capitalize keywords in an interactive session (e.g. psql)
+# 	       (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+# 	       ;; Set a global keyword to use sqlup on a region
+# 	       (global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
+# 	       ;; SQL indentation using TAB
+# 	       (load-library "sql-indent")))
+
+# ;; ;; Add a newline before comint output:
+# ;; ;; http://emacswiki.org/emacs/SqlMode#toc2
+# ;; (defvar sql-last-prompt-pos 1
+# ;;   "position of last prompt when added recording started")
+# ;; (make-variable-buffer-local 'sql-last-prompt-pos)
+# ;; (put 'sql-last-prompt-pos 'permanent-local t)
+# ;; (defun sql-add-newline-first (output)
+# ;;   "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'
+# ;; This fixes up the display of queries sent to the inferior buffer
+# ;; programatically."
+# ;;   (let ((begin-of-prompt
+# ;; 	     (or (and comint-last-prompt-overlay
+# ;; 		      ;; sometimes this overlay is not on prompt
+# ;; 		      (save-excursion
+# ;; 			(goto-char (overlay-start comint-last-prompt-overlay))
+# ;; 			(looking-at-p comint-prompt-regexp)
+# ;; 			(point)))
+# ;; 		 1)))
+# ;; 	(if (> begin-of-prompt sql-last-prompt-pos)
+# ;; 	    (progn
+# ;; 	      (setq sql-last-prompt-pos begin-of-prompt)
+# ;; 	      (concat "\n" output))
+# ;; 	  output)))
+# ;; (defun sqli-add-hooks ()
+# ;;   "Add hooks to `sql-interactive-mode-hook'."
+# ;;   (add-hook 'comint-preoutput-filter-functions
+# ;; 		'sql-add-newline-first))
+# ;; (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
+
+
+
+** Web
 
 =[[http://web-mode.org/][web-mode]]= is a major mode to edit Web files ([s]HTML, CSS, PHP,
 etc.). Here is a standard configuration, with auto-pairing, CSS
@@ -954,7 +1333,7 @@ associated to =web-mode=:
 
 # (provide 'init-web-mode)
 
-Spell check with flyspell can be [[http://blog.binchen.org/?p=950][integrated to web-mode]]:
+Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integrated to web-mode]]:
 
 #+BEGIN_SRC emacs-lisp
 (defun web-mode-flyspell-verify ()
@@ -995,62 +1374,3 @@ Spell check with flyspell can be [[http://blog.binchen.org/?p=950][integrated to
 
 
 
-* Utilities
-
-
-** File manager
-
-=Dired= list directories first:
-
-#+BEGIN_SRC emacs-lisp
-(setq dired-listing-switches "-aBhl  --group-directories-first")
-#+END_SRC
-
-Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
-bound to =C-F5=). Project-explorer is set to a width of 20 characters:
-
-#+BEGIN_SRC emacs-lisp
-(projectile-global-mode)
-(diminish 'projectile-mode "Proj")
-(require 'project-explorer)
-(setq pe/width 20)
-(global-set-key [(control f5)] 'project-explorer-open)
-#+END_SRC
-
-
-** GIT
-
-=[[https://magit.vc/][Magit]]= is a interface to Git completely integrated to Emacs. Once
-installed, it pretty much works out of the box, there are just a
-couple of settings to make it even smoother (remove Git from the list
-of backends handled by Emacs version control; use IDO to complete;
-links to Git-man; automatically refresh the repository's status after
-file save). We also bound Magit to =F5=, and integrate Git-flow to
-Magit (=magit-gitflow=, started with =C-f= from within Magit):
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key [(f5)] 'magit-status)
-(setq vc-handled-backends (delq 'Git vc-handled-backends))
-(setq magit-completing-read-function 'magit-ido-completing-read)
-(setq magit-view-git-manual-method 'man)
-(add-hook 'after-save-hook 'magit-after-save-refresh-status)
-
-(require 'magit-gitflow)
-(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
-#+END_SRC
-
-** Shell
-
-Emacs provide different possibilities to embed a Shell (for instance,
-=M-x shell=, =M-x ansi-term=), with different advantages and
-drawbacks. Here I setup Eshell (the Emacs shell, =M-x eshell=), with
-short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
-case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= enables detection of Git repositories and
-brings a nice powerline:
-
-#+BEGIN_SRC emacs-lisp
-(setq
- eshell-buffer-shorthand t
- eshell-cmpl-ignore-case t)
-(eshell-git-prompt-use-theme 'powerline)
-#+END_SRC
