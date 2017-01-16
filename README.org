@@ -3,4 +3,4 @@
 #+EMAIL: basille@ufl.edu
 
 
-All explanations are in the [init file](/init.org).
+All explanations are in the [[/init.org][init file]].
