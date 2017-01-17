@@ -741,9 +741,9 @@ silently:
   (setq dired-listing-switches "-aBhl  --group-directories-first")
 #+END_SRC
 
-Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
-bound to ~F5~). Project-explorer is set to a width of 20
-characters, and saves its cache in the =cache= folder:
+Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https://github.com/sabof/project-explorer][project-explorer]] (the later bound
+to ~F5~). Project-explorer is set to a width of 20 characters, and
+saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode)
@@ -757,7 +757,7 @@ characters, and saves its cache in the =cache= folder:
 
 ** GIT
 
-=[[https://magit.vc/][Magit]]= is a interface to Git completely integrated to Emacs. Once
+[[https://magit.vc/][Magit]] is a interface to Git completely integrated to Emacs. Once
 installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
 of backends handled by Emacs version control; use IDO to complete;
@@ -782,7 +782,7 @@ Emacs provide different possibilities to embed a Shell (for instance,
 ~M-x shell~, ~M-x ansi-term~), with different advantages and
 drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~), with
 short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
-case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= enables detection of Git repositories and
+case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]] enables detection of Git repositories and
 brings a nice powerline:
 
 #+BEGIN_SRC emacs-lisp
@@ -799,6 +799,8 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 #+BEGIN_SRC emacs-lisp
   (pdf-tools-install)
 #+END_SRC
+
+P fit page; H fit height; W fit width; g refresh (revert); h help.
 
 
 ** Additional functions
@@ -822,7 +824,7 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 
 ** Polymode
 
-=[[https://github.com/vitoshka/polymode][Polymode]]= allows multiple major modes in the same document (e.g. R +
+[[https://github.com/vitoshka/polymode][Polymode]] allows multiple major modes in the same document (e.g. R +
 Markdown in =.Rmd= files). It is setup for Mardown and LateX files
 with R:
 
@@ -900,7 +902,7 @@ Make nice UTF-8 bullet points:
 # #+END_SRC
 
 
-Table of contents with =[[https://github.com/snosov1/toc-org][Toc-Org]]= (just add a =:TOC:= tag with 
+Table of contents with [[https://github.com/snosov1/toc-org][Toc-Org]] (just add a =:TOC:= tag with 
 ~C-c C-q~ in the first header, and the table of contents will be
 automatically updated on file save):
 
@@ -1099,7 +1101,7 @@ Use PDF tools (and start Sync server) and refresh PDF automatically:
 
 ** Markdown
 
-=[[http://jblevins.org/projects/markdown-mode/][Markdown-mode]]= is used to edit Markdown files (=.md= or =.markdown=)
+[[http://jblevins.org/projects/markdown-mode/][Markdown-mode]] is used to edit Markdown files (=.md= or =.markdown=)
 and is loaded automatically. We simply enable Math:
 
 # BUG with markdown-toc; see bug report with M-x markdown-toc-bug-report
@@ -1272,7 +1274,7 @@ Useful commands:
 
 ** Web
 
-=[[http://web-mode.org/][web-mode]]= is a major mode to edit Web files ([s]HTML, CSS, PHP,
+[[http://web-mode.org/][Web-mode]] is a major mode to edit Web files ([s]HTML, CSS, PHP,
 etc.). Here is a standard configuration, with auto-pairing, CSS
 colorization and a broad list of file extensions and engines
 associated to =web-mode=:
@@ -1350,4 +1352,4 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 - Remove =require= for packages?
 - Remove magit-auto-revert for non Magit buffers
 - Document PDF-tools, ESS, LaTeX (document path to main biblio)
-- 
+- Additional functions
