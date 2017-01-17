@@ -5,7 +5,7 @@
 #+PROPERTY: header-args :tangle yes
 
 
-* Table of Contents							:TOC:
+* Table of Contents                                                     :TOC:
  - [[#getting-started][Getting started]]
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
    - [[#emacs-packages][Emacs packages]]
@@ -122,11 +122,11 @@ generated at every modification of =init.org= (precisely every time
     "If the current buffer is 'init.org' the code-blocks are
   tangled, and the tangled file is compiled."
     (when (equal (buffer-file-name)
-		 (expand-file-name (concat user-emacs-directory "init.org")))
+                 (expand-file-name (concat user-emacs-directory "init.org")))
       ;; Avoid running hooks when tangling.
       (let ((prog-mode-hook nil))
-	(org-babel-tangle)
-	(byte-compile-file (concat user-emacs-directory "init.el")))))
+        (org-babel-tangle)
+        (byte-compile-file (concat user-emacs-directory "init.el")))))
   
   (add-hook 'after-save-hook 'tangle-init)
 #+END_SRC
@@ -146,17 +146,17 @@ the official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELP
 
 #+BEGIN_SRC emacs-lisp
   (setq package-archives 
-	'(("gnu" . "https://elpa.gnu.org/packages/")
-	  ("melpa-stable" . "https://stable.melpa.org/packages/")
-	  ("melpa" . "https://melpa.org/packages/")
-	  ("org" . "http://orgmode.org/elpa/")
-	  )
-	package-archive-priorities
-	'(("org"          . 20)
-	  ("melpa-stable" . 10)
-	  ("gnu"          . 5)
-	  ("melpa"        . 0)
-	  ))
+        '(("gnu" . "https://elpa.gnu.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("org" . "http://orgmode.org/elpa/")
+          )
+        package-archive-priorities
+        '(("org"          . 20)
+          ("melpa-stable" . 10)
+          ("gnu"          . 5)
+          ("melpa"        . 0)
+          ))
 #+END_SRC
 
 We now load it and make sure Emacs does not load it automatically 
@@ -172,39 +172,39 @@ repositories. We first list these packages:
 
 #+BEGIN_SRC emacs-lisp
   (setq package-list '(
-		       aggressive-indent
-		       anzu
-		       col-highlight
-		       company
-		       color-theme-sanityinc-tomorrow 
-		       diminish
-		       eshell-git-prompt
-		       ess
-		       ess-smart-underscore
-		       expand-region
-		       flx-ido
-		       hideshow-org
-		       highlight 
-		       highlight-indent-guides
-		       ido-completing-read+
-		       ido-ubiquitous
-		       ido-vertical-mode
-		       magit
-		       magit-gitflow
-		       markdown-mode
-		       markdown-toc
-		       multiple-cursors
-		       polymode
-		       project-explorer
-		       projectile
-		       org
-		       org-bullets
-		       powerline
-		       smex
-		       toc-org
-		       web-mode
-		       yaml-mode
-		       ))
+                       aggressive-indent
+                       anzu
+                       col-highlight
+                       company
+                       color-theme-sanityinc-tomorrow 
+                       diminish
+                       eshell-git-prompt
+                       ess
+                       ess-smart-underscore
+                       expand-region
+                       flx-ido
+                       hideshow-org
+                       highlight 
+                       highlight-indent-guides
+                       ido-completing-read+
+                       ido-ubiquitous
+                       ido-vertical-mode
+                       magit
+                       magit-gitflow
+                       markdown-mode
+                       markdown-toc
+                       multiple-cursors
+                       polymode
+                       project-explorer
+                       projectile
+                       org
+                       org-bullets
+                       powerline
+                       smex
+                       toc-org
+                       web-mode
+                       yaml-mode
+                       ))
 #+END_SRC
 
 Then fetch the list of packages available and install the missing
@@ -289,9 +289,9 @@ Prevent lateral scrolling from touchpad to beep:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<mouse-7>")
-		  (lambda () (interactive)))
+                  (lambda () (interactive)))
   (global-set-key (kbd "<mouse-6>")
-		  (lambda () (interactive)))
+                  (lambda () (interactive)))
 #+END_SRC
 
 Visible bells (flashes the frame):
@@ -356,6 +356,8 @@ Kill THIS buffer with ~C-x k~:
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+END_SRC
 
+Note that you get the buffer menu (list of buffers) with ~C-x C-b~.
+
 
 *** Navigation
 
@@ -379,11 +381,11 @@ Programming mode:
 #+BEGIN_SRC emacs-lisp
   (require 'hideshow-org)
   (add-hook 'prog-mode-hook
-	    (lambda()
-	      (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-	      (hs-minor-mode t)
-	      (diminish 'hs-minor-mode)
-	      (hs-org/minor-mode)))
+            (lambda()
+              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+              (hs-minor-mode t)
+              (diminish 'hs-minor-mode)
+              (hs-org/minor-mode)))
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
@@ -399,78 +401,29 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f1)]
-		  '(lambda () (interactive) (jump-to-register 1 nil)))
+                  '(lambda () (interactive) (jump-to-register 1 nil)))
   (global-set-key [(ctrl f1)]
-		  '(lambda () (interactive) (point-to-register 1 nil)))
+                  '(lambda () (interactive) (point-to-register 1 nil)))
   (global-set-key [(f2)]
-		  '(lambda () (interactive) (jump-to-register 2 nil)))
+                  '(lambda () (interactive) (jump-to-register 2 nil)))
   (global-set-key [(ctrl f2)]
-		  '(lambda () (interactive) (point-to-register 2 nil)))
+                  '(lambda () (interactive) (point-to-register 2 nil)))
   (global-set-key [(f3)]
-		  '(lambda () (interactive) (jump-to-register 3 nil)))
+                  '(lambda () (interactive) (jump-to-register 3 nil)))
   (global-set-key [(ctrl f3)]
-		  '(lambda () (interactive) (point-to-register 3 nil)))
+                  '(lambda () (interactive) (point-to-register 3 nil)))
   (global-set-key [(f4)]
-		  '(lambda () (interactive) (jump-to-register 4 nil)))
+                  '(lambda () (interactive) (jump-to-register 4 nil)))
   (global-set-key [(ctrl f4)]
-		  '(lambda () (interactive) (point-to-register 4 nil)))
+                  '(lambda () (interactive) (point-to-register 4 nil)))
 #+END_SRC
 
 Imenu lists the main parts of a document (sections, headers, etc.) to
 navigate interactively a long document (bound to ~C-.~):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-.") #'imenu)
+  (global-set-key (kbd "C-M-=") #'imenu)
 #+END_SRC
-
-
-*** Cycling through buffers
-
-# ;; Buffer menu with C-x C-b
-# (global-set-key (kbd "C-x C-b") 'buffer-menu)
-
-# ;; Put this in a function?
-# ;; 
-# ;; List the buffers to always or never show (always override never)
-# ;; http://scottfrazersblog.blogspot.com/2010/01/emacs-filtered-buffer-switching.html
-# ;; (defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\)\\*")
-# ;; *scratch* / *R* / *help[R](...)* / *[R]vignettes* / *magit:...* /
-# ;; **shell...
-# (defvar my-bs-always-show-regexps '("\\*scratch\\*" "\\*Packages\\*" "\\*R\\*" "^\\*help" "^\\*\\[R\\]vignettes" "^\\*magit:" "\\*shell")
-#   "*Buffer regexps to always show when buffer switching.")
-# (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
-#   "*Buffer regexps to never show when buffer switching.")
-# (defun my-bs-str-in-regexp-list (str regexp-list)
-#   "Return non-nil if str matches anything in regexp-list."
-#   (let ((case-fold-search nil))
-#     (catch 'done
-#       (dolist (regexp regexp-list)
-#         (when (string-match regexp str)
-#           (throw 'done t))))))
-# (defun my-bs-ignore-buffer (name)
-#   "Return non-nil if the named buffer should be ignored."
-#   ;; (or (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
-#   ;;          (my-bs-str-in-regexp-list name my-bs-never-show-regexps))
-#   ;;     (and my-ido-ignore-dired-buffers
-#   ;;          (save-excursion
-#   ;;            (set-buffer name)
-#   ;;            (equal major-mode 'dired-mode)))))
-#   (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
-#        (my-bs-str-in-regexp-list name my-bs-never-show-regexps)))
-
-# ;; Cycle through buffers: iflipb
-# ;; http://www.emacswiki.org/emacs/iflipb
-# (use-package iflipb
-# 	     :config 
-# 	     (progn
-# 	       (setq
-# 		iflipb-wrap-around 1	; Circular list
-# 		iflipb-ignore-buffers 'my-bs-ignore-buffer ; List of buffers to ignore
-# 		))
-# 	     :bind (("<C-tab>" . iflipb-next-buffer) ; C-tab to switch to next buffer
-# 		    ("<C-S-iso-lefttab>" . iflipb-previous-buffer))) ; C-S-tab to switch to previous buffer
-
-
 
 
 ** Mode line
@@ -514,8 +467,8 @@ Interaction (replaced with just "Lisp"):
   (diminish 'visual-line-mode)
   (diminish 'eldoc-mode)
   (add-hook 'emacs-lisp-mode-hook 
-	    (lambda()
-	      (setq mode-name "Lisp"))) 
+            (lambda()
+              (setq mode-name "Lisp"))) 
 #+END_SRC
 
 Note: check modes in a buffer with ~C-h m~.
@@ -590,8 +543,22 @@ state in the =cache= folder:
    ido-save-directory-list-file "~/.emacs.d/cache/ido")
 #+END_SRC
 
+Cycle through buffers with =IDO= (~C-TAB~ in this window and ~C-S-TAB~
+in the other window):
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<C-tab>") 'ido-switch-buffer)
+  (global-set-key (kbd "<C-iso-lefttab>") 'ido-switch-buffer-other-window) ; C-S-TAB
+#+END_SRC
+
 
 * Buffer editing
+
+Never use Tabs when indenting, use spaces instead:
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
 
 Delete selection mode (replace a selection):
 
@@ -611,12 +578,12 @@ parentheses, square brackets and curly brackets:
 #+BEGIN_SRC emacs-lisp
   (electric-pair-mode 1)
   (setq electric-pair-pairs '(
-			      (?\" . ?\")
-			      (?\` . ?\`)
-			      (?\( . ?\))
-			      (?\[ . ?\])
-			      (?\{ . ?\})
-			      ) )
+                              (?\" . ?\")
+                              (?\` . ?\`)
+                              (?\( . ?\))
+                              (?\[ . ?\])
+                              (?\{ . ?\})
+                              ) )
 #+END_SRC
 
 Show matching parentheses and other characters (without any delay):
@@ -661,12 +628,12 @@ aggressive completion:
     (define-key company-active-map [tab] #'company-complete-common)
     (diminish 'company-mode))
   (setq company-idle-delay 0
-	company-echo-delay 0
-	company-dabbrev-downcase nil
-	company-minimum-prefix-length 2
-	company-selection-wrap-around t
-	company-transformers '(company-sort-by-occurrence
-			       company-sort-by-backend-importance))
+        company-echo-delay 0
+        company-dabbrev-downcase nil
+        company-minimum-prefix-length 2
+        company-selection-wrap-around t
+        company-transformers '(company-sort-by-occurrence
+                               company-sort-by-backend-importance))
 #+END_SRC
 
 Multiple cursors (=multiple-cursors=), choices are saved in the
@@ -694,7 +661,7 @@ is enabled by default in all text files, and in programming mode
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "hunspell"
-	ispell-local-dictionary "en_US")
+        ispell-local-dictionary "en_US")
 
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -931,9 +898,9 @@ Make nice UTF-8 bullet points:
 # #+END_SRC
 
 
-Table of contents with =[[https://github.com/snosov1/toc-org][Toc-Org]]= (just add a =:TOC:= tag in the first
-header, and the table of contents will be automatically updated on
-file save):
+Table of contents with =[[https://github.com/snosov1/toc-org][Toc-Org]]= (just add a =:TOC:= tag with 
+~C-c C-q~ in the first header, and the table of contents will be
+automatically updated on file save):
 
 #+BEGIN_SRC emacs-lisp
   (require 'toc-org)
@@ -1172,17 +1139,17 @@ prepare packages. ESS is simply loaded with:
 
 #+BEGIN_SRC emacs-lisp
   (setq
-					; ess-default-style 'RRR+  ; Use RRR+ style
-   inferior-ess-same-window nil	; Run R in inferior window
-   ess-ask-for-ess-directory nil      ; Use current directory as working directory
-   inferior-R-args "--quiet --no-save" ; No save on exit
-   ess-nuke-trailing-whitespace-p t	; Remove trailing spaces
-   comint-scroll-to-bottom-on-input t	; Always scroll to the end of the R buffer
+                                        ; ess-default-style 'RRR+  ; Use RRR+ style
+   inferior-ess-same-window nil         ; Run R in inferior window
+   ess-ask-for-ess-directory nil ; Use current directory as working directory
+   inferior-R-args "--quiet --no-save"  ; No save on exit
+   ess-nuke-trailing-whitespace-p t     ; remove trailing spaces
+   comint-scroll-to-bottom-on-input t ; Always scroll to the end of the R buffer
    comint-scroll-to-bottom-on-output t ; Scroll automatically when output reaches bottom
    ;; comint-move-point-for-output t
-   ess-eval-visibly 'nowait		; Does not wait for R
-   ess-swv-processor 'knitr	; Use knitr instead of Sweave as ESS processor
-   ess-roxy-fontify-examples t	; Syntax highlighting in Roxygen examples
+   ess-eval-visibly 'nowait             ; Does not wait for R
+   ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
+   ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
    )
 #+END_SRC
 
@@ -1204,23 +1171,20 @@ prepare packages. ESS is simply loaded with:
      ))
 
   (add-hook 'ess-mode-hook 
-	    (lambda ()
-	      (flyspell-prog-mode)
-	      (highlight-indent-guides-mode) ; Highlight indentation using
-					; 'highlight-indent-guides'
-	      (subword-mode)	        ; Consider CamelCase as two words
-
-	      (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-	      (hs-minor-mode t)
-	      (diminish 'hs-minor-mode)
-	      (hs-org/minor-mode)
-
-	      (aggressive-indent-mode)
-	      (myindent-ess-hook)
-
-	      (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
-			(lambda ()
-			  (ess-nuke-trailing-whitespace)))
+            (lambda ()
+              (flyspell-prog-mode)
+              (highlight-indent-guides-mode) ; Highlight indentation using
+                                        ; 'highlight-indent-guides'
+              (subword-mode) ; Consider CamelCase as two words             
+              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+              (hs-minor-mode t)
+              (diminish 'hs-minor-mode)
+              (hs-org/minor-mode) 
+              (aggressive-indent-mode)
+              (myindent-ess-hook)
+              (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
+                        (lambda ()
+                          (ess-nuke-trailing-whitespace)))
 	      ))
 #+END_SRC
 
@@ -1231,8 +1195,8 @@ prepare packages. ESS is simply loaded with:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'ess-R-post-run-hook 
-	    'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
-					; buffer on startup
+            'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
+                                        ; buffer on startup
 #+END_SRC
 
 Useful commands:
@@ -1348,27 +1312,27 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
        ;; Check the words with these font faces, possibly.
        ;; this *blacklist* will be tweaked in next condition
        ((not (memq f '(web-mode-html-attr-value-face
-		       web-mode-html-tag-face
-		       web-mode-html-attr-name-face
-		       web-mode-constant-face
-		       web-mode-doctype-face
-		       web-mode-keyword-face
-		       web-mode-comment-face ;; focus on get html label right
-		       web-mode-function-name-face
-		       web-mode-variable-name-face
-		       web-mode-css-property-name-face
-		       web-mode-css-selector-face
-		       web-mode-css-color-face
-		       web-mode-type-face
-		       web-mode-block-control-face)))
+                       web-mode-html-tag-face
+                       web-mode-html-attr-name-face
+                       web-mode-constant-face
+                       web-mode-doctype-face
+                       web-mode-keyword-face
+                       web-mode-comment-face ;; focus on get html label right
+                       web-mode-function-name-face
+                       web-mode-variable-name-face
+                       web-mode-css-property-name-face
+                       web-mode-css-selector-face
+                       web-mode-css-color-face
+                       web-mode-type-face
+                       web-mode-block-control-face)))
 	(setq rlt t))
        ;; check attribute value under certain conditions
        ((memq f '(web-mode-html-attr-value-face))
 	(save-excursion
 	  (search-backward-regexp "=['\"]" (line-beginning-position) t)
 	  (backward-char)
-	  (setq rlt (string-match "^\\(value\\|class\\|ng[A-Za-z0-9-]*\\)$"
-				  (thing-at-point 'symbol)))))
+          (setq rlt (string-match "^\\(value\\|class\\|ng[A-Za-z0-9-]*\\)$"
+                                  (thing-at-point 'symbol)))))
        ;; finalize the blacklist
        (t
 	(setq rlt nil)))
