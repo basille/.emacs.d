@@ -43,17 +43,18 @@ Stretch). While most of it should work pretty much on any platform,
 the first steps of installing Emacs (Emacs 25.1 at the time of
 writing) is Debian specific.
 
-So we start by install emacs:
+So we start by install emacs (=libpoppler-glib-dev= is required for
+PDF-tools):
 
 #+BEGIN_SRC sh :tangle no
-sudo apt install emacs25
+  sudo apt install emacs25 libpoppler-glib-dev
 #+END_SRC
 
 To configure Emacs, the easiest is simply to clone this repository in
 the =home= directory :
 
 #+BEGIN_SRC sh :tangle no
-git clone https://github.com/basille/.emacs.d ~
+  git clone https://github.com/basille/.emacs.d ~
 #+END_SRC
 
 Opening Emacs will then do the magic!
@@ -793,9 +794,7 @@ brings a nice powerline:
 
 ** PDF
 
-Use PDF tools to view PDF
-
-sudo apt install libpoppler-glib-dev
+Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 
 #+BEGIN_SRC emacs-lisp
   (pdf-tools-install)
@@ -1350,5 +1349,5 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 - Integrate Markdown-toc (bug)
 - Remove =require= for packages?
 - Remove magit-auto-revert for non Magit buffers
-- Document PDF-tools, ESS, LaTeX
-  
+- Document PDF-tools, ESS, LaTeX (document path to main biblio)
+- 
