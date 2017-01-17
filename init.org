@@ -174,8 +174,11 @@ repositories. We first list these packages:
   (setq package-list '(
                        aggressive-indent
                        anzu
+                       auctex
+                       auctex-latexmk
                        col-highlight
                        company
+                       company-auctex
                        color-theme-sanityinc-tomorrow 
                        diminish
                        eshell-git-prompt
@@ -194,6 +197,7 @@ repositories. We first list these packages:
                        markdown-mode
                        markdown-toc
                        multiple-cursors
+                       pdf-tools
                        polymode
                        project-explorer
                        projectile
@@ -712,7 +716,7 @@ versions of each backup:
    kept-new-versions 2
    kept-old-versions 2
    delete-old-versions t)
-#+END_SRC
+                                                                                                                                                                                                                                                                                                                                                                                                                                      #+END_SRC
 
 Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
 words into longer text. Since I don't use it, it gets slightly in the
@@ -789,14 +793,13 @@ brings a nice powerline:
 
 ** PDF
 
-# ;; Use PDF tools to view PDF
-# (use-package pdf-tools
-# 	     ;; :ensure t				; Installed from APT
-# 	     :config
-# 	     (progn
-# 	       (pdf-tools-install)
-# 	       )
-# 	     )
+Use PDF tools to view PDF
+
+sudo apt install libpoppler-glib-dev
+
+#+BEGIN_SRC emacs-lisp
+  (pdf-tools-install)
+#+END_SRC
 
 
 ** Additional functions
@@ -1033,70 +1036,66 @@ a few languages:
 ** LaTeX
 
 
-# ;; LaTeX
-# ;; 
-# (use-package tex-site		        ; AUCTeX
-# 	     :ensure auctex		        ; Check and install if necessary
-# 	     :config 
-# 	     (progn
-# 	       (setq
-# 		TeX-parse-self t			; Enable parse on load.
-# 		TeX-auto-save nil			; Do not use folder 'auto' 
-# 		TeX-auto-global nil		;   (useful in case of a master)
-# 		TeX-PDF-mode t			; Compile as PDF
-# 		TeX-show-compilation t		; Show compilation buffer
-# 		TeX-source-correlate-mode t	; Synxtex on (Ctrl+left mouse button 
-# 					;   within a PDF document sends back 
-# 					;   to the corresponding line of the 
-# 					;   .tex source)
-# 		reftex-plug-into-AUCTeX t		; Plug RefTeX to AUCTeX
-# 		reftex-default-bibliography '("~/Work/Biblio/BiblioMB.bib")
-# 					; Define default bib file
-# 		))
-	     
-# 	     ;; (add-hook 'LaTeX-mode-hook 
-# 	     ;; 	      (lambda ()
-# 	     ;; 		(LaTeX-math-mode)	; math mode
-# 	     ;; 		(flyspell-mode)		; Flyspell checking
-# 	     ;; 		(turn-on-reftex)	; RefTeX on
-# 	     ;; 		(TeX-fold-mode 1)	; For outline views (hide/show sections, 
-# 	     ;; 		(outline-minor-mode 1)	;   chapters, etc.)
-# 	     ;; 		;; Clean up intermediary files with LaTeXmk and Beamer
-# 	     ;; 		(add-to-list 'LaTeX-clean-intermediate-suffixes "\\.fdb_latexmk" t)
-# 	     ;; 		(add-to-list 'LaTeX-clean-intermediate-suffixes "\\.vrb" t)
-# 	     ;; 		(setq 
-# 	     ;; 		 TeX-clean-confirm nil ; Clean up intermediary files without confirm
-# 	     ;; 		 TeX-command-default "LatexMk") ; LaTeXmk by default
-# 	     ;; ;; Add the TOC in imenu
-# 	     ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
-# 	     ;; (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
-# 	     ;; )
-	     
-# 	     (use-package company-auctex		; Autocompletion using Company
-# 			  :ensure t
-# 			  :config
-# 			  (company-auctex-init)
-# 			  )
-	     
-# 	     (use-package auctex-latexmk		; Integration of LaTeXmk
-# 					; https://github.com/tom-tan/auctex-latexmk
-# 			  :config
-# 			  (progn
-# 			    (require 'auctex-latexmk)		; Load LaTeXmk
-# 			    (auctex-latexmk-setup)
-# 			    (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; Inherit PDF mode from AucTeX
-# 			    ))		; Enable --pvc mode for continuous compilation
-# 					;   Add this to .latexmkrc:
-# 					;   $pdf_mode = 1;
-# 					;   $pdf_previewer = 'start emacsclient';
-	     
-# 	     ;; (use-package latex-preview-pane       ; LaTeX Preview Pane
-# 	     ;; 					; http://www.emacswiki.org/emacs/LaTeXPreviewPane
-# 	     ;;   :init (latex-preview-pane-enable))	; Enable LaTeX Preview Pane
-# 	     ;; ;; Can't make it work when opening a file... Needs to M-x latex-preview-pane-mode
+kpsewhich -show-path=.bib
+should contain: /home/<user>/.texlive2016/texmf-var/bibtex/bib//
+mkdir -p ~/.texlive2016/texmf-var/bibtex/bib
+ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
 
-# 	     )
+C-c -C-l to show compilation logs (=(setqTeX-show-compilation t)= to
+have it by default)
 
+pdf-sync-display-pdf (C-g) for forward search
+Ctrl+click for inverse search
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-parse-self t ; Enable parse on load.
+        TeX-auto-save t ; Enable parse on save.
+;        TeX-show-compilation t          ; Show compliation output
+        TeX-source-correlate-mode t	; Forward and inverse search
+        TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
+        reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
+        ;; reftex-default-bibliography '("~/Work/Biblio/BiblioMB.bib")
+		        		; Define default bib file
+        )
+  (add-hook 'LaTeX-mode-hook 
+            (lambda ()
+              (TeX-global-PDF-mode t) ; Compile as PDF
+              (LaTeX-math-mode)	; Math mode
+              (turn-on-reftex)	; RefTeX on
+              (outline-minor-mode 1)	; Fold LaTeX sections
+              (TeX-fold-mode 1)	; Fold LaTeX environments
+              ))
+#+END_SRC
+
+auctex-latexmk: Integration of LaTeXmk
+https://github.com/tom-tan/auctex-latexkm
+
+#+BEGIN_SRC emacs-lisp
+  (auctex-latexmk-setup)
+  (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode
+  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "LatexMk"))) ; LaTeXMk default engine
+#+END_SRC
+
+Autocompletion using Company
+
+#+BEGIN_SRC emacs-lisp
+  (company-auctex-init)
+#+END_SRC
+
+
+Use PDF tools (and start Sync server) and refresh PDF automatically:
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-source-correlate-start-server t)
+
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+#+END_SRC
+
+
+# ;; Clean up intermediary files with LaTeXmk and Beamer
+# (add-to-list 'LaTeX-clean-intermediate-suffixes "\\.fdb_latexmk" t)
+# (add-to-list 'LaTeX-clean-intermediate-suffixes "\\.vrb" t)
 
 
 ** Markdown
@@ -1350,4 +1349,6 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 - R indentation
 - Integrate Markdown-toc (bug)
 - Remove =require= for packages?
+- Remove magit-auto-revert for non Magit buffers
+- Document PDF-tools, ESS, LaTeX
   
