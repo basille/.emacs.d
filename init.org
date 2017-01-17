@@ -11,9 +11,10 @@
    - [[#emacs-packages][Emacs packages]]
  - [[#interface][Interface]]
    - [[#color-theme][Color theme]]
-   - [[#mode-line][Mode line]]
+   - [[#frames][Frames]]
    - [[#windows][Windows]]
    - [[#buffers][Buffers]]
+   - [[#mode-line][Mode line]]
    - [[#minibuffer][Minibuffer]]
  - [[#buffer-editing][Buffer editing]]
    - [[#spell-check-and-syntax-check][Spell check and syntax check]]
@@ -220,13 +221,6 @@ packages:
 
 * Interface
 
-Frames (generally called windows) have a title instead of
-=emacs25@<computer>=:
-
-#+BEGIN_SRC emacs-lisp
-  (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
-#+END_SRC
-
 
 ** Color theme
 
@@ -242,52 +236,14 @@ in the terminal:
 #+END_SRC
 
 
-** Mode line
+** Frames
 
-Use a Power line:
-
-#+BEGIN_SRC emacs-lisp
-  (require 'powerline)
-  (powerline-default-theme)
-#+END_SRC
-
-Display line and column number in the mode line:
+Frames (generally called windows) have a title instead of
+=emacs25@<computer>=:
 
 #+BEGIN_SRC emacs-lisp
-  (column-number-mode 1)
+  (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
 #+END_SRC
-
-[[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
-mode-line, and show replacement interactively. Replace is bound to
-=C-r=, and replace using a RegExp is bound to =C-M-r=:
-
-#+BEGIN_SRC emacs-lisp
-  (require 'anzu)
-  (global-anzu-mode 1)
-  (anzu-mode 1)
-  (with-eval-after-load 'anzu (diminish 'anzu-mode))
-  (global-set-key (kbd "C-r") 'anzu-query-replace)
-  (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
-#+END_SRC
-
-
-"Diminish" =auto-fill= (automatically break long lines while typing),
-=auto-revert= (which is used by Magit to automatically update file
-content), =visual-line-mode= (word wrapping at the end of long lines),
-=eldoc= (display function arguments in the minibuffer), Lisp
-Interaction (replaced with just "Lisp"):
-
-#+BEGIN_SRC emacs-lisp
-  (diminish 'auto-fill-function)
-  (diminish 'auto-revert-mode)
-  (diminish 'visual-line-mode)
-  (diminish 'eldoc-mode)
-  (add-hook 'emacs-lisp-mode-hook 
-	    (lambda()
-	      (setq mode-name "Lisp"))) 
-#+END_SRC
-
-Note: check modes in a buffer with =C-h m=.
 
 
 ** Windows
@@ -298,17 +254,23 @@ Emacs starts split horizontaly in the middle:
   (split-window-horizontally)
 #+END_SRC
 
-Visible bells (flashes the frame):
+Open a file in the other window:
 
 #+BEGIN_SRC emacs-lisp
-  visible-bell t
+  (global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
 #+END_SRC
 
-Use =M-<arrows>= to move between windows (package =windmove=, built in
+Use ~M-<arrows>~ to move between windows (package =windmove=, built in
 Emacs):
 
 #+BEGIN_SRC emacs-lisp
   (windmove-default-keybindings 'meta)
+#+END_SRC
+
+Next window with C-<key above Tab>:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [C-dead-grave] 'other-window)
 #+END_SRC
 
 Mouse wheel does not accelerate:
@@ -332,16 +294,10 @@ Prevent lateral scrolling from touchpad to beep:
 		  (lambda () (interactive)))
 #+END_SRC
 
-Open a file in the other window:
+Visible bells (flashes the frame):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
-#+END_SRC
-
-Next window with C-<key above Tab>:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key [C-dead-grave] 'other-window)
+  visible-bell t
 #+END_SRC
 
 
@@ -353,18 +309,6 @@ Disable the splash screen:
   (setq inhibit-startup-screen t)
 #+END_SRC
 
- # ;; Use system font (set to Monospace 11):
- # font-use-system-font t
-
-Highlight regions (=highlight=): F9 to highlight, C-F9 to move to the
-next highlighted text, C-S-F9 to unhighlight everything.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key [(f9)] 'hlt-highlight)
-  (global-set-key [(ctrl f9)] 'hlt-next-highlight)
-  (global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
-#+END_SRC
-
 Lines soft wrapped at word boundary (with fringe indicators):
 
 #+BEGIN_SRC emacs-lisp
@@ -372,16 +316,25 @@ Lines soft wrapped at word boundary (with fringe indicators):
   (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 
-=F10= to (in)activate line wrapping:
+~F10~ to (in)activate line wrapping:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
 
-Highlight columns (=col-highlight=): C-F10 to toggle column highlight mode.
+Highlight columns (=col-highlight=): ~C-F10~ to toggle column highlight mode.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(ctrl f10)] 'column-highlight-mode)
+#+END_SRC
+
+Highlight regions (=highlight=): ~F9~ to highlight, ~C-F9~ to move to
+the next highlighted text, ~C-S-F9~ to unhighlight everything.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [(f9)] 'hlt-highlight)
+  (global-set-key [(ctrl f9)] 'hlt-next-highlight)
+  (global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
 #+END_SRC
 
 Highlight indentation in Programming mode (=highlight-indent-guides=):
@@ -391,13 +344,13 @@ Highlight indentation in Programming mode (=highlight-indent-guides=):
   (setq highlight-indent-guides-method 'character) ; use 'column for more visible guides
 #+END_SRC
 
-Count words in region using =C-+=:
+Count words in region using ~C-+~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-+") 'count-words)
 #+END_SRC
 
-Kill THIS buffer with =C-x k=:
+Kill THIS buffer with ~C-x k~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -406,21 +359,21 @@ Kill THIS buffer with =C-x k=:
 
 *** Navigation
 
-Backward search with =C-S-s=:
+Backward search with ~C-S-s~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-s") 'isearch-backward)
   (define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
 #+END_SRC
 
-Expand region with =C-\== (then continue to expand by pressing =\== or
-contract by pressing =-=):
+Expand region with ~C-=~ (then continue to expand by pressing ~=~ or
+contract by pressing ~-~):
 
 #+BEGIN_SRC emacs-lisp
   (require 'expand-region)
 #+END_SRC
 
-HideShow (fold or unfold functions/regions with =C-S-F10=) for
+HideShow (fold or unfold functions/regions with ~C-S-F10~) for
 Programming mode:
 
 #+BEGIN_SRC emacs-lisp
@@ -441,8 +394,8 @@ Saveplace: Go back to last position where the point was in a file
   (setq save-place-file "~/.emacs.d/cache/saved-places")
 #+END_SRC
 
-Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
-=C-F4= to save a register, =F1= to =F4= to jump to a saved register:
+Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
+~C-F4~ to save a register, ~F1~ to ~F4~ to jump to a saved register:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f1)]
@@ -529,6 +482,54 @@ Use position registers (a sort of bookmark) with F1—F4: =C-F1= to
 
 
 
+** Mode line
+
+Use a Power line:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'powerline)
+  (powerline-default-theme)
+#+END_SRC
+
+Display line and column number in the mode line:
+
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode 1)
+#+END_SRC
+
+[[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
+mode-line, and show replacement interactively. Replace is bound to
+~C-r~, and replace using a RegExp is bound to ~C-M-r~:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'anzu)
+  (global-anzu-mode 1)
+  (anzu-mode 1)
+  (with-eval-after-load 'anzu (diminish 'anzu-mode))
+  (global-set-key (kbd "C-r") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
+#+END_SRC
+
+
+"Diminish" =auto-fill= (automatically break long lines while typing),
+=auto-revert= (which is used by Magit to automatically update file
+content), =visual-line-mode= (word wrapping at the end of long lines),
+=eldoc= (display function arguments in the minibuffer), Lisp
+Interaction (replaced with just "Lisp"):
+
+#+BEGIN_SRC emacs-lisp
+  (diminish 'auto-fill-function)
+  (diminish 'auto-revert-mode)
+  (diminish 'visual-line-mode)
+  (diminish 'eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook 
+	    (lambda()
+	      (setq mode-name "Lisp"))) 
+#+END_SRC
+
+Note: check modes in a buffer with ~C-h m~.
+
+
 ** Minibuffer
 
 Answer with y/n instead of yes/no:
@@ -537,7 +538,7 @@ Answer with y/n instead of yes/no:
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-Enhanced M-x: SMEX (SMEX states saved in the =cache= subfolder):
+Enhanced ~M-x~: SMEX (SMEX states saved in the =cache= subfolder):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-x") 'smex)
@@ -553,7 +554,7 @@ Enhanced M-x: SMEX (SMEX states saved in the =cache= subfolder):
 IDO allows to Interactively Do Things, more precisely to give
 interactively lists of possibilities when opening a file, executing a
 function, etc. (note that it is possible to fall back to a normal
-prompt using =C-f=).
+prompt using ~C-f~).
 
 Initialize it, and make it work everywhere:
 
@@ -587,7 +588,7 @@ a sequence) with =flx-ido=:
 #+END_SRC
 
 Other settings: IDO uses flexible matching, find file at point
-intelligently, always create new buffers with =C-x b=, and saves its
+intelligently, always create new buffers with ~C-x b~, and saves its
 state in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
@@ -658,7 +659,7 @@ it with "," in the mode line):
   (with-eval-after-load 'subword (diminish 'subword-mode))
 #+END_SRC
 
-Complete anything (=company=), with =TAB= (=(kbd "TAB")= for terminal;
+Complete anything (=company=), with ~TAB~ (=(kbd "TAB")= for terminal;
 =[tab]= for graphical mode) to complete immediately, no delay and
 aggressive completion:
 
@@ -678,9 +679,9 @@ aggressive completion:
 #+END_SRC
 
 Multiple cursors (=multiple-cursors=), choices are saved in the
-=cache= folder; =F11= to have multiple cursors in all lines of a
-region; =C-F11= tries to be smart about marking everything you want
-(can be pressed multiple times); =C-S-F11= marks the next item like
+=cache= folder; ~F11~ to have multiple cursors in all lines of a
+region; ~C-F11~ tries to be smart about marking everything you want
+(can be pressed multiple times); ~C-S-F11~ marks the next item like
 the selection (use then arrows to select more/less):
 
 #+BEGIN_SRC emacs-lisp
@@ -778,7 +779,7 @@ silently:
 #+END_SRC
 
 Manage projects with =[[http://batsov.com/projectile/][projectile]]= and =[[https://github.com/sabof/project-explorer][project-explorer]]= (the later
-bound to =F5=). Project-explorer is set to a width of 20
+bound to ~F5~). Project-explorer is set to a width of 20
 characters, and saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
@@ -798,8 +799,8 @@ installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
 of backends handled by Emacs version control; use IDO to complete;
 links to Git-man; automatically refresh the repository's status after
-file save). We also bound Magit to =F5=, and integrate Git-flow to
-Magit (=magit-gitflow=, started with =C-f= from within Magit):
+file save). We also bound Magit to ~C-F5~, and integrate Git-flow to
+Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(ctrl f5)] 'magit-status)
@@ -815,8 +816,8 @@ Magit (=magit-gitflow=, started with =C-f= from within Magit):
 ** Shell
 
 Emacs provide different possibilities to embed a Shell (for instance,
-=M-x shell=, =M-x ansi-term=), with different advantages and
-drawbacks. Here I setup Eshell (the Emacs shell, =M-x eshell=), with
+~M-x shell~, ~M-x ansi-term~), with different advantages and
+drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~), with
 short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
 case. =[[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]= enables detection of Git repositories and
 brings a nice powerline:
@@ -951,7 +952,7 @@ file save):
 
 Org-babel can recognize code blocks [[http://orgmode.org/manual/Languages.html][from many different languages]] (Lisp,
 Bash, R, etc.) and provides a way to edit them in their respective
-mode (=C-c '=; and same keybinding to close). However,  =polymode=
+mode (~C-c '~; and same keybinding to close). However,  =polymode=
 provides an even better integration directly in the Org file. We load
 a few languages:
 
@@ -1148,7 +1149,7 @@ and is loaded automatically. We simply enable Math:
 # BUG with markdown-toc; see bug report with M-x markdown-toc-bug-report
 # 
 # , and integrate
-# =[[https://github.com/ardumont/markdown-toc][markdown-toc]]= (type =M-x markdown-toc-generate-toc= to generate Table
+# =[[https://github.com/ardumont/markdown-toc][markdown-toc]]= (type ~M-x markdown-toc-generate-toc~ to generate Table
 # of contents at point):
 
 #+BEGIN_SRC emacs-lisp
@@ -1245,9 +1246,9 @@ prepare packages. ESS is simply loaded with:
 
 Useful commands:
 
-- =C-c C-r=: move cursor to the previous command line and place it at
+- ~C-c C-r~: move cursor to the previous command line and place it at
   the top of the window;
-- =C-c C-o= delete everything from the last command to the current
+- ~C-c C-o~ delete everything from the last command to the current
   prompt.
 
 
