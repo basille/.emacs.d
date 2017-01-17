@@ -416,21 +416,12 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 		  '(lambda () (interactive) (point-to-register 4 nil)))
 #+END_SRC
 
+Imenu lists the main parts of a document (sections, headers, etc.) to
+navigate interactively a long document (bound to ~C-.~):
 
-
-# ;; Table of contents: imenu
-# ;; 
-# ;; imenu+? imenu-anywhere?
-# ;; imenu using ido
-# ;; Don't forget to add that to the specific mode...
-# ;; Need to use M-x idomenu, but then it loses subsections...
-# ;; (autoload 'idomenu "idomenu" nil t)
-# ;; imenu-anywhere with C-.
-# ;; (global-set-key (kbd "C-.") 'imenu-anywhere)
-# (use-package imenu
-# 	     :bind ("C-M-=" . imenu))	      ; C-M-= opens imenu
-
-
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-.") #'imenu)
+#+END_SRC
 
 
 *** Cycling through buffers
