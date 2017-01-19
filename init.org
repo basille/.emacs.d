@@ -787,7 +787,7 @@ brings a nice powerline:
 Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 
 #+BEGIN_SRC emacs-lisp
-  (pdf-tools-install)
+  (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-tools-install))
 #+END_SRC
 
 P fit page; H fit height; W fit width; g refresh (revert); h help.
@@ -902,17 +902,18 @@ provides an even better integration directly in the Org file. We load
 a few languages:
 
 #+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((css . t)
-     (ditaa . t)
-     (emacs-lisp . t)
-     (latex . t)
-     (lilypond . t)
-     (org . t)
-     (sh . t)
-     (sql . t)
-     (R . t)))
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+                               'org-babel-load-languages
+                               '((css . t)
+                                 (ditaa . t)
+                                 (emacs-lisp . t)
+                                 (latex . t)
+                                 (lilypond . t)
+                                 (org . t)
+                                 (sh . t)
+                                 (sql . t)
+                                 (R . t))))
 #+END_SRC
 
 
@@ -1034,7 +1035,7 @@ Ctrl+click for inverse search
 #+BEGIN_SRC emacs-lisp
   (setq TeX-parse-self t ; Enable parse on load.
         TeX-auto-save t ; Enable parse on save.
-;        TeX-show-compilation t          ; Show compliation output
+                                        ;        TeX-show-compilation t          ; Show compliation output
         TeX-source-correlate-mode t	; Forward and inverse search
         TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
         reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
@@ -1055,15 +1056,17 @@ auctex-latexmk: Integration of LaTeXmk
 https://github.com/tom-tan/auctex-latexkm
 
 #+BEGIN_SRC emacs-lisp
-  (auctex-latexmk-setup)
   (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode
+  (with-eval-after-load "tex"
+    (auctex-latexmk-setup))
   (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "LatexMk"))) ; LaTeXMk default engine
 #+END_SRC
 
 Autocompletion using Company
 
 #+BEGIN_SRC emacs-lisp
-  (company-auctex-init)
+  (with-eval-after-load "tex"
+    (company-auctex-init))
 #+END_SRC
 
 
