@@ -136,14 +136,9 @@ generated at every modification of =init.org= (precisely every time
 ** Emacs packages
 
 Emacs now provide an entire ecosystem of packages, in various
-repositories, and handles them through the =package= utility:
-
-#+BEGIN_SRC emacs-lisp
-  (require 'package)
-#+END_SRC
-
-Emacs packages can come from different repositories. We only activate
-the official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]]:
+repositories, and handles them through the =package= utility.  Emacs
+packages can come from different repositories. We only activate the
+official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]]:
 
 #+BEGIN_SRC emacs-lisp
   (setq package-archives 
@@ -223,6 +218,14 @@ packages:
       (package-install package)))
 #+END_SRC
 
+From now on, given that all packages are installed with a purpose,
+Emacs will silently accept redefinitions of functions by packages (for
+instance, =ido-ubiquitous= redefine =ido-completing-read= from =ido=):
+
+#+BEGIN_SRC emacs-lisp
+  (setq ad-redefinition-action 'accept)
+#+END_SRC
+
 
 * Interface
 
@@ -233,8 +236,6 @@ Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomor
 in the terminal:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'color-theme-sanityinc-tomorrow)
-  
   (if (display-graphic-p) 
       (load-theme 'sanityinc-tomorrow-eighties t)
     (load-theme 'zenburn t))
@@ -377,20 +378,19 @@ Expand region with ~C-=~ (then continue to expand by pressing ~=~ or
 contract by pressing ~-~):
 
 #+BEGIN_SRC emacs-lisp
-  (require 'expand-region)
+  ;;  (require 'expand-region)
 #+END_SRC
 
-HideShow (fold or unfold functions/regions with ~C-S-F10~) for
-Programming mode:
+[[https://github.com/shanecelis/hideshow-org][HideShow]] (fold or unfold functions/regions with ~TAB~ if the code is
+already indented) for Programming mode:
 
 #+BEGIN_SRC emacs-lisp
   (require 'hideshow-org)
   (add-hook 'prog-mode-hook
             (lambda()
-              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-              (hs-minor-mode t)
+              (hs-org/minor-mode)
               (diminish 'hs-minor-mode)
-              (hs-org/minor-mode)))
+              ))
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
@@ -436,7 +436,6 @@ navigate interactively a long document (bound to ~C-.~):
 Use a Power line:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'powerline)
   (powerline-default-theme)
 #+END_SRC
 
@@ -451,7 +450,6 @@ mode-line, and show replacement interactively. Replace is bound to
 ~C-r~, and replace using a RegExp is bound to ~C-M-r~:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'anzu)
   (global-anzu-mode 1)
   (anzu-mode 1)
   (with-eval-after-load 'anzu (diminish 'anzu-mode))
@@ -508,7 +506,6 @@ prompt using ~C-f~).
 Initialize it, and make it work everywhere:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ido)
   (ido-mode 1)
   (ido-everywhere 1)
 #+END_SRC
@@ -516,14 +513,12 @@ Initialize it, and make it work everywhere:
 Set up IDO with almost anything that uses completion:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ido-ubiquitous)
   (ido-ubiquitous-mode 1)
 #+END_SRC
 
 Use IDO in vertical mode:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ido-vertical-mode)
   (ido-vertical-mode 1)
 #+END_SRC
 
@@ -532,7 +527,6 @@ containing these characters in the given order, but not necessarily in
 a sequence) with =flx-ido=:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'flx-ido)
   (flx-ido-mode 1)
 #+END_SRC
 
@@ -648,7 +642,6 @@ region; ~C-F11~ tries to be smart about marking everything you want
 the selection (use then arrows to select more/less):
 
 #+BEGIN_SRC emacs-lisp
-  (require 'multiple-cursors)
   (setq mc/list-file "~/.emacs.d/cache/mc-lists.el")
   (global-set-key [(f11)] 'mc/edit-lines)
   (global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
@@ -748,7 +741,6 @@ saves its cache in the =cache= folder:
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode)
   (diminish 'projectile-mode "Proj")
-  (require 'project-explorer)
   (setq pe/width 20)
   (setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
   (global-set-key [(f5)] 'project-explorer-toggle)
@@ -771,8 +763,6 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
   (setq magit-completing-read-function 'magit-ido-completing-read)
   (setq magit-view-git-manual-method 'man)
   (add-hook 'after-save-hook 'magit-after-save-refresh-status)
-
-  (require 'magit-gitflow)
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC
 
@@ -829,17 +819,12 @@ Markdown in =.Rmd= files). It is setup for Mardown and LateX files
 with R:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'poly-org)
-  
   (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
   (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
   (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
   (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
 #+END_SRC
-
-# How to use markdown+r+yaml?
-# https://github.com/vspinu/polymode#markdownryaml
 
 # Diminish them?
 # (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
@@ -885,7 +870,6 @@ with other settings]]).
 Make nice UTF-8 bullet points:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'org-bullets)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
 
@@ -907,7 +891,6 @@ Table of contents with [[https://github.com/snosov1/toc-org][Toc-Org]] (just add
 automatically updated on file save):
 
 #+BEGIN_SRC emacs-lisp
-  (require 'toc-org)
   (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
 
@@ -1133,9 +1116,7 @@ and is loaded automatically. We simply enable Math:
 ESS to use R, edit R script, edit R documentation (Roxygen) and
 prepare packages. ESS is simply loaded with:
 
-#+BEGIN_SRC emacs-lisp
-  (require 'ess-site)
-#+END_SRC
+[[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
 
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -1173,6 +1154,7 @@ prepare packages. ESS is simply loaded with:
   (add-hook 'ess-mode-hook 
             (lambda ()
               (flyspell-prog-mode)
+              (require 'ess-smart-underscore)
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
@@ -1187,11 +1169,6 @@ prepare packages. ESS is simply loaded with:
                           (ess-nuke-trailing-whitespace)))
 	      ))
 #+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (require 'ess-smart-underscore)
-#+END_SRC
-
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'ess-R-post-run-hook 
@@ -1349,7 +1326,6 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 
 - R indentation
 - Integrate Markdown-toc (bug)
-- Remove =require= for packages?
 - Remove magit-auto-revert for non Magit buffers
 - Document PDF-tools, ESS, LaTeX (document path to main biblio)
 - Additional functions
