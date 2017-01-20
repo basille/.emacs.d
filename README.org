@@ -230,7 +230,7 @@ here is Emacs in action:
 
   #+CAPTION: Emacs on a RMarkdown file (with ESS)
   #+NAME: emacs-ess
-  [[emacs-markdown-yaml-ess.png]
+  [[emacs-markdown-yaml-ess.png]]
 
 
 * To-do
