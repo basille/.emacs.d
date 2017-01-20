@@ -49,7 +49,7 @@ file provided with this repository, which does the job the first time
 Emacs is loaded.
 
 The initial =init.el= file also adjusts =Xresources= for Emacs (start
-maximized and without scrollbards), and create the folder structure
+maximized and without scrollbars), and create the folder structure
 necessary for the rest of the configuration.
 
 This file looks like that:
