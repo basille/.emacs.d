@@ -6,9 +6,7 @@
 
 
 * Table of Contents                                                     :TOC:
- - [[#getting-started][Getting started]]
-   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
-   - [[#emacs-packages][Emacs packages]]
+ - [[#emacs-packages][Emacs packages]]
  - [[#interface][Interface]]
    - [[#color-theme][Color theme]]
    - [[#frames][Frames]]
@@ -34,106 +32,9 @@
    - [[#ess][ESS]]
    - [[#sql][SQL]]
    - [[#web][Web]]
- - [[#to-do][To-do]]
+ - [[#postface][Postface]]
 
-* Getting started
-
-This is a configuration for Emacs on Debian Testing (currently
-Stretch). While most of it should work pretty much on any platform,
-the first steps of installing Emacs (Emacs 25.1 at the time of
-writing) is Debian specific.
-
-So we start by install emacs (=libpoppler-glib-dev= is required for
-PDF-tools):
-
-#+BEGIN_SRC sh :tangle no
-  sudo apt install emacs25 libpoppler-glib-dev
-#+END_SRC
-
-To configure Emacs, the easiest is simply to clone this repository in
-the =home= directory :
-
-#+BEGIN_SRC sh :tangle no
-  git clone https://github.com/basille/.emacs.d ~
-#+END_SRC
-
-Opening Emacs will then do the magic!
-
-
-** A note on the use of =org-mode= for literate configuration
-
-The idea is that configuration bits are embeded into a Org file, which
-makes it a lot easier to navigate and configure. Emacs, with the use
-of =org-babel= is able to extract all configuration bits and compile
-them in a standard =init.el= file. The trick is that there is already
-an initial =init.el= file provided with this repository, which does
-the job the first time Emacs is loaded. 
-
-The initial =init.el= file also adjust Xresources for Emacs (start
-maximized and without scrollbards), and create the folder structure
-necessary for the rest of the configuration.
-
-This file looks like that:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-;; This file replaces itself with the actual configuration at first run.
-
-;; Add X options to ~/.Xresources and initialize them
-(write-region "
-! Emacs geometry
-!
-emacs.fullscreen: maximized
-emacs.geometry: 250x250
-emacs.toolBar: off
-emacs.verticalScrollBars: off
-emacs.horizontalScrollbars: off
-emacs25.fullscreen: maximized
-emacs25.geometry: 250x250
-emacs25.toolBar: off
-emacs25.verticalScrollBars: off
-emacs25.horizontalScrollbars: off
-
-" nil "~/..Xresources" 'append)
-(shell-command "xrdb -merge ~/.Xresources")
-
-;; Create necessary directories and save abbrev silently
-(mkdir "~/.emacs.d/cache/" 1)
-(mkdir "~/.emacs.d/save/" 1)
-(setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
-(setq save-abbrevs 'silently)
-
-;; We can't tangle without org!
-(require 'org)
-;; Open the configuration
-(find-file (concat user-emacs-directory "init.org"))
-;; tangle it
-(org-babel-tangle)
-;; load it
-(load-file (concat user-emacs-directory "init.el"))
-;; finally byte-compile it
-(byte-compile-file (concat user-emacs-directory "init.el"))
-#+END_SRC
-
-After this initial load, a function ensures that a new =init.el= is
-generated at every modification of =init.org= (precisely every time
-=init.org= is saved):
-
-#+BEGIN_SRC emacs-lisp
-  (defun tangle-init ()
-    "If the current buffer is 'init.org' the code-blocks are
-  tangled, and the tangled file is compiled."
-    (when (equal (buffer-file-name)
-                 (expand-file-name (concat user-emacs-directory "init.org")))
-      ;; Avoid running hooks when tangling.
-      (let ((prog-mode-hook nil))
-        (org-babel-tangle)
-        (byte-compile-file (concat user-emacs-directory "init.el")))))
-  
-  (add-hook 'after-save-hook 'tangle-init)
-#+END_SRC
-
-
-** Emacs packages
+* Emacs packages
 
 Emacs now provide an entire ecosystem of packages, in various
 repositories, and handles them through the =package= utility.  Emacs
@@ -273,7 +174,7 @@ Emacs):
   (windmove-default-keybindings 'meta)
 #+END_SRC
 
-Next window with C-<key above Tab>:
+Next window with ~C-~~ (key above TAB):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [C-dead-grave] 'other-window)
@@ -322,19 +223,20 @@ Lines soft wrapped at word boundary (with fringe indicators):
   (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 
-~F10~ to (in)activate line wrapping:
+~F10~ to toggle line wrapping (activated by default):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
 
-Highlight columns (=col-highlight=): ~C-F10~ to toggle column highlight mode.
+Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-F10~ to toggle column highlight
+mode.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(ctrl f10)] 'column-highlight-mode)
 #+END_SRC
 
-Highlight regions (=highlight=): ~F9~ to highlight, ~C-F9~ to move to
+Highlight regions ([[https://www.emacswiki.org/emacs/highlight.el][highlight]]): ~F9~ to highlight, ~C-F9~ to move to
 the next highlighted text, ~C-S-F9~ to unhighlight everything.
 
 #+BEGIN_SRC emacs-lisp
@@ -362,8 +264,6 @@ Kill THIS buffer with ~C-x k~:
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+END_SRC
 
-Note that you get the buffer menu (list of buffers) with ~C-x C-b~.
-
 
 *** Navigation
 
@@ -374,15 +274,15 @@ Backward search with ~C-S-s~:
   (define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
 #+END_SRC
 
-Expand region with ~C-=~ (then continue to expand by pressing ~=~ or
+[[https://github.com/magnars/expand-region.el][Expand region]] with ~C-=~ (then continue to expand by pressing ~=~ or
 contract by pressing ~-~):
 
 #+BEGIN_SRC emacs-lisp
   ;;  (require 'expand-region)
 #+END_SRC
 
-[[https://github.com/shanecelis/hideshow-org][HideShow]] (fold or unfold functions/regions with ~TAB~ if the code is
-already indented) for Programming mode:
+[[https://github.com/shanecelis/hideshow-org][HideShow]] (fold or unfold functions/regions with ~TAB~ or ~C-S-F10~ if
+the code is already indented) for Programming mode:
 
 #+BEGIN_SRC emacs-lisp
   (require 'hideshow-org)
@@ -390,6 +290,7 @@ already indented) for Programming mode:
             (lambda()
               (hs-org/minor-mode)
               (diminish 'hs-minor-mode)
+              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               ))
 #+END_SRC
 
@@ -424,7 +325,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 #+END_SRC
 
 Imenu lists the main parts of a document (sections, headers, etc.) to
-navigate interactively a long document (bound to ~C-.~):
+navigate interactively a long document (bound to ~C-M-=~):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-M-=") #'imenu)
@@ -474,8 +375,6 @@ Interaction (replaced with just "Lisp"):
               (setq mode-name "Lisp"))) 
 #+END_SRC
 
-Note: check modes in a buffer with ~C-h m~.
-
 
 ** Minibuffer
 
@@ -485,20 +384,19 @@ Answer with y/n instead of yes/no:
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-Enhanced ~M-x~: SMEX (SMEX states saved in the =cache= subfolder):
+Enhanced ~M-x~: SMEX, with states saved in the =cache= subfolder (note
+that the "old" =M-x= is the command =execute-extended-command=):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  ;; This is your old M-x.
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
   (setq smex-save-file "~/.emacs.d/cache/smex-items")
 #+END_SRC
 
 
 *** IDO: Interactively Do Things
 
-IDO allows to Interactively Do Things, more precisely to give
+[[https://www.gnu.org/software/emacs/manual/ido.html][IDO]] allows to Interactively Do Things, more precisely to give
 interactively lists of possibilities when opening a file, executing a
 function, etc. (note that it is possible to fall back to a normal
 prompt using ~C-f~).
@@ -565,7 +463,7 @@ Delete selection mode (replace a selection):
   (delete-selection-mode 1)
 #+END_SRC
 
-Undo with C-z:
+Undo with ~C-z~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-z") 'undo)
@@ -653,9 +551,11 @@ the selection (use then arrows to select more/less):
 
 Emacs built-in spell check package is Ispell. A good approach is to
 use =Hunspell= as the spell check engine (needs to be installed), with
-"en_US" as the default dictionary. =Flyspell= (spell check on the fly)
-is enabled by default in all text files, and in programming mode
-(only in the comments) in programming files.
+"en_US" as the default dictionary (~C-S-F12~ to change
+dictionary). =Flyspell= (spell check on the fly) is enabled by default
+in all text files (~C-F12~ to toggle Flyspell), and in programming
+mode (only in the comments) in programming files. ~F12~ (or middle
+click) opens the list of correction suggestions:
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "hunspell"
@@ -668,8 +568,6 @@ is enabled by default in all text files, and in programming mode
   (global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
   (global-set-key [C-S-f12] 'ispell-change-dictionary)
 #+END_SRC
-
-Flycheck
 
 
 ** File saving
@@ -710,7 +608,7 @@ versions of each backup:
    kept-new-versions 2
    kept-old-versions 2
    delete-old-versions t)
-                                                                                                                                                                                                                                                                                                                                                                                                                                      #+END_SRC
+#+END_SRC
 
 Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
 words into longer text. Since I don't use it, it gets slightly in the
@@ -754,15 +652,16 @@ installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
 of backends handled by Emacs version control; use IDO to complete;
 links to Git-man; automatically refresh the repository's status after
-file save). We also bound Magit to ~C-F5~, and integrate Git-flow to
+file save). We also bound Magit to ~F6~, and integrate Git-flow to
 Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl f5)] 'magit-status)
+  (global-set-key [(f6)] 'magit-status)
   (setq vc-handled-backends (delq 'Git vc-handled-backends))
   (setq magit-completing-read-function 'magit-ido-completing-read)
   (setq magit-view-git-manual-method 'man)
-  (add-hook 'after-save-hook 'magit-after-save-refresh-status)
+  (with-eval-after-load 'magit
+    (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC
 
@@ -770,12 +669,13 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 Emacs provide different possibilities to embed a Shell (for instance,
 ~M-x shell~, ~M-x ansi-term~), with different advantages and
-drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~), with
-short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
-case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]] enables detection of Git repositories and
-brings a nice powerline:
+drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~, bound
+to ~F7~), with short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that
+ignores case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]] enables detection of Git repositories
+and brings a nice powerline:
 
 #+BEGIN_SRC emacs-lisp
+  (global-set-key [(f7)] 'eshell)
   (setq
    eshell-buffer-shorthand t
    eshell-cmpl-ignore-case t)
@@ -790,7 +690,9 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-tools-install))
 #+END_SRC
 
-P fit page; H fit height; W fit width; g refresh (revert); h help.
+From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to
+the height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~
+opens the help of PDF tools.
 
 
 ** Additional functions
@@ -1161,10 +1063,9 @@ prepare packages. ESS is simply loaded with:
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
-              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-              (hs-minor-mode t)
               (diminish 'hs-minor-mode)
               (hs-org/minor-mode) 
+              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               (aggressive-indent-mode)
               (myindent-ess-hook)
               (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
@@ -1179,12 +1080,6 @@ prepare packages. ESS is simply loaded with:
                                         ; buffer on startup
 #+END_SRC
 
-Useful commands:
-
-- ~C-c C-r~: move cursor to the previous command line and place it at
-  the top of the window;
-- ~C-c C-o~ delete everything from the last command to the current
-  prompt.
 
 
     # (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
@@ -1260,7 +1155,9 @@ colorization and a broad list of file extensions and engines
 associated to =web-mode=:
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.[s]html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.htm?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.shtml?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -1279,8 +1176,6 @@ associated to =web-mode=:
      ("django" . "\\.jinja\\'")
      ("blade"  . "\\.blade\\.")))
 #+END_SRC
-
-# (provide 'init-web-mode)
 
 Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integrated to web-mode]]:
 
@@ -1321,14 +1216,22 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 #+END_SRC
 
 
+* Postface
 
+Of course, the very last part of this =init.org= file is the very
+function that enables Emacs to regenerate both =init.el= and
+=init.elc= files every time the =init.org= file is saved:
 
-
-
-* To-do
-
-- R indentation
-- Integrate Markdown-toc (bug)
-- Remove magit-auto-revert for non Magit buffers
-- Document PDF-tools, ESS, LaTeX (document path to main biblio)
-- Additional functions
+#+BEGIN_SRC emacs-lisp
+  (defun tangle-init ()
+    "If the current buffer is 'init.org' the code-blocks are
+  tangled, and the tangled file is compiled."
+    (when (equal (buffer-file-name)
+                 (expand-file-name (concat user-emacs-directory "init.org")))
+      ;; Avoid running hooks when tangling.
+      (let ((prog-mode-hook nil))
+        (org-babel-tangle)
+        (byte-compile-file (concat user-emacs-directory "init.el")))))
+  
+  (add-hook 'after-save-hook 'tangle-init)
+#+END_SRC

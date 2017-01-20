@@ -3,4 +3,221 @@
 #+EMAIL: basille@ufl.edu
 
 
-All explanations are in the [[/init.org][init file]].
+* Table of Contents                                                     :TOC:
+ - [[#getting-started][Getting started]]
+ - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
+ - [[#special-key-bindings][Special key bindings]]
+   - [[#interface][Interface]]
+   - [[#special][Special]]
+   - [[#pdf-tools][PDF tools]]
+   - [[#latex][LaTeX]]
+   - [[#ess][ESS]]
+   - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
+ - [[#to-do][To-do]]
+
+* Getting started
+
+This is a configuration for Emacs on Debian Testing (currently
+Stretch). While most of it should work pretty much on any platform,
+installing Emacs (Emacs 25.1 at the time of writing) is Debian
+specific (=libpoppler-glib-dev= is required for PDF-tools):
+
+#+BEGIN_SRC sh
+  sudo apt install emacs25 libpoppler-glib-dev
+#+END_SRC
+
+To configure Emacs, the easiest is simply to clone this repository in
+the =home= directory :
+
+#+BEGIN_SRC sh
+  git clone https://github.com/basille/.emacs.d ~
+#+END_SRC
+
+Opening Emacs will then do the magic!
+
+
+* A note on the use of =org-mode= for literate configuration
+
+The [[https://github.com/larstvei/dot-emacs][original idea]] is to embed configuration bits into an Org file
+([[/init.org][init.org]]), which contains both code and explanations, making it a lot
+easier to navigate and configure. Emacs, with the use of =org-babel=
+is able to extract all configuration bits and assemble them in a
+standard =init.el= file, and its compiled version =init.elc=. The
+trick to make it work is that there is already an initial =init.el=
+file provided with this repository, which does the job the first time
+Emacs is loaded.
+
+The initial =init.el= file also adjusts =Xresources= for Emacs (start
+maximized and without scrollbards), and create the folder structure
+necessary for the rest of the configuration.
+
+This file looks like that:
+
+#+BEGIN_SRC emacs-lisp
+  ;; This file replaces itself with the actual configuration at first run.
+
+  ;; Add X options to ~/.Xresources and initialize them
+  (write-region "
+  ! Emacs geometry
+  !
+  emacs.fullscreen: maximized
+  emacs.geometry: 250x250
+  emacs.toolBar: off
+  emacs.verticalScrollBars: off
+  emacs.horizontalScrollbars: off
+  emacs25.fullscreen: maximized
+  emacs25.geometry: 250x250
+  emacs25.toolBar: off
+  emacs25.verticalScrollBars: off
+  emacs25.horizontalScrollbars: off
+
+  " nil "~/.Xresources" 'append)
+  (shell-command "xrdb -merge ~/.Xresources")
+
+  ;; Create necessary directories and save abbrev silently
+  (mkdir "~/.emacs.d/cache/" 1)
+  (mkdir "~/.emacs.d/save/" 1)
+  (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
+  (setq save-abbrevs 'silently)
+  
+  ;; We can't tangle without org!
+  (require 'org)
+  ;; Open the configuration
+  (find-file (concat user-emacs-directory "init.org"))
+  ;; tangle it
+  (org-babel-tangle)
+  ;; load it
+  (load-file (concat user-emacs-directory "init.el"))
+  ;; finally byte-compile it
+  (byte-compile-file (concat user-emacs-directory "init.el"))
+#+END_SRC
+
+Note that this file is "locked" by Git, so that it is not modified
+after the complete =init.el= file is prepared, with the command:
+
+#+BEGIN_SRC sh
+  git update-index --assume-unchanged init.el
+#+END_SRC
+
+To "unlock" it and make changes to the initial =init.el= file, use:
+
+#+BEGIN_SRC sh
+  git update-index --no-assume-unchanged init.el
+#+END_SRC
+
+After this initial load, a function (=tangle-init=) ensures that a new
+=init.el= is generated at every modification of =init.org= (precisely
+every time =init.org= is saved).
+
+
+* Special key bindings
+
+** Interface
+
+| Key name     | Operation                            |
+| --------     | ---------                            |
+| ~M-<arrows>~ | Move between windows                 |
+| ~C-~~        | Next window (key above TAB)          |
+| ~C-TAB~      | Cycle through buffers (this window)  |
+| ~C-S-TAB~    | Cycle through buffers (other window) |
+| ~C-x k~      | Kill THIS buffer                     |
+| ~C-x C-b~    | Buffer menu (list of buffers)        |
+
+| Key name | Operation                             |
+| -------- | ---------                             |
+| ~C-S-s~  | Backward search                       |
+| ~C-r~    | Replace                               |
+| ~C-M-r~  | Replace using a RegExp                |
+| ~C-z~    | Undo                                  |
+| ~C-+~    | Count words in region                 |
+| ~C-=~    | Expand region  (more: ~=~; less: ~-~) |
+
+| Key name | Operation                       |
+| -------- | ---------                       |
+| ~C-.~    | Imenu (main sections/headers)   |
+| ~M-x~    | SMEX                            |
+| ~M-!~    | Shell-command in the minibuffer |
+| ~C-h m~  | Check modes in a buffer         |
+
+** Special
+
+| Key name   | Operation                                        |
+| --------   | ---------                                        |
+| ~C-f~      | In IDO mode, fall back to normal prompt          |
+| ~TAB~      | Complete anything                                |
+| or         | Fold/unfold functions/regions (if code indented) |
+| ~C-f~      | GitFlow from within Magit                        |
+| ~C-c C-q~  | Add a Tag in Org mode                            |
+
+
+** PDF tools
+
+| Key name | Operation                   |
+| -------- | ---------                   |
+| ~P~      | Fit to the page             |
+| ~H~      | Fit to the height           |
+| ~W~      | Fit to the width            |
+| ~g~      | refreshes the PDF           |
+| ~h~      | opens the help of PDF tools |
+
+
+** LaTeX
+
+| Key name     | Operation                        |
+| --------     | ---------                        |
+| ~C-c -C-l~   | Show compilation logs in LaTeX   |
+| ~C-g~        | Forward search in LaTeX document |
+| ~Ctrl+click~ | Inverse search in PDF document   |
+
+
+** ESS
+
+| Key name  | Operation                                                  |
+| --------  | ---------                                                  |
+| ~C-c C-r~ | Move cursor to previous command + at the top of the window |
+| ~C-c C-o~ | Delete everything from last command to current prompt      |
+
+
+** Function keys (~F1–F12~)
+
+Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
+~C-F4~ to save a register, ~F1~ to ~F4~ to jump to a saved register:
+
+| Key name    | Operation         |
+| --------    | ---------         |
+| ~F1–F4~     | Jump to registers |
+| ~C-F1–C-F4~ | Save registers    |
+|             |                   |
+
+| Key name | Operation        |
+| -------- | ---------        |
+| ~F5~     | Project explorer |
+| ~F6~     | Magit            |
+| ~F7~     | Eshell           |
+
+| Key name  | Operation                            |
+| --------  | ---------                            |
+| ~F9~      | Highlight region (like a marker)     |
+| ~C-F9~    | to move to the next highlighted text |
+| ~C-S-F9~  | Un-highlight everything              |
+| ~F10~     | Toggle line wrapping                 |
+| ~C-F10~   | Toggle column highlight mode         |
+| ~C-S-F10~ | Fold/unfold functions/regions        |
+| ~F11~     | Multiple cursors in all lines        |
+| ~C-F11~   | Smart multiple cursors               |
+| ~C-S-F11~ | Multiple cursors: next like selected |
+| ~F12~     | Flyspell correction suggestions      |
+| ~C-F12~   | Toggle Flyspell                      |
+| ~C-S-F12~ | Change Ispell dictionary             |
+
+
+* To-do
+
+- Flycheck
+- R indentation
+- Set up Polymode for R (weave/tangle/export, previous/next chunk)
+- Integrate Markdown-toc (bug)
+- Document PDF-tools, ESS, LaTeX (document path to main biblio)
+- Configure Org mode
+- Configure SQL mode
+- Additional functions

@@ -15,7 +15,7 @@ emacs25.toolBar: off
 emacs25.verticalScrollBars: off
 emacs25.horizontalScrollbars: off
 
-" nil "~/..Xresources" 'append)
+" nil "~/.Xresources" 'append)
 (shell-command "xrdb -merge ~/.Xresources")
 
 ;; Create necessary directories and save abbrev silently
@@ -34,4 +34,3 @@ emacs25.horizontalScrollbars: off
 (load-file (concat user-emacs-directory "init.el"))
 ;; finally byte-compile it
 (byte-compile-file (concat user-emacs-directory "init.el"))
-
