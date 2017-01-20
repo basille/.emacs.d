@@ -115,7 +115,7 @@ every time =init.org= is saved).
 ** Interface
 
 | Key name     | Operation                            |
-| ------------ | ------------------------------------ |
+|--------------+--------------------------------------|
 | ~M-<arrows>~ | Move between windows                 |
 | ~C-~~        | Next window (key above TAB)          |
 | ~C-TAB~      | Cycle through buffers (this window)  |
@@ -124,7 +124,7 @@ every time =init.org= is saved).
 | ~C-x C-b~    | Buffer menu (list of buffers)        |
 
 | Key name | Operation                             |
-| -------- | ---------                             |
+|----------+---------------------------------------|
 | ~C-S-s~  | Backward search                       |
 | ~C-r~    | Replace                               |
 | ~C-M-r~  | Replace using a RegExp                |
@@ -133,7 +133,7 @@ every time =init.org= is saved).
 | ~C-=~    | Expand region  (more: ~=~; less: ~-~) |
 
 | Key name | Operation                       |
-| -------- | ---------                       |
+|----------+---------------------------------|
 | ~C-.~    | Imenu (main sections/headers)   |
 | ~M-x~    | SMEX                            |
 | ~M-!~    | Shell-command in the minibuffer |
@@ -141,19 +141,19 @@ every time =init.org= is saved).
 
 ** Special
 
-| Key name   | Operation                                        |
-| --------   | ---------                                        |
-| ~C-f~      | In IDO mode, fall back to normal prompt          |
-| ~TAB~      | Complete anything                                |
-| or         | Fold/unfold functions/regions (if code indented) |
-| ~C-f~      | GitFlow from within Magit                        |
-| ~C-c C-q~  | Add a Tag in Org mode                            |
+| Key name  | Operation                                        |
+|-----------+--------------------------------------------------|
+| ~C-f~     | In IDO mode, fall back to normal prompt          |
+| ~TAB~     | Complete anything                                |
+| or        | Fold/unfold functions/regions (if code indented) |
+| ~C-f~     | GitFlow from within Magit                        |
+| ~C-c C-q~ | Add a Tag in Org mode                            |
 
 
 ** PDF tools
 
 | Key name | Operation                   |
-| -------- | ---------                   |
+|----------+-----------------------------|
 | ~P~      | Fit to the page             |
 | ~H~      | Fit to the height           |
 | ~W~      | Fit to the width            |
@@ -164,7 +164,7 @@ every time =init.org= is saved).
 ** LaTeX
 
 | Key name     | Operation                        |
-| --------     | ---------                        |
+|--------------+----------------------------------|
 | ~C-c -C-l~   | Show compilation logs in LaTeX   |
 | ~C-g~        | Forward search in LaTeX document |
 | ~Ctrl+click~ | Inverse search in PDF document   |
@@ -173,7 +173,7 @@ every time =init.org= is saved).
 ** ESS
 
 | Key name  | Operation                                                  |
-| --------  | ---------                                                  |
+|-----------+------------------------------------------------------------|
 | ~C-c C-r~ | Move cursor to previous command + at the top of the window |
 | ~C-c C-o~ | Delete everything from last command to current prompt      |
 
@@ -184,19 +184,19 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 ~C-F4~ to save a register, ~F1~ to ~F4~ to jump to a saved register:
 
 | Key name    | Operation         |
-| --------    | ---------         |
+|-------------+-------------------|
 | ~F1–F4~     | Jump to registers |
 | ~C-F1–C-F4~ | Save registers    |
 |             |                   |
 
 | Key name | Operation        |
-| -------- | ---------        |
+|----------+------------------|
 | ~F5~     | Project explorer |
 | ~F6~     | Magit            |
 | ~F7~     | Eshell           |
 
 | Key name  | Operation                            |
-| --------  | ---------                            |
+|-----------+--------------------------------------|
 | ~F9~      | Highlight region (like a marker)     |
 | ~C-F9~    | to move to the next highlighted text |
 | ~C-S-F9~  | Un-highlight everything              |
