@@ -115,7 +115,7 @@ every time =init.org= is saved).
 ** Interface
 
 | Key name     | Operation                            |
-| --------     | ---------                            |
+| ------------ | ------------------------------------ |
 | ~M-<arrows>~ | Move between windows                 |
 | ~C-~~        | Next window (key above TAB)          |
 | ~C-TAB~      | Cycle through buffers (this window)  |
