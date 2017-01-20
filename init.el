@@ -19,7 +19,8 @@ emacs25.horizontalScrollbars: off
 (shell-command "xrdb -merge ~/.Xresources")
 
 ;; Create necessary directories and save abbrev silently
-(mkdir "~/.emacs.d/cache/" 1)
+(mkdir (concat user-emacs-directory "cache"))
+(mkdir (concat user-emacs-directory "save"))
 (mkdir "~/.emacs.d/save/" 1)
 (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
 (setq save-abbrevs 'silently)

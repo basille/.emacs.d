@@ -76,8 +76,8 @@ This file looks like that:
   (shell-command "xrdb -merge ~/.Xresources")
 
   ;; Create necessary directories and save abbrev silently
-  (mkdir "~/.emacs.d/cache/" 1)
-  (mkdir "~/.emacs.d/save/" 1)
+  (mkdir (concat user-emacs-directory "cache"))
+  (mkdir (concat user-emacs-directory "save"))
   (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
   (setq save-abbrevs 'silently)
   
@@ -246,3 +246,4 @@ here is Emacs in action:
 - Configure Org mode
 - Configure SQL mode
 - Additional functions
+  
