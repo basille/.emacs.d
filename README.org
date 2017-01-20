@@ -187,7 +187,6 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 |-------------+-------------------|
 | ~F1–F4~     | Jump to registers |
 | ~C-F1–C-F4~ | Save registers    |
-|             |                   |
 
 | Key name | Operation        |
 |----------+------------------|
