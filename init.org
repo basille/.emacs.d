@@ -5,7 +5,7 @@
 #+PROPERTY: header-args :tangle yes
 
 
-* Table of Contents                                                     :TOC:
+* Table of Contents                                            :TOC:
  - [[#emacs-packages][Emacs packages]]
  - [[#interface][Interface]]
    - [[#color-theme][Color theme]]
@@ -637,7 +637,8 @@ to ~F5~). Project-explorer is set to a width of 20 characters, and
 saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
-  (projectile-global-mode)
+  (projectile-global-mode +1)
+  (setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
   (diminish 'projectile-mode "Proj")
   (setq pe/width 20)
   (setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")

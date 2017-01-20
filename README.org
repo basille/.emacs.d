@@ -213,6 +213,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 * To-do
 
 - Flycheck
+- R not recognized in Rmd
 - R indentation
 - Set up Polymode for R (weave/tangle/export, previous/next chunk)
 - Integrate Markdown-toc (bug)
