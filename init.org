@@ -25,7 +25,6 @@
    - [[#additional-functions][Additional functions]]
  - [[#major-modes][Major modes]]
    - [[#polymode][Polymode]]
-   - [[#yaml][YAML]]
    - [[#org][Org]]
    - [[#latex][LaTeX]]
    - [[#markdown][Markdown]]
@@ -729,34 +728,34 @@ with R:
   (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
 #+END_SRC
 
-# Diminish them?
-# (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
-# (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
-# (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
+  # Diminish them?
+  # (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
+  # (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
+  # (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
 
 
 
-	       # (setq 
-	       # 	pm-weaver "knitR-ESS"		; Default weaver
-	       # 	pm-exporter "pandoc")		; Default exporter
-	       # (bind-keys :map polymode-mode-map
+  # (setq 
+     # 	pm-weaver "knitR-ESS"		; Default weaver
+        # 	pm-exporter "pandoc")		; Default exporter
+  # (bind-keys :map polymode-mode-map
 	       # 		  ([(C-prior)] . polymode-previous-chunk) ; C-PageUp to move to the previous chunk (code or comment)
-	       # 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
-	       # 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
-	       # 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
-	       # 		  ([(f8)] . polymode-weave)       ; F7 to weave
-	       # 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
+                                  # 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
+                                                  # 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
+                                                                  # 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
+                                                                                  # 		  ([(f8)] . polymode-weave)       ; F7 to weave
+                                                                                                  # 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
 
 
 
 
-** YAML
+  ** YAML
 
-=YAML-mode= for YAML headers/files:
+  =YAML-mode= for YAML headers/files:
 
-#+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-#+END_SRC
+    #+END_SRC
 
 
 ** Org
@@ -768,7 +767,7 @@ with other settings]]).
 
 #+BEGIN_SRC emacs-lisp
   (setq org-replace-disputed-keys t)
-#+END_SRC
+  #+END_SRC
 
 Make nice UTF-8 bullet points:
 
@@ -807,17 +806,17 @@ a few languages:
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'org
     (org-babel-do-load-languages
-                               'org-babel-load-languages
-                               '((css . t)
-                                 (ditaa . t)
-                                 (emacs-lisp . t)
-                                 (latex . t)
-                                 (lilypond . t)
-                                 (org . t)
-                                 (sh . t)
-                                 (sql . t)
-                                 (R . t))))
-#+END_SRC
+     'org-babel-load-languages
+     '((css . t)
+       (ditaa . t)
+       (emacs-lisp . t)
+       (latex . t)
+       (lilypond . t)
+       (org . t)
+       (sh . t)
+       (sql . t)
+       (R . t))))
+  #+END_SRC
 
 
 # ;; Keeping notes and TODO lists: org-mode
@@ -1025,6 +1024,7 @@ prepare packages. ESS is simply loaded with:
 [[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
 
 #+BEGIN_SRC emacs-lisp
+  (require 'ess-site)
   (setq
                                         ; ess-default-style 'RRR+  ; Use RRR+ style
    inferior-ess-same-window nil         ; Run R in inferior window
@@ -1038,7 +1038,7 @@ prepare packages. ESS is simply loaded with:
    ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
    ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
    )
-#+END_SRC
+  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (defun myindent-ess-hook ()
@@ -1235,4 +1235,4 @@ function that enables Emacs to regenerate both =init.el= and
         (byte-compile-file (concat user-emacs-directory "init.el")))))
   
   (add-hook 'after-save-hook 'tangle-init)
-#+END_SRC
+  #+END_SRC
