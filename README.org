@@ -13,6 +13,7 @@
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
    - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
+ - [[#screenshot][Screenshot]]
  - [[#to-do][To-do]]
 
 * Getting started
@@ -208,6 +209,28 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~F12~     | Flyspell correction suggestions      |
 | ~C-F12~   | Toggle Flyspell                      |
 | ~C-S-F12~ | Change Ispell dictionary             |
+
+
+* Screenshot
+
+A good demonstration could not be complete without screenshots, so
+here is Emacs in action:
+
+- Emacs on the =init.org= config file, in Org mode, with
+  Project-explorer in the left window, and Magit in the right window
+  with its main commands at the bottom.
+
+  #+CAPTION: Emacs in Org mode + project explorer + Magit
+  #+NAME: emacs-org
+  [[emacs-proj-org-magit.png]]
+
+- Emacs opened with a RMarkdown file (=.Rmd=), including YAML headers
+  and R code chunks, with the help page of a function in the right
+  window together with the R buffer at the bottom.
+
+  #+CAPTION: Emacs on a RMarkdown file (with ESS)
+  #+NAME: emacs-ess
+  [[emacs-markdown-yaml-ess.png]
 
 
 * To-do
