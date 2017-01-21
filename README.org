@@ -242,8 +242,6 @@ here is Emacs in action:
   - hs-org/minor-mode not working
   - Document ESS
 - Integrate Markdown-toc (bug)
-- Document PDF-tools, LaTeX (document path to main biblio)
+- Document PDF-tools, LaTeX (document path to main biblio), SQL
 - Configure Org mode
-- Configure SQL mode
 - Additional functions
-  
