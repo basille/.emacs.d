@@ -5,7 +5,6 @@
 
 * Table of Contents                                                     :TOC:
  - [[#preface][Preface]]
- - [[#getting-started][Getting started]]
  - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#special-key-bindings][Special key bindings]]
    - [[#interface][Interface]]
@@ -51,13 +50,19 @@ bibliographic folder (here =~/Work/Biblio/=) to this folder:
   ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
 #+END_SRC
 
-
-* Getting started
-
-To configure Emacs, the easiest is simply to clone this repository
-in the =home= directory :
+Finally, we also add a Python library for SQL formating:
 
 #+BEGIN_SRC sh
+  sudo pip install format-sql  
+#+END_SRC  
+
+
+ * Getting started
+
+To configure Emacs, the easiest is simply to clone this repository in
+the =home= directory :
+
+#+BEGIN_SRC sh  
   git clone https://github.com/basille/.emacs.d ~
 #+END_SRC
 
@@ -269,7 +274,8 @@ here is Emacs in action:
   - hs-org/minor-mode not working
   - Document ESS
 - Integrate Markdown-toc (bug)
-- Document PDF-tools, SQL
+- Document PDF-tools
+- SQL server credentials
 - Configure Org mode
 - Additional functions
 - ditaa

@@ -997,17 +997,16 @@ and is loaded automatically. We simply enable Math:
 #+END_SRC
 
 
-	       # (load-library "rmd-R-insert-code") ; In (R)Markdown, add a new R
-	       # 				; chunk with C-return and
-	       # 				; inline R code with C-S-return
-	       # (add-hook 'markdown-mode-hook 
-	       # 		 (lambda ()
-	       # 		   (imenu-add-menubar-index) ; Add imenu
-	       # 		   (local-set-key [C-return] 'rmd-R-fenced-code-block) ; C-return to 
-	       # 				; insert a new R chunk
-	       # 		   (local-set-key [C-S-return] 'rmd-R-inline-code)))) ; C-S-return to 
-	       # 				; insert inline R code
-
+# (load-library "rmd-R-insert-code") ; In (R)Markdown, add a new R
+# 				; chunk with C-return and
+# 				; inline R code with C-S-return
+# (add-hook 'markdown-mode-hook 
+# 		 (lambda ()
+# 		   (imenu-add-menubar-index) ; Add imenu
+# 		   (local-set-key [C-return] 'rmd-R-fenced-code-block) ; C-return to 
+# 				; insert a new R chunk
+# 		   (local-set-key [C-S-return] 'rmd-R-inline-code)))) ; C-S-return to 
+# 				; insert inline R code
 
 
 ** ESS
@@ -1097,17 +1096,17 @@ prepare packages. ESS is simply loaded with:
 
 ** SQL
 
-[[https://github.com/bsvingen/sql-indent][sql-indent]]
+SQL works already well out of the box. However, more configuration is
+required to have a beautiful code and readable output. First of all,
+[[https://github.com/bsvingen/sql-indent][sql-indent]] allows to indent correctly SQL code:
 
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'sql (load-library "sql-indent"))
 #+END_SRC
 
-[[https://github.com/Trevoke/sqlup-mode.el][SQL-up]]
-
-Capitalize keywords in SQL mode
-Capitalize keywords in an interactive session (e.g. psql)
-sqlup on a region set to C-c u
+In addition to it, [[https://github.com/Trevoke/sqlup-mode.el][SQL-up]] automatically corrects lower case SQL
+reserved names (=SELECT=, =FROM=, etc.). If necessary, it is called
+with ~C-c u~ on a region:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook 'sqlup-mode)
@@ -1117,9 +1116,9 @@ sqlup on a region set to C-c u
                (local-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)))
 #+END_SRC
 
-format-sql (Python library) (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beautify]])
-
-$ sudo pip install format-sql
+To make it a step further, [[https://github.com/emacsmirror/format-sql][format-sql]] integrates the Python library of
+the same name, and allows to completely format the code in a region
+with ~C-M-]~ (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beautify]]):
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook
@@ -1168,7 +1167,7 @@ $ sudo pip install format-sql
 #   ;;                  (sql-database "db2"))))
 # #+END_SRC
 
-No line truncate in results:
+In the output, we first make sure that lines are not truncated:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-interactive-mode-hook
@@ -1176,14 +1175,16 @@ No line truncate in results:
               (toggle-truncate-lines t))) 
 #+END_SRC
 
-When using sql-send-region to execute a query in a SQLi buffer, the table formatting is off because the column names are printed on the same row as the the prompt. By adding a newline before the comint output we can make sure everything lines up nice. This will add a preceding newline to every comint output, even queries run at the prompt - though the extra line isn’t too noticeable.
+And that table formating is not off when using =sql-send-region= to
+execute a query in a SQLi buffer (because the column names are printed
+on the same row as the the prompt). We [[https://www.emacswiki.org/emacs/SqlMode][simply add a newline]] before the
+comint output (for all queries, even queries run at the prompt):
 
 #+BEGIN_SRC emacs-lisp
   (defvar sql-last-prompt-pos 1
     "position of last prompt when added recording started")
   (make-variable-buffer-local 'sql-last-prompt-pos)
-  (put 'sql-last-prompt-pos 'permanent-local t)
-  
+  (put 'sql-last-prompt-pos 'permanent-local t) 
   (defun sql-add-newline-first (output)
     "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'
     This fixes up the display of queries sent to the inferior buffer
@@ -1200,16 +1201,13 @@ When using sql-send-region to execute a query in a SQLi buffer, the table format
           (progn
             (setq sql-last-prompt-pos begin-of-prompt)
             (concat "\n" output))
-        output)))
-  
+        output))) 
   (defun sqli-add-hooks ()
     "Add hooks to `sql-interactive-mode-hook'."
     (add-hook 'comint-preoutput-filter-functions
-              'sql-add-newline-first))
-  
+              'sql-add-newline-first)) 
   (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
 #+END_SRC
-
 
 
 ** Web
