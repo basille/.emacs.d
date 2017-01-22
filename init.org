@@ -732,25 +732,21 @@ with R:
   (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
 #+END_SRC
 
-  # Diminish them?
-  # (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
-  # (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
-  # (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
+# Diminish them?
+# (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
+# (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
+# (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
 
-
-
-  # (setq 
-     # 	pm-weaver "knitR-ESS"		; Default weaver
-        # 	pm-exporter "pandoc")		; Default exporter
-  # (bind-keys :map polymode-mode-map
-	       # 		  ([(C-prior)] . polymode-previous-chunk) ; C-PageUp to move to the previous chunk (code or comment)
-                                  # 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
-                                                  # 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
-                                                                  # 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
-                                                                                  # 		  ([(f8)] . polymode-weave)       ; F7 to weave
-                                                                                                  # 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
-
-
+# (setq 
+# 	pm-weaver "knitR-ESS"		; Default weaver
+# 	pm-exporter "pandoc")		; Default exporter
+# (bind-keys :map polymode-mode-map
+# 		  ([(C-prior)] . polymode-previous-chunk) ; C-PageUp to move to the previous chunk (code or comment)
+# 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
+# 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
+# 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
+# 		  ([(f8)] . polymode-weave)       ; F7 to weave
+# 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
 
 
 ** YAML
@@ -820,6 +816,12 @@ a few languages:
        (R . t))))
   #+END_SRC
 
+Give the correct path to the Ditaa java library:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-ditaa-jar-path (expand-file-name "/usr/share/ditaa/ditaa.jar"))
+#+END_SRC
+
 
 # ;; Keeping notes and TODO lists: org-mode
 # (use-package org
@@ -882,7 +884,6 @@ a few languages:
 # 		  ("DONE" :foreground "gray" :weight bold))
 # 		org-use-fast-todo-selection t	; Menu with selection of TODO keywords
 # 		org-enforce-todo-dependencies t	; Parent can't be marked as done unless all children are done
-# 		org-ditaa-jar-path (expand-file-name "/usr/share/ditaa/ditaa.jar") ; Path to ditaa.jar
 # 		)
 # 	       (defun org-summary-todo (n-done n-not-done)
 # 		 "Switch entry to DONE when all subentries are done, to SOMEDAY otherwise."
@@ -919,7 +920,6 @@ a few languages:
 # 			      (require 'org-bullets)		; 
 # 			      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 # 	       ))
-
 
 
 ** LaTeX
@@ -1075,23 +1075,22 @@ prepare packages. ESS is simply loaded with:
 #+END_SRC
 
 
-
-    # (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
-    # 					; (C-M-\ ou 'M-x indent-region')
-    # 					; http://www.emacswiki.org/emacs/ESSRParser
-    # (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
-    # 					; .emacs.d/config/config.pandoc
-    # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
-    #   (interactive) (ess-remote nil "R"))
-    # (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
-    # 					; the width of the R buffer
-    # (bind-keys :map ess-mode-map
-    # 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
-    # 					; should jump to the next block and C-M-x evaluates
-    # 					; and stays in place)
-    # 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
-    # 	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
-    # 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
+# (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
+# 					; (C-M-\ ou 'M-x indent-region')
+# 					; http://www.emacswiki.org/emacs/ESSRParser
+# (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
+# 					; .emacs.d/config/config.pandoc
+# (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
+#   (interactive) (ess-remote nil "R"))
+# (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
+# 					; the width of the R buffer
+# (bind-keys :map ess-mode-map
+# 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
+# 					; should jump to the next block and C-M-x evaluates
+# 					; and stays in place)
+# 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
+# 	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
+# 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
 
 
 ** SQL
@@ -1126,18 +1125,18 @@ with ~C-M-]~ (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beau
                (local-set-key (kbd "C-M-]") 'format-sql-region)))
 #+END_SRC
 
-  # ;; (defun format-sql-region-or-buffer ()
-  # ;;   "Format SQL for the entire buffer or the marked region"
-  # ;;   (interactive)
-  # ;;   (if (use-region-p)
-  # ;;       (format-sql-bf--apply-executable-to-buffer "format-sql"
-  # ;;                                                  'format-sql--call-executable
-  # ;;                                                  t
-  # ;;                                                  (get-file-type)))
-  # ;;   (format-sql-bf--apply-executable-to-buffer "format-sql"
-  # ;;                                              'format-sql--call-executable
-  # ;;                                              nil
-  # ;;                                              (get-file-type)))
+# ;; (defun format-sql-region-or-buffer ()
+# ;;   "Format SQL for the entire buffer or the marked region"
+# ;;   (interactive)
+# ;;   (if (use-region-p)
+# ;;       (format-sql-bf--apply-executable-to-buffer "format-sql"
+# ;;                                                  'format-sql--call-executable
+# ;;                                                  t
+# ;;                                                  (get-file-type)))
+# ;;   (format-sql-bf--apply-executable-to-buffer "format-sql"
+# ;;                                              'format-sql--call-executable
+# ;;                                              nil
+# ;;                                              (get-file-type)))
 
 # If only one server:
 

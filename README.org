@@ -50,11 +50,13 @@ bibliographic folder (here =~/Work/Biblio/=) to this folder:
   ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
 #+END_SRC
 
-Finally, we also add a Python library for SQL formating:
+Finally, we also add a Python library for SQL formating, and Ditaa
+for ASCII-based diagrams:
 
 #+BEGIN_SRC sh
-  sudo pip install format-sql  
-#+END_SRC  
+  sudo pip install format-sql
+  sudo apt install ditaa  
+#+END_SRC
 
 
  * Getting started
@@ -64,7 +66,7 @@ the =home= directory :
 
 #+BEGIN_SRC sh  
   git clone https://github.com/basille/.emacs.d ~
-#+END_SRC
+  #+END_SRC
 
 And that's it! Opening Emacs will then do the magic!
 
@@ -274,8 +276,6 @@ here is Emacs in action:
   - hs-org/minor-mode not working
   - Document ESS
 - Integrate Markdown-toc (bug)
-- Document PDF-tools
 - SQL server credentials
 - Configure Org mode
 - Additional functions
-- ditaa
