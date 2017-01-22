@@ -711,12 +711,14 @@ folder of the Emacs profile:
   (add-to-list 'load-path (concat user-emacs-directory "functions"))
 #+END_SRC
 
-
+Magnar Sveen wrote a [[https://github.com/magnars/.emacs.d/blob/master/defuns/lisp-defuns.el][very useful function]] to evaluate and directly
+replace a Lisp expression. For instance, evaluating =(+ 1 2)= replaces
+the expression by =3=. It is bound to ~C-x C-y~:
 
 #+BEGIN_SRC emacs-lisp
-  
+  (load-library "sexp-eval-and-replace")
+  (global-set-key (kbd "C-x C-y") 'sexp-eval-and-replace)
 #+END_SRC
-
 
 
 # ;; C-S-F3/F4 to prepare the code for Dotclear to insert a photo:
