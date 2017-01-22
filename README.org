@@ -156,6 +156,11 @@ After this initial load, a function (=tangle-init=) ensures that a new
 =init.el= is generated at every modification of =init.org= (precisely
 every time =init.org= is saved).
 
+(note for Magit: to show untracked files within subdirectories, switch
+the =--untracked-files= option with =git config
+status.showUntrackedFiles all=; switch back with =git config
+status.showUntrackedFiles normal=)
+
 
 * Special key bindings
 
