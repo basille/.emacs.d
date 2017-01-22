@@ -6,6 +6,8 @@
 * Table of Contents                                                     :TOC:
  - [[#preface][Preface]]
  - [[#getting-started][Getting started]]
+   - [[#pre-requisites][Pre-requisites]]
+   - [[#configuring-emacs][Configuring Emacs]]
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#special-key-bindings][Special key bindings]]
    - [[#interface][Interface]]
@@ -18,6 +20,14 @@
  - [[#to-do][To-do]]
 
 * Preface
+
+…
+
+
+* Getting started
+
+
+** Pre-requisites
 
 This is a configuration for Emacs on Debian Testing (currently
 Stretch). While most of it should work pretty much on any platform,
@@ -60,7 +70,7 @@ for ASCII-based diagrams:
 #+END_SRC
 
 
-* Getting started
+** Configuring Emacs
 
 To configure Emacs, the easiest is simply to clone this repository in
 the =home= directory :
@@ -270,6 +280,7 @@ here is Emacs in action:
 
 * To-do
 
+- Write preface
 - Flycheck
 - R:
   - indentation to follow R parser
