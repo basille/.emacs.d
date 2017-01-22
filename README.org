@@ -9,7 +9,7 @@
    - [[#pre-requisites][Pre-requisites]]
    - [[#configuring-emacs][Configuring Emacs]]
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
- - [[#special-key-bindings][Special key bindings]]
+ - [[#key-bindings][Key bindings]]
    - [[#interface][Interface]]
    - [[#special][Special]]
    - [[#pdf-tools][PDF tools]]
@@ -162,7 +162,7 @@ status.showUntrackedFiles all=; switch back with =git config
 status.showUntrackedFiles normal=)
 
 
-* Special key bindings
+* Key bindings
 
 ** Interface
 
@@ -175,14 +175,15 @@ status.showUntrackedFiles normal=)
 | ~C-x k~      | Kill THIS buffer                     |
 | ~C-x C-b~    | Buffer menu (list of buffers)        |
 
-| Key name | Operation                             |
-|----------+---------------------------------------|
-| ~C-S-s~  | Backward search                       |
-| ~C-r~    | Replace                               |
-| ~C-M-r~  | Replace using a RegExp                |
-| ~C-z~    | Undo                                  |
-| ~C-+~    | Count words in region                 |
-| ~C-=~    | Expand region  (more: ~=~; less: ~-~) |
+| Key name  | Operation                                   |
+|-----------+---------------------------------------------|
+| ~C-S-s~   | Backward search                             |
+| ~C-r~     | Replace                                     |
+| ~C-M-r~   | Replace using a RegExp                      |
+| ~C-z~     | Undo                                        |
+| ~C-+~     | Count words in region                       |
+| ~C-=~     | Expand region  (more: ~=~; less: ~-~)       |
+| ~C-x C-y~ | Evaluate expression and replace with result |
 
 | Key name | Operation                       |
 |----------+---------------------------------|
