@@ -5,6 +5,7 @@
 
 * Table of Contents                                                     :TOC:
  - [[#preface][Preface]]
+ - [[#getting-started][Getting started]]
  - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#special-key-bindings][Special key bindings]]
    - [[#interface][Interface]]
@@ -59,7 +60,7 @@ for ASCII-based diagrams:
 #+END_SRC
 
 
- * Getting started
+* Getting started
 
 To configure Emacs, the easiest is simply to clone this repository in
 the =home= directory :
