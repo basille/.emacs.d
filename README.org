@@ -122,6 +122,7 @@ This file looks like that:
 
   ;; Create necessary directories and save abbrev silently
   (mkdir (concat user-emacs-directory "cache"))
+  (mkdir (concat user-emacs-directory "functions"))
   (mkdir (concat user-emacs-directory "save"))
   (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
   (setq save-abbrevs 'silently)
@@ -291,3 +292,4 @@ here is Emacs in action:
 - SQL server credentials
 - Configure Org mode
 - Additional functions
+  

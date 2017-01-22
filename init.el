@@ -20,6 +20,7 @@ emacs25.horizontalScrollbars: off
 
 ;; Create necessary directories and save abbrev silently
 (mkdir (concat user-emacs-directory "cache"))
+(mkdir (concat user-emacs-directory "functions"))
 (mkdir (concat user-emacs-directory "save"))
 (mkdir "~/.emacs.d/save/" 1)
 (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")

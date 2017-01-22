@@ -302,7 +302,7 @@ Saveplace: Go back to last position where the point was in a file
 
 #+BEGIN_SRC emacs-lisp
   (save-place-mode 1)
-  (setq save-place-file "~/.emacs.d/cache/saved-places")
+  (setq save-place-file (concat user-emacs-directory "cache/saved-places"))
 #+END_SRC
 
 Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
@@ -393,7 +393,7 @@ that the "old" =M-x= is the command =execute-extended-command=):
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  (setq smex-save-file "~/.emacs.d/cache/smex-items")
+  (setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
 #+END_SRC
 
 
@@ -440,7 +440,7 @@ state in the =cache= folder:
    ido-use-filename-at-point 'guess
    ido-create-new-buffer 'always
    ;; ido-file-extensions-order '(".Rmd" ".R" ".tex" ".el") ; extension order
-   ido-save-directory-list-file "~/.emacs.d/cache/ido")
+   ido-save-directory-list-file (concat user-emacs-directory "cache/ido"))
 #+END_SRC
 
 Cycle through buffers with =IDO= (~C-TAB~ in this window and ~C-S-TAB~
@@ -543,7 +543,7 @@ region; ~C-F11~ tries to be smart about marking everything you want
 the selection (use then arrows to select more/less):
 
 #+BEGIN_SRC emacs-lisp
-  (setq mc/list-file "~/.emacs.d/cache/mc-lists.el")
+  (setq mc/list-file (concat user-emacs-directory "cache/mc-lists.el"))
   (global-set-key [(f11)] 'mc/edit-lines)
   (global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
   (global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
@@ -593,7 +593,7 @@ which creates tmp lockfiles):
 #+BEGIN_SRC emacs-lisp
   (setq
    auto-save-file-name-transforms `((".*" ,"~/.emacs.d/save/\\1" t))
-   auto-save-list-file-name "~/.emacs.d/cache/save-list"
+   auto-save-list-file-name (concat user-emacs-directory "cache/save-list")
    auto-save-interval 100
    auto-save-timeout 10)
 #+END_SRC
@@ -604,8 +604,9 @@ versioned (numbered) backup, and only keep the first 2 and last 2
 versions of each backup:
 
 #+BEGIN_SRC emacs-lisp
+  (defvar save-dir (concat user-emacs-directory "cache/save"))
   (setq
-   backup-directory-alist `((".*" . "~/.emacs.d/save"))
+   backup-directory-alist (list (cons "." save-dir))
    backup-by-copying t
    version-control t
    kept-new-versions 2
@@ -619,7 +620,7 @@ way. I tell Emacs to save abbreviations in the cache directory
 silently:
 
 #+BEGIN_SRC emacs-lisp
-  (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
+  (setq abbrev-file-name (concat user-emacs-directory "cache/abbrev_defs"))
   (setq save-abbrevs 'silently)
 #+END_SRC
 
@@ -641,10 +642,12 @@ saves its cache in the =cache= folder:
 
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode +1)
-  (setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
+  (setq projectile-known-projects-file
+        (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
   (diminish 'projectile-mode "Proj")
   (setq pe/width 20)
-  (setq pe/cache-directory "~/.emacs.d/cache/project-explorer-cache/")
+  (setq pe/cache-directory
+        (concat user-emacs-directory "cache/project-explorer-cache/"))
   (global-set-key [(f5)] 'project-explorer-toggle)
 #+END_SRC
 
@@ -701,10 +704,20 @@ opens the help of PDF tools.
 
 ** Additional functions
 
-# ;; Additional functions (.el)
-# ;; 
-# ;; Functions are in ~/.emacs.d/functions/
-# (add-to-list 'load-path "~/.emacs.d/functions/")
+Additional Lisp functions (=.el= files) are placed in the =functions=
+folder of the Emacs profile:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (concat user-emacs-directory "functions"))
+#+END_SRC
+
+
+
+#+BEGIN_SRC emacs-lisp
+  
+#+END_SRC
+
+
 
 # ;; C-S-F3/F4 to prepare the code for Dotclear to insert a photo:
 # (load-library "dc-insert")
