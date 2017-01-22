@@ -25,6 +25,7 @@
    - [[#additional-functions][Additional functions]]
  - [[#major-modes][Major modes]]
    - [[#polymode][Polymode]]
+   - [[#yaml][YAML]]
    - [[#org][Org]]
    - [[#latex][LaTeX]]
    - [[#markdown][Markdown]]
@@ -752,18 +753,16 @@ with R:
 
 
 
-  ** YAML
+** YAML
 
-  =YAML-mode= for YAML headers/files:
+=YAML-mode= for YAML headers/files:
 
-  #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-    #+END_SRC
+#+END_SRC
 
 
 ** Org
-
-
 
 Org mode comes with its own keybindings, ([[http://orgmode.org/manual/Conflicts.html][which can easily conflict
 with other settings]]).
@@ -796,7 +795,7 @@ Table of contents with [[https://github.com/snosov1/toc-org][Toc-Org]] (just add
 automatically updated on file save):
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook 'toc-org-enable)
+  (add-hook 'org-mode-hook 'toc-org-enable) 
 #+END_SRC
 
 
@@ -806,7 +805,7 @@ mode (~C-c '~; and same keybinding to close). However,  =polymode=
 provides an even better integration directly in the Org file. We load
 a few languages:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (with-eval-after-load 'org
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -925,65 +924,57 @@ a few languages:
 
 ** LaTeX
 
-
-kpsewhich -show-path=.bib
-should contain: /home/<user>/.texlive2016/texmf-var/bibtex/bib//
-mkdir -p ~/.texlive2016/texmf-var/bibtex/bib
-ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
-
-C-c -C-l to show compilation logs (=(setqTeX-show-compilation t)= to
-have it by default)
-
-pdf-sync-display-pdf (C-g) for forward search
-Ctrl+click for inverse search
+The main package for LaTeX in Emacs is AUCTeX. In this configuration,
+AUCTeX integrates RefTeX (references), LatexMk (compilation) and PDF
+Tools (visualization). Note that compilation logs are not shown by
+default (use ~C-c C-l~ to see them, or add =(setqTeX-show-compilation
+t)= in the =LaTeX-mode-hook=). We start by configuring the LaTeX mode
+(notably forward and inverse search, RefTeX, compilation as PDF, Math
+mode):
 
 #+BEGIN_SRC emacs-lisp
-  (setq TeX-parse-self t ; Enable parse on load.
-        TeX-auto-save t ; Enable parse on save.
-                                        ;        TeX-show-compilation t          ; Show compliation output
+  (setq TeX-parse-self t                ; Enable parse on load.
+        TeX-auto-save t                 ; Enable parse on save.
         TeX-source-correlate-mode t	; Forward and inverse search
         TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
         reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
-        ;; reftex-default-bibliography '("~/Work/Biblio/BiblioMB.bib")
-		        		; Define default bib file
         )
   (add-hook 'LaTeX-mode-hook 
             (lambda ()
-              (TeX-global-PDF-mode t) ; Compile as PDF
-              (LaTeX-math-mode)	; Math mode
-              (turn-on-reftex)	; RefTeX on
+              (TeX-global-PDF-mode t)   ; Compile as PDF
+              (LaTeX-math-mode)         ; Math mode
+              (turn-on-reftex)          ; RefTeX on
               (outline-minor-mode 1)	; Fold LaTeX sections
-              (TeX-fold-mode 1)	; Fold LaTeX environments
-              ))
+              (TeX-fold-mode 1)         ; Fold LaTeX environments
+              )) 
 #+END_SRC
 
-auctex-latexmk: Integration of LaTeXmk
-https://github.com/tom-tan/auctex-latexkm
+The compilation by LatexMk (a single call to perform all necessary
+LaTeX/BibTeX compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]]
+package, which allows to have LatexMk as the default engine for LaTeX compilation:
 
 #+BEGIN_SRC emacs-lisp
-  (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode
+  (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode 
   (with-eval-after-load "tex"
     (auctex-latexmk-setup))
-  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "LatexMk"))) ; LaTeXMk default engine
+  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "LatexMk")))
 #+END_SRC
 
-Autocompletion using Company
+We also enable completion for LaTeX commands using Company:
 
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load "tex"
     (company-auctex-init))
 #+END_SRC
 
-
-Use PDF tools (and start Sync server) and refresh PDF automatically:
+Finally, we enable the use of PDF tools to visualize the resulting PDF
+and refresh it automatically:
 
 #+BEGIN_SRC emacs-lisp
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-source-correlate-start-server t)
-
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 #+END_SRC
-
 
 # ;; Clean up intermediary files with LaTeXmk and Beamer
 # (add-to-list 'LaTeX-clean-intermediate-suffixes "\\.fdb_latexmk" t)
@@ -1308,4 +1299,4 @@ function that enables Emacs to regenerate both =init.el= and
         (byte-compile-file (concat user-emacs-directory "init.el")))))
   
   (add-hook 'after-save-hook 'tangle-init)
-  #+END_SRC
+#+END_SRC

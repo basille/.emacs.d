@@ -4,6 +4,7 @@
 
 
 * Table of Contents                                                     :TOC:
+ - [[#preface][Preface]]
  - [[#getting-started][Getting started]]
  - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#special-key-bindings][Special key bindings]]
@@ -16,25 +17,51 @@
  - [[#screenshot][Screenshot]]
  - [[#to-do][To-do]]
 
-* Getting started
+* Preface
 
 This is a configuration for Emacs on Debian Testing (currently
 Stretch). While most of it should work pretty much on any platform,
 installing Emacs (Emacs 25.1 at the time of writing) is Debian
-specific (=libpoppler-glib-dev= is required for PDF-tools):
+specific:
 
 #+BEGIN_SRC sh
-  sudo apt install emacs25 libpoppler-glib-dev
+  sudo apt install emacs25
 #+END_SRC
 
-To configure Emacs, the easiest is simply to clone this repository in
-the =home= directory :
+In addition, to addition need to be made for PDF Tools and
+LaTeX. First a library for PDF Tools:
+
+#+BEGIN_SRC sh
+  sudo apt install libpoppler-glib-dev
+#+END_SRC
+
+Second, we define a central bibliographic folder at the level of the
+LaTeX distribution. We first check the actual BibTeX folder:
+
+#+BEGIN_SRC sh
+  kpsewhich -show-path=.bib
+#+END_SRC
+
+This should contain:
+=/home/<user>/.texlive2016/texmf-var/bibtex/bib//=. We thus link the
+bibliographic folder (here =~/Work/Biblio/=) to this folder:
+
+#+BEGIN_SRC sh
+  mkdir -p ~/.texlive2016/texmf-var/bibtex/bib
+  ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
+#+END_SRC
+
+
+* Getting started
+
+To configure Emacs, the easiest is simply to clone this repository
+in the =home= directory :
 
 #+BEGIN_SRC sh
   git clone https://github.com/basille/.emacs.d ~
 #+END_SRC
 
-Opening Emacs will then do the magic!
+And that's it! Opening Emacs will then do the magic!
 
 
 * A note on the use of =org-mode= for literate configuration
@@ -242,6 +269,7 @@ here is Emacs in action:
   - hs-org/minor-mode not working
   - Document ESS
 - Integrate Markdown-toc (bug)
-- Document PDF-tools, LaTeX (document path to main biblio), SQL
+- Document PDF-tools, SQL
 - Configure Org mode
 - Additional functions
+- ditaa
