@@ -6,7 +6,7 @@
 * Table of Contents                                                     :TOC:
  - [[#preface][Preface]]
  - [[#getting-started][Getting started]]
- - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
+   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#special-key-bindings][Special key bindings]]
    - [[#interface][Interface]]
    - [[#special][Special]]
@@ -14,7 +14,7 @@
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
    - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
- - [[#screenshot][Screenshot]]
+ - [[#screenshots][Screenshots]]
  - [[#to-do][To-do]]
 
 * Preface
@@ -72,7 +72,7 @@ the =home= directory :
 And that's it! Opening Emacs will then do the magic!
 
 
-* A note on the use of =org-mode= for literate configuration
+** A note on the use of =org-mode= for literate configuration
 
 The [[https://github.com/larstvei/dot-emacs][original idea]] is to embed configuration bits into an Org file
 ([[/init.org][init.org]]), which contains both code and explanations, making it a lot
@@ -246,7 +246,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-S-F12~ | Change Ispell dictionary             |
 
 
-* Screenshot
+* Screenshots
 
 A good demonstration could not be complete without screenshots, so
 here is Emacs in action:
