@@ -290,7 +290,6 @@ here is Emacs in action:
 - Write preface
 - Flycheck
 - R:
-  - indentation to follow R parser
   - Set up Polymode for R (weave/tangle/export, previous/next chunk)
   - hs-org/minor-mode not working
   - Document ESS
@@ -298,4 +297,3 @@ here is Emacs in action:
 - SQL server credentials
 - Configure Org mode
 - Additional functions
-  

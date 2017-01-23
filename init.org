@@ -7,6 +7,7 @@
 
 * Table of Contents                                            :TOC:
  - [[#emacs-packages][Emacs packages]]
+   - [[#additional-functions][Additional functions]]
  - [[#interface][Interface]]
    - [[#color-theme][Color theme]]
    - [[#frames][Frames]]
@@ -22,7 +23,6 @@
    - [[#git][GIT]]
    - [[#shell][Shell]]
    - [[#pdf][PDF]]
-   - [[#additional-functions][Additional functions]]
  - [[#major-modes][Major modes]]
    - [[#polymode][Polymode]]
    - [[#yaml][YAML]]
@@ -128,6 +128,15 @@ instance, =ido-ubiquitous= redefine =ido-completing-read= from =ido=):
 
 #+BEGIN_SRC emacs-lisp
   (setq ad-redefinition-action 'accept)
+#+END_SRC
+
+** Additional functions
+
+Additional Lisp functions (=.el= files) are placed in the =functions=
+folder of the Emacs profile:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (concat user-emacs-directory "functions"))
 #+END_SRC
 
 
@@ -549,6 +558,15 @@ the selection (use then arrows to select more/less):
   (global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
 #+END_SRC
 
+Magnar Sveen wrote a [[https://github.com/magnars/.emacs.d/blob/master/defuns/lisp-defuns.el][very useful function]] to evaluate and directly
+replace a Lisp expression. For instance, evaluating =(+ 1 2)= replaces
+the expression by =3= (works in any buffer). It is bound to ~C-x C-y~:
+
+#+BEGIN_SRC emacs-lisp
+  (load-library "sexp-eval-and-replace")
+  (global-set-key (kbd "C-x C-y") 'sexp-eval-and-replace)
+#+END_SRC
+
 
 ** Spell check and syntax check
 
@@ -701,33 +719,6 @@ From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to
 the height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~
 opens the help of PDF tools.
 
-
-** Additional functions
-
-Additional Lisp functions (=.el= files) are placed in the =functions=
-folder of the Emacs profile:
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path (concat user-emacs-directory "functions"))
-#+END_SRC
-
-Magnar Sveen wrote a [[https://github.com/magnars/.emacs.d/blob/master/defuns/lisp-defuns.el][very useful function]] to evaluate and directly
-replace a Lisp expression. For instance, evaluating =(+ 1 2)= replaces
-the expression by =3=. It is bound to ~C-x C-y~:
-
-#+BEGIN_SRC emacs-lisp
-  (load-library "sexp-eval-and-replace")
-  (global-set-key (kbd "C-x C-y") 'sexp-eval-and-replace)
-#+END_SRC
-
-
-# ;; C-S-F3/F4 to prepare the code for Dotclear to insert a photo:
-# (load-library "dc-insert")
-# (global-set-key [(ctrl shift f3)] 'dc-insert-photos)
-# (global-set-key [(ctrl shift f4)] 'dc-insert-videos)
-# ;; ;; C-F8 to start a Shell on Beheaded (ssh Beheaded) with screen capability:
-# ;; (load-library "shell-beheaded")
-# ;; (global-set-key [(ctrl f8)] 'shell-beheaded)
 
 
 * Major modes
@@ -1034,7 +1025,7 @@ prepare packages. ESS is simply loaded with:
 #+BEGIN_SRC emacs-lisp
   (require 'ess-site)
   (setq
-                                        ; ess-default-style 'RRR+  ; Use RRR+ style
+   ess-default-style 'OWN
    inferior-ess-same-window nil         ; Run R in inferior window
    ess-ask-for-ess-directory nil ; Use current directory as working directory
    inferior-R-args "--quiet --no-save"  ; No save on exit
@@ -1046,24 +1037,48 @@ prepare packages. ESS is simply loaded with:
    ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
    ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
    )
-  #+END_SRC
+  (custom-set-variables
+   '(ess-own-style-list
+     (quote
+      ((ess-indent-offset . 4)
+       (ess-offset-arguments . prev-line)
+       (ess-offset-arguments-newline . prev-line)
+       (ess-offset-block . prev-line)
+       (ess-offset-continued . straight)
+       (ess-align-nested-calls)
+       (ess-align-arguments-in-calls)
+       (ess-align-continuations-in-calls . prev-line)
+       (ess-align-blocks control-flow)
+       (ess-indent-from-lhs)
+       (ess-indent-from-chain-start)
+       (ess-indent-with-fancy-comments . t)))))  
+#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (defun myindent-ess-hook ()
-    (setq 
-     ess-indent-offset 4
-     ess-offset-arguments 'prev-line
-     ess-offset-arguments-newline 'prev-line
-     ess-offset-block 'prev-line
-     ess-offset-continued nil
-     ess-align-nested-calls nil
-     ess-align-arguments-in-calls nil
-     ess-align-continuations-in-calls nil
-     ess-align-blocks nil
-     ess-indent-from-lhs nil
-     ess-indent-from-chain-start nil
-     ess-indent-with-fancy-comments t
-     ))
+(defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
+  "Indentation using R parser rules"
+  :group 'ess-edit
+  :type 'alist
+  :initialize 'custom-initialize-set
+  :set (lambda (symbol value)
+         (set symbol value)
+         (ess-add-style 'R value)))
+
+         #+BEGIN_SRC emacs-lisp
+  ;; (defun myindent-ess-hook ()
+  ;;   (setq 
+  ;;    ess-indent-offset 4
+  ;;    ess-offset-arguments 'prev-line
+  ;;    ess-offset-arguments-newline 'prev-line
+  ;;    ess-offset-block 'prev-line
+  ;;    ess-offset-continued straight
+  ;;    ess-align-nested-calls . nil
+  ;;    ess-align-arguments-in-calls . nil
+  ;;    ess-align-continuations-in-calls . nil
+  ;;    ess-align-blocks . nil
+  ;;    ess-indent-from-lhs . nil
+  ;;    ess-indent-from-chain-start t
+  ;;    ess-indent-with-fancy-comments t
+  ;;    ))
 
   (add-hook 'ess-mode-hook 
             (lambda ()
@@ -1072,11 +1087,11 @@ prepare packages. ESS is simply loaded with:
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
-              (diminish 'hs-minor-mode)
-              (hs-org/minor-mode) 
-              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-              (aggressive-indent-mode)
-              (myindent-ess-hook)
+              ;; (diminish 'hs-minor-mode)
+              ;; (hs-org/minor-mode) 
+              ;; (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+              ;; (aggressive-indent-mode)
+              ;; (myindent-ess-hook)
               (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
                         (lambda ()
                           (ess-nuke-trailing-whitespace)))
@@ -1089,10 +1104,16 @@ prepare packages. ESS is simply loaded with:
                                         ; buffer on startup
 #+END_SRC
 
+Use the R parser (ess-indent-region-as-r) or formatR
+(ess-indent-region-with-formatr) to format R code. The later
+is bound to C-M-\ ou 'M-x indent-region'.
 
-# (load-library "ess-indent-region-R") ; Use the R parser or formatR to format R code 
-# 					; (C-M-\ ou 'M-x indent-region')
-# 					; http://www.emacswiki.org/emacs/ESSRParser
+#+BEGIN_SRC emacs-lisp
+  (load-library "ess-indent-region-r")
+  (add-hook 'ess-mode-hook '(lambda () (set (make-local-variable 'indent-region-function)
+                                            'ess-indent-region-with-formatr)))
+#+END_SRC
+
 # (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
 # 					; .emacs.d/config/config.pandoc
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
