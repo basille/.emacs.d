@@ -319,21 +319,21 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f1)]
-                  '(lambda () (interactive) (jump-to-register 1 nil)))
+                  (lambda () (interactive) (jump-to-register 1 nil)))
   (global-set-key [(ctrl f1)]
-                  '(lambda () (interactive) (point-to-register 1 nil)))
+                  (lambda () (interactive) (point-to-register 1 nil)))
   (global-set-key [(f2)]
-                  '(lambda () (interactive) (jump-to-register 2 nil)))
+                  (lambda () (interactive) (jump-to-register 2 nil)))
   (global-set-key [(ctrl f2)]
-                  '(lambda () (interactive) (point-to-register 2 nil)))
+                  (lambda () (interactive) (point-to-register 2 nil)))
   (global-set-key [(f3)]
-                  '(lambda () (interactive) (jump-to-register 3 nil)))
+                  (lambda () (interactive) (jump-to-register 3 nil)))
   (global-set-key [(ctrl f3)]
-                  '(lambda () (interactive) (point-to-register 3 nil)))
+                  (lambda () (interactive) (point-to-register 3 nil)))
   (global-set-key [(f4)]
-                  '(lambda () (interactive) (jump-to-register 4 nil)))
+                  (lambda () (interactive) (jump-to-register 4 nil)))
   (global-set-key [(ctrl f4)]
-                  '(lambda () (interactive) (point-to-register 4 nil)))
+                  (lambda () (interactive) (point-to-register 4 nil)))
 #+END_SRC
 
 Imenu lists the main parts of a document (sections, headers, etc.) to
@@ -963,7 +963,7 @@ package, which allows to have LatexMk as the default engine for LaTeX compilatio
   (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode 
   (with-eval-after-load "tex"
     (auctex-latexmk-setup))
-  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "LatexMk")))
+  (add-hook 'TeX-mode-hook (lambda () (setq TeX-command-default "LatexMk")))
 #+END_SRC
 
 We also enable completion for LaTeX commands using Company:
@@ -1002,17 +1002,9 @@ and is loaded automatically. We simply enable Math:
   (setq markdown-enable-math t)
 #+END_SRC
 
-
-# (load-library "rmd-R-insert-code") ; In (R)Markdown, add a new R
-# 				; chunk with C-return and
-# 				; inline R code with C-S-return
 # (add-hook 'markdown-mode-hook 
 # 		 (lambda ()
 # 		   (imenu-add-menubar-index) ; Add imenu
-# 		   (local-set-key [C-return] 'rmd-R-fenced-code-block) ; C-return to 
-# 				; insert a new R chunk
-# 		   (local-set-key [C-S-return] 'rmd-R-inline-code)))) ; C-S-return to 
-# 				; insert inline R code
 
 
 ** ESS
@@ -1020,10 +1012,12 @@ and is loaded automatically. We simply enable Math:
 ESS to use R, edit R script, edit R documentation (Roxygen) and
 prepare packages. ESS is simply loaded with:
 
+R is not a =prog-mode=, so it needs its own settings in the ESS hook.
+
 [[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ess-site)
+  (require 'ess-site)  
   (setq
    ess-default-style 'OWN
    inferior-ess-same-window nil         ; Run R in inferior window
@@ -1054,48 +1048,32 @@ prepare packages. ESS is simply loaded with:
        (ess-indent-with-fancy-comments . t)))))  
 #+END_SRC
 
-(defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
-  "Indentation using R parser rules"
-  :group 'ess-edit
-  :type 'alist
-  :initialize 'custom-initialize-set
-  :set (lambda (symbol value)
-         (set symbol value)
-         (ess-add-style 'R value)))
+# (defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
+#   "Indentation using R parser rules"
+#   :group 'ess-edit
+#   :type 'alist
+#   :initialize 'custom-initialize-set
+#   :set (lambda (symbol value)
+#          (set symbol value)
+#          (ess-add-style 'R value)))
 
-         #+BEGIN_SRC emacs-lisp
-  ;; (defun myindent-ess-hook ()
-  ;;   (setq 
-  ;;    ess-indent-offset 4
-  ;;    ess-offset-arguments 'prev-line
-  ;;    ess-offset-arguments-newline 'prev-line
-  ;;    ess-offset-block 'prev-line
-  ;;    ess-offset-continued straight
-  ;;    ess-align-nested-calls . nil
-  ;;    ess-align-arguments-in-calls . nil
-  ;;    ess-align-continuations-in-calls . nil
-  ;;    ess-align-blocks . nil
-  ;;    ess-indent-from-lhs . nil
-  ;;    ess-indent-from-chain-start t
-  ;;    ess-indent-with-fancy-comments t
-  ;;    ))
-
+#+BEGIN_SRC emacs-lisp
   (add-hook 'ess-mode-hook 
             (lambda ()
               (flyspell-prog-mode)
-              (require 'ess-smart-underscore)
+              (require 'ess-smart-underscore) 
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
-              ;; (diminish 'hs-minor-mode)
-              ;; (hs-org/minor-mode) 
-              ;; (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+              (diminish 'hs-minor-mode)
+              (hs-org/minor-mode) 
+              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               ;; (aggressive-indent-mode)
               ;; (myindent-ess-hook)
               (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
                         (lambda ()
                           (ess-nuke-trailing-whitespace)))
-	      ))
+              ))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1108,25 +1086,41 @@ Use the R parser (ess-indent-region-as-r) or formatR
 (ess-indent-region-with-formatr) to format R code. The later
 is bound to C-M-\ ou 'M-x indent-region'.
 
-#+BEGIN_SRC emacs-lisp
-  (load-library "ess-indent-region-r")
-  (add-hook 'ess-mode-hook '(lambda () (set (make-local-variable 'indent-region-function)
-                                            'ess-indent-region-with-formatr)))
+#+BEGIN_SRC emacs-lisp  
+  (add-hook 'ess-mode-hook
+            (lambda ()
+              (load-library "ess-indent-region-r")
+              (set (make-local-variable 'indent-region-function)
+                   'ess-indent-region-with-formatr)))
 #+END_SRC
+
+In (R)Markdown, add a fenced R code block (~C-return~) or inline R
+code (~C-S-return~):
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'markdown-mode-hook 
+            (lambda ()
+              (load-library "rmd-r-insert-code.el")
+              (local-set-key [C-return] 'rmd-r-fenced-code-block)
+              (local-set-key [C-S-return] 'rmd-r-inline-code)))
+#+END_SRC
+
+# (load-library)
 
 # (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
 # 					; .emacs.d/config/config.pandoc
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
-#   (interactive) (ess-remote nil "R"))
+    #   (interactive) (ess-remote nil "R"))
 # (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
 # 					; the width of the R buffer
 # (bind-keys :map ess-mode-map
-# 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
-# 					; should jump to the next block and C-M-x evaluates
-# 					; and stays in place)
-# 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
+             # 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
+                       # 					; should jump to the next block and C-M-x evaluates
+                       # 					; and stays in place)
+                       # 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
 # 	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
-# 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
+# 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to
+# associate R remote buffer to ESS buffer
 
 
 ** SQL
@@ -1147,7 +1141,7 @@ with ~C-c u~ on a region:
   (add-hook 'sql-mode-hook 'sqlup-mode)
   (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
   (add-hook 'sql-mode-hook
-            '(lambda ()
+            (lambda ()
                (local-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)))
 #+END_SRC
 
@@ -1157,8 +1151,8 @@ with ~C-M-]~ (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beau
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook
-            '(lambda ()
-               (local-set-key (kbd "C-M-]") 'format-sql-region)))
+            (lambda ()
+              (local-set-key (kbd "C-M-]") 'format-sql-region)))
 #+END_SRC
 
 # ;; (defun format-sql-region-or-buffer ()

@@ -291,7 +291,6 @@ here is Emacs in action:
 - Flycheck
 - R:
   - Set up Polymode for R (weave/tangle/export, previous/next chunk)
-  - hs-org/minor-mode not working
   - Document ESS
 - Integrate Markdown-toc (bug)
 - SQL server credentials
