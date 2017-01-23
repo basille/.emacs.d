@@ -24,7 +24,6 @@
    - [[#shell][Shell]]
    - [[#pdf][PDF]]
  - [[#major-modes][Major modes]]
-   - [[#polymode][Polymode]]
    - [[#yaml][YAML]]
    - [[#org][Org]]
    - [[#latex][LaTeX]]
@@ -32,6 +31,7 @@
    - [[#ess][ESS]]
    - [[#sql][SQL]]
    - [[#web][Web]]
+   - [[#polymode][Polymode]]
  - [[#postface][Postface]]
 
 * Emacs packages
@@ -724,37 +724,6 @@ opens the help of PDF tools.
 * Major modes
 
 
-** Polymode
-
-[[https://github.com/vitoshka/polymode][Polymode]] allows multiple major modes in the same document (e.g. R +
-Markdown in =.Rmd= files). It is setup for Mardown and LateX files
-with R:
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
-#+END_SRC
-
-# Diminish them?
-# (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
-# (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
-# (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
-
-# (setq 
-# 	pm-weaver "knitR-ESS"		; Default weaver
-# 	pm-exporter "pandoc")		; Default exporter
-# (bind-keys :map polymode-mode-map
-# 		  ([(C-prior)] . polymode-previous-chunk) ; C-PageUp to move to the previous chunk (code or comment)
-# 		  ([(C-next)] . polymode-next-chunk)      ; C-PageDown to move to the next chunk (code or comment)
-# 		  ([(C-S-prior)] . polymode-previous-chunk-same-type) ; C-S-PageUp to move to the previous chunk of the same type
-# 		  ([(C-S-next)] . polymode-next-chunk-same-type)      ; C-S-PageDown to move to the next chunk of the same type
-# 		  ([(f8)] . polymode-weave)       ; F7 to weave
-# 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
-
-
 ** YAML
 
 =YAML-mode= for YAML headers/files:
@@ -1016,8 +985,9 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
 
 [[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
 
+
 #+BEGIN_SRC emacs-lisp
-  (require 'ess-site)  
+  (require 'ess-site)
   (setq
    ess-default-style 'OWN
    inferior-ess-same-window nil         ; Run R in inferior window
@@ -1030,6 +1000,7 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
    ess-eval-visibly 'nowait             ; Does not wait for R
    ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
    ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
+   ess-swv-plug-into-auctex-p t ; Add integration of Sweave/Kniter into AUCTeX
    )
   (custom-set-variables
    '(ess-own-style-list
@@ -1097,18 +1068,24 @@ is bound to C-M-\ ou 'M-x indent-region'.
 In (R)Markdown, add a fenced R code block (~C-return~) or inline R
 code (~C-S-return~):
 
+Weave with ~F8~; export (pandoc) with ~C-F8~; use =knitr::pandoc= with
+options in =.pandoc/config.pandoc= with ~C-S-F8~:
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
             (lambda ()
-              (load-library "rmd-r-insert-code.el")
-              (local-set-key [C-return] 'rmd-r-fenced-code-block)
-              (local-set-key [C-S-return] 'rmd-r-inline-code)))
+              (load-library "md-insert-r-code.el")
+              (local-set-key [C-return] 'md-fenced-r-code-block)
+              (local-set-key [C-S-return] 'md-inline-r-code)
+              (load-library "md-ess-pandoc-custom.el")
+              ;; (local-set-key [(ctrl shift f8)] 'md-ess-pandoc-custom)
+              ))
+  (with-eval-after-load 'polymode
+    (define-key polymode-mode-map [(f8)] #'polymode-weave)
+    (define-key polymode-mode-map [(ctrl f8)] #'polymode-export)
+    (define-key polymode-mode-map [(ctrl shift f8)] #'md-ess-pandoc-custom))
 #+END_SRC
 
-# (load-library)
-
-# (load-library "ess-swv-pandoc")	; Use knitr::pandoc with options in
-# 					; .emacs.d/config/config.pandoc
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
     #   (interactive) (ess-remote nil "R"))
 # (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
@@ -1306,6 +1283,45 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
       rlt))
   (put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspell-verify)
 #+END_SRC
+
+
+** Polymode
+
+[[https://github.com/vitoshka/polymode][Polymode]] allows multiple major modes in the same document (e.g. R +
+Markdown in =.Rmd= files). It is setup for Mardown and LateX files
+with R:
+
+#+BEGIN_SRC emacs-lisp
+  ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.[rR]md" . poly-markdown+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.[sS]nw" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.[rR]nw" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
+#+END_SRC
+
+# Diminish them?
+# (with-eval-after-load 'poly-markdown-mode (diminish 'poly-markdown-mode))
+# (with-eval-after-load 'poly-markdown+r-mode (diminish 'poly-markdown+r-mode))
+# (with-eval-after-load 'poly-noweb+r-mode (diminish 'poly-noweb+r-mode))
+
+Navigate through chunks: ~C-PageUp~ / ~C-PageDown~ go to previous/next
+chunk; ~C-S-PageUp~ / ~C-S-PageDown~ go to previous/next chunk of the
+same type:
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'polymode
+    (define-key polymode-mode-map [(C-prior)] #'polymode-previous-chunk)
+    (define-key polymode-mode-map [(C-next)] #'polymode-next-chunk)
+    (define-key polymode-mode-map [(C-S-prior)] #'polymode-previous-chunk-same-type)
+    (define-key polymode-mode-map [(C-S-next)] #'polymode-next-chunk-same-type))
+#+END_SRC
+
+# (setq 
+# 	pm-weaver "knitR-ESS"		; Default weaver
+# 	pm-exporter "pandoc")		; Default exporter
+# (bind-keys :map polymode-mode-map
+# 		  ([(f8)] . polymode-weave)       ; F7 to weave
+# 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
 
 
 * Postface
