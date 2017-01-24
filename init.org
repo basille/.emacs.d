@@ -913,6 +913,7 @@ mode):
         TeX-source-correlate-mode t	; Forward and inverse search
         TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
         reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
+        TeX-auto-untabify t             ; Replace Tabs by spaces on save
         )
   (add-hook 'LaTeX-mode-hook 
             (lambda ()
@@ -922,7 +923,7 @@ mode):
               (outline-minor-mode 1)	; Fold LaTeX sections
               (TeX-fold-mode 1)         ; Fold LaTeX environments
               )) 
-#+END_SRC
+        #+END_SRC
 
 The compilation by LatexMk (a single call to perform all necessary
 LaTeX/BibTeX compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]]
