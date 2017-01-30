@@ -630,7 +630,7 @@ versions of each backup:
    kept-new-versions 2
    kept-old-versions 2
    delete-old-versions t)
-#+END_SRC
+                                          #+END_SRC
 
 Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
 words into longer text. Since I don't use it, it gets slightly in the
@@ -652,6 +652,10 @@ silently:
 
 #+BEGIN_SRC emacs-lisp
   (setq dired-listing-switches "-aBhl  --group-directories-first")
+  (global-set-key [C-f5] 'dired)
+  (eval-after-load "dired"
+    '(progn
+       (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)))
 #+END_SRC
 
 Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https://github.com/sabof/project-explorer][project-explorer]] (the later bound

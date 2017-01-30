@@ -241,14 +241,16 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~F1–F4~     | Jump to registers |
 | ~C-F1–C-F4~ | Save registers    |
 
-| Key name | Operation            |
-|----------+----------------------|
-| ~F5~     | Project explorer     |
-| ~F6~     | Magit                |
-| ~F7~     | Eshell               |
-| ~F8~     | Polymode Weave       |
-| ~C-F8~   | Polymode Export      |
-| ~C-S-F8~ | knitr::pandoc Export |
+| Key name | Operation                                        |
+|----------+--------------------------------------------------|
+| ~F5~     | Project explorer                                 |
+| ~C-F5~   | Dired                                            |
+| ~C-S-F5~ | Activate write mode in Dired (~C-c C-c~ to exit) |
+| ~F6~     | Magit                                            |
+| ~F7~     | Eshell                                           |
+| ~F8~     | Polymode Weave                                   |
+| ~C-F8~   | Polymode Export                                  |
+| ~C-S-F8~ | knitr::pandoc Export                             |
 
 | Key name  | Operation                            |
 |-----------+--------------------------------------|
