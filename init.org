@@ -652,7 +652,10 @@ silently:
 
 #+BEGIN_SRC emacs-lisp
   (setq dired-listing-switches "-aBhl  --group-directories-first")
-  (global-set-key [C-f5] 'dired)
+  (global-set-key (kbd "C-<f5>")
+                  (lambda ()
+                    (interactive)
+                    (dired ".")))
   (eval-after-load "dired"
     '(progn
        (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)))

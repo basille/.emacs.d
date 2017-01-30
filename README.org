@@ -244,7 +244,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | Key name | Operation                                        |
 |----------+--------------------------------------------------|
 | ~F5~     | Project explorer                                 |
-| ~C-F5~   | Dired                                            |
+| ~C-F5~   | Dired in current directory                       |
 | ~C-S-F5~ | Activate write mode in Dired (~C-c C-c~ to exit) |
 | ~F6~     | Magit                                            |
 | ~F7~     | Eshell                                           |
