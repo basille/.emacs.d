@@ -228,11 +228,11 @@ status.showUntrackedFiles normal=)
 
 ** LaTeX
 
-| Key name     | Operation                        |
-|--------------+----------------------------------|
-| ~C-c -C-l~   | Show compilation logs in LaTeX   |
-| ~C-g~        | Forward search in LaTeX document |
-| ~Ctrl+click~ | Inverse search in PDF document   |
+| Key name     | Operation                                            |
+|--------------+------------------------------------------------------|
+| ~C-c C-l~    | Show compilation logs in LaTeX                       |
+| ~C-c C-v~    | Calls viewer with forward search from LaTeX document |
+| ~Ctrl+click~ | Inverse search in PDF document                       |
 
 
 ** ESS
