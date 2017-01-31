@@ -12,6 +12,7 @@
  - [[#key-bindings][Key bindings]]
    - [[#interface][Interface]]
    - [[#special][Special]]
+   - [[#polymode][Polymode]]
    - [[#pdf-tools][PDF tools]]
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
@@ -201,6 +202,17 @@ status.showUntrackedFiles normal=)
 | or        | Fold/unfold functions/regions (if code indented) |
 | ~C-f~     | GitFlow from within Magit                        |
 | ~C-c C-q~ | Add a Tag in Org mode                            |
+
+
+** Polymode
+
+| Key name        | Operation                               |
+|-----------------+-----------------------------------------|
+| ~C-PAGE DOWN~   | Move to previous chunk                  |
+| ~C-PAGE UP~     | Move to next chunk                      |
+| ~C-S-PAGE DOWN~ | Move to previous chunk of the same type |
+| ~C-S-PAGE UP~   | Move to next chunk of the same type     |
+
 
 
 ** PDF tools
