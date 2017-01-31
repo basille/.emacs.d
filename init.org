@@ -505,10 +505,10 @@ Show matching parentheses and other characters (without any delay):
 [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] in Programming mode to indent automatically all
 blocks when a part is moved (add modes to
 =aggressive-indent-excluded-modes= to NOT start aggressive indent in
-this mode):
+this mode) [NOTE: Disabled because of bugs with Polymode!]:
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook #'aggressive-indent-mode)
+  ;; (add-hook 'prog-mode-hook #'aggressive-indent-mode)
 #+END_SRC
 
 Automatically break long lines (by default after 70 characters, as set
