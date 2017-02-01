@@ -707,7 +707,7 @@ ignores case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prom
 and brings a nice powerline:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(f7)] 'eshell)
+  (global-set-key [(ctrl f6)] 'eshell)
   (setq
    eshell-buffer-shorthand t
    eshell-cmpl-ignore-case t)
@@ -1082,16 +1082,15 @@ options in =.pandoc/config.pandoc= with ~C-S-F8~:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
             (lambda ()
-              (load-library "md-insert-r-code.el")
-              (local-set-key [C-return] 'md-fenced-r-code-block)
-              (local-set-key [C-S-return] 'md-inline-r-code)
-              (load-library "md-ess-pandoc-custom.el")
-              ;; (local-set-key [(ctrl shift f8)] 'md-ess-pandoc-custom)
+              (load-library "rmd-library.el")
+              (local-set-key [C-return] 'rmd-fenced-r-code-block)
+              (local-set-key [C-S-return] 'rmd-inline-r-code)
               ))
   (with-eval-after-load 'polymode
-    (define-key polymode-mode-map [(f8)] #'polymode-weave)
-    (define-key polymode-mode-map [(ctrl f8)] #'polymode-export)
-    (define-key polymode-mode-map [(ctrl shift f8)] #'md-ess-pandoc-custom))
+    (define-key polymode-mode-map [(f7)] #'polymode-weave)
+    (define-key polymode-mode-map [(ctrl f7)] #'polymode-export)
+    (define-key polymode-mode-map [(f8)] #'rmd-pandoc-custom)
+    (define-key polymode-mode-map [(ctrl f8)] #'rmd-bookdown))
 #+END_SRC
 
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
