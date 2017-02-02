@@ -313,7 +313,8 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-F9~    | to move to the next highlighted text |
 | ~C-S-F9~  | Un-highlight everything              |
 | ~F10~     | Toggle line wrapping                 |
-| ~C-F10~   | Toggle column highlight mode         |
+| ~C-F10~   | Toggle current line highlight mode   |
+| ~C-S-F10~ | Toggle column highlight mode         |
 | ~C-S-F10~ | Fold/unfold functions/regions        |
 | ~F11~     | Multiple cursors in all lines        |
 | ~C-F11~   | Smart multiple cursors               |

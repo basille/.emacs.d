@@ -243,11 +243,19 @@ Lines soft wrapped at word boundary (with fringe indicators):
   (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
 
-Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-F10~ to toggle column highlight
+Highlight current line globally (and toggle it with ~C-F10~):
+
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode)
+  (global-set-key [(ctrl f10)] 'global-hl-line-mode)
+#+END_SRC
+
+
+Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-S-F10~ to toggle column highlight
 mode.
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl f10)] 'column-highlight-mode)
+  (global-set-key [(ctrl shift f10)] 'column-highlight-mode)
 #+END_SRC
 
 Highlight regions ([[https://www.emacswiki.org/emacs/highlight.el][highlight]]): ~F9~ to highlight, ~C-F9~ to move to
@@ -714,6 +722,7 @@ and go to bookmarks with ~$~:
                     (dired ".")))
   (eval-after-load "dired"
     '(progn
+       (hl-line-mode)
        (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
        (define-key dired-mode-map "$" 'my-ido-bookmark-jump)))
 #+END_SRC
