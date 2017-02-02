@@ -705,14 +705,15 @@ silently:
 ** File manager
 
 =Dired= (launched in current directory with with ~C-F5~) list
-directories first, intelligently guess where to copy (other window),
-and does not ask for confirmation for recursive copies and
-deletes. Switch to WDired mode (to 'write' file names) with ~C-S-F5~,
-and go to bookmarks with ~$~:
+directories first, refresh automatically directories, intelligently
+guess where to copy (other window), and does not ask for confirmation
+for recursive copies and deletes. Switch to WDired mode (to 'write'
+file names) with ~C-S-F5~, and go to bookmarks with ~$~:
 
 #+BEGIN_SRC emacs-lisp
   (setq
    dired-listing-switches "-aBhl  --group-directories-first"
+   dired-auto-revert-buffer t
    dired-dwim-target t
    dired-recursive-copies (quote always)
    dired-recursive-deletes (quote always))

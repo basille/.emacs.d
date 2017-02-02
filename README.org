@@ -229,6 +229,7 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 |----------+----------------------------|
 | ~$~      | Go to a bookmark           |
 | ~(~      | Hide/show details          |
+| ~s~      | Sort by date or filename   |
 | ~m~      | Mark a file/folder         |
 | ~* /~    | Mark all folders           |
 | ~* s~    | Mark all files and folders |
