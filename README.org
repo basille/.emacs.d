@@ -12,6 +12,7 @@
  - [[#key-bindings][Key bindings]]
    - [[#interface][Interface]]
    - [[#special][Special]]
+   - [[#file-manager][File manager]]
    - [[#polymode][Polymode]]
    - [[#pdf-tools][PDF tools]]
    - [[#latex][LaTeX]]
@@ -195,13 +196,44 @@ status.showUntrackedFiles normal=)
 
 ** Special
 
-| Key name  | Operation                                        |
-|-----------+--------------------------------------------------|
-| ~C-f~     | In IDO mode, fall back to normal prompt          |
-| ~TAB~     | Complete anything                                |
-| or        | Fold/unfold functions/regions (if code indented) |
-| ~C-f~     | GitFlow from within Magit                        |
-| ~C-c C-q~ | Add a Tag in Org mode                            |
+| Key name  | Operation                                                    |
+|-----------+--------------------------------------------------------------|
+| ~C-f~     | In IDO mode, fall back to normal prompt                      |
+| ~TAB~     | Complete anything                                            |
+| or        | Fold/unfold functions/regions (if code indented)             |
+| ~C-f~     | GitFlow from within Magit                                    |
+| ~C-c C-q~ | Add a Tag in Org mode                                        |
+| ~C-x r m~ | Bookmark a file (works on directories and remote files too!) |
+| ~C-x r l~ | List bookmarks                                               |
+
+
+** File manager
+
+When opening a file with IDO (~C-x C-f~):
+
+| Key name | Operation                     |
+|----------+-------------------------------|
+| ~//~     | Go to the root directory      |
+| =~/=     | Go to the home directory      |
+| ~C-d~    | Enter Dired in this directory |
+| ~$~      | Go to a bookmark              |
+
+In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Marks-vs-Flags.html][here]], and operations on file [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Operating-on-Files.html#Operating-on-Files][here]]):
+
+| Key name | Operation                  |
+|----------+----------------------------|
+| ~$~      | Go to a bookmark           |
+| ~(~      | Hide/show details          |
+| ~m~      | Mark a file/folder         |
+| ~* /~    | Mark all folders           |
+| ~* s~    | Mark all files and folders |
+| ~u~      | Unmark a file/folder       |
+| ~U~      | Unmark all                 |
+| ~t~      | Toggle mark                |
+|----------+----------------------------|
+| ~C~      | Copy (marked) file(s)      |
+| ~D~      | Delete (marked) file(s)    |
+| ~R~      | Rename (marked) file(s)    |
 
 
 ** Polymode

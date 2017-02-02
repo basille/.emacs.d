@@ -73,6 +73,7 @@ repositories. We first list these packages:
                        anzu
                        auctex
                        auctex-latexmk
+                       bonjourmadame
                        col-highlight
                        company
                        company-auctex
@@ -107,6 +108,7 @@ repositories. We first list these packages:
                        sqlup-mode
                        toc-org
                        web-mode
+                       xkcd
                        yaml-mode
                        ))
 #+END_SRC
@@ -460,6 +462,43 @@ in the other window):
   (global-set-key (kbd "<C-iso-lefttab>") 'ido-switch-buffer-other-window) ; C-S-TAB
 #+END_SRC
 
+Type ~$~ in IDO find file to [[https://scottfrazersblog.blogspot.com/2009/12/emacs-using-bookmarked-directories.html][go to a bookmark]]:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'bookmark)
+  
+  (defun my-ido-bookmark-jump ()
+    "Jump to bookmark using ido"
+    (interactive)
+    (let ((dir (my-ido-get-bookmark-dir)))
+      (when dir
+        (find-alternate-file dir))))
+  
+  (defun my-ido-get-bookmark-dir ()
+    "Get the directory of a bookmark."
+    (let* ((name (ido-completing-read "Find bookmark: " (bookmark-all-names) nil t))
+           (bmk (bookmark-get-bookmark name)))
+      (when bmk
+        (setq bookmark-alist (delete bmk bookmark-alist))
+        (push bmk bookmark-alist)
+        (let ((filename (bookmark-get-filename bmk)))
+          (if (file-directory-p filename)
+              filename
+            (file-name-directory filename))))))
+
+  (defun my-ido-use-bookmark-dir ()
+    "Get directory of bookmark"
+    (interactive)
+    (let* ((enable-recursive-minibuffers t)
+           (dir (my-ido-get-bookmark-dir)))
+      (when dir
+        (ido-set-current-directory dir)
+        (setq ido-exit 'refresh)
+        (exit-minibuffer))))
+
+  (define-key ido-file-dir-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
+#+END_SRC
+
 
 * Buffer editing
 
@@ -648,17 +687,23 @@ silently:
 
 ** File manager
 
-=Dired= list directories first:
+=Dired= (launched in current directory with with ~C-F5~) list
+directories first, intelligently guess where to copy (other window),
+switch to WDired mode (to 'write' file names) with ~C-S-F5~, and go
+to bookmarks with ~$~:
 
 #+BEGIN_SRC emacs-lisp
-  (setq dired-listing-switches "-aBhl  --group-directories-first")
+  (setq
+   dired-listing-switches "-aBhl  --group-directories-first"
+   dired-dwim-target t)
   (global-set-key (kbd "C-<f5>")
                   (lambda ()
                     (interactive)
                     (dired ".")))
   (eval-after-load "dired"
     '(progn
-       (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)))
+       (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
+       (define-key dired-mode-map "$" 'my-ido-bookmark-jump)))
 #+END_SRC
 
 Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https://github.com/sabof/project-explorer][project-explorer]] (the later bound
