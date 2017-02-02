@@ -345,6 +345,15 @@ navigate interactively a long document (bound to ~C-M-=~):
   (global-set-key (kbd "C-M-=") #'imenu)
 #+END_SRC
 
+Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
+~C-S-F1~ and listed with ~C-S-F4~:
+
+#+BEGIN_SRC emacs-lisp
+  (setq bookmark-default-file (concat user-emacs-directory "cache/bookmarks"))
+  (global-set-key [(ctrl shift f1)] 'bookmark-set)
+  (global-set-key [(ctrl shift f4)] 'list-bookmarks)
+#+END_SRC
+
 
 ** Mode line
 
@@ -719,6 +728,12 @@ saves its cache in the =cache= folder:
   (setq pe/cache-directory
         (concat user-emacs-directory "cache/project-explorer-cache/"))
   (global-set-key [(f5)] 'project-explorer-toggle)
+#+END_SRC
+
+TRAMP history of connections in =.emacs.d/cache/tramp=:
+
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-persistency-file-name (concat user-emacs-directory "cache/tramp"))
 #+END_SRC
 
 

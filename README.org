@@ -194,6 +194,13 @@ status.showUntrackedFiles normal=)
 | ~M-!~    | Shell-command in the minibuffer |
 | ~C-h m~  | Check modes in a buffer         |
 
+| Key name  | Operation                                                    |
+|-----------+--------------------------------------------------------------|
+| ~C-x r m~ | Bookmark a file (works on directories and remote files too!) |
+| ~C-x r b~ | Jump to a bookmark                                           |
+| ~C-x r l~ | List bookmarks                                               |
+
+
 ** Special
 
 | Key name  | Operation                                                    |
@@ -203,8 +210,6 @@ status.showUntrackedFiles normal=)
 | or        | Fold/unfold functions/regions (if code indented)             |
 | ~C-f~     | GitFlow from within Magit                                    |
 | ~C-c C-q~ | Add a Tag in Org mode                                        |
-| ~C-x r m~ | Bookmark a file (works on directories and remote files too!) |
-| ~C-x r l~ | List bookmarks                                               |
 
 
 ** File manager
@@ -282,10 +287,13 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 ~C-F4~ to save a register, ~F1~ to ~F4~ to jump to a saved register:
 
-| Key name    | Operation         |
-|-------------+-------------------|
-| ~F1–F4~     | Jump to registers |
-| ~C-F1–C-F4~ | Save registers    |
+| Key name    | Operation                                                    |
+|-------------+--------------------------------------------------------------|
+| ~F1–F4~     | Jump to registers                                            |
+| ~C-F1–C-F4~ | Save registers                                               |
+| ~C-S-F1~    | Bookmark a file (works on directories and remote files too!) |
+| ~C-S-F4~    | List bookmarks                                               |
+
 
 | Key name | Operation                                            |
 |----------+------------------------------------------------------|
