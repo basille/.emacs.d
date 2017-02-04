@@ -79,6 +79,8 @@ repositories. We first list these packages:
                        company-auctex
                        color-theme-sanityinc-tomorrow 
                        diminish
+                       dired+
+                       dired-narrow
                        eshell-git-prompt
                        ess
                        ess-smart-underscore
@@ -368,7 +370,8 @@ Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
 Use a Power line:
 
 #+BEGIN_SRC emacs-lisp
-  (powerline-default-theme)
+  (powerline-center-theme)
+  (setq powerline-default-separator 'wave)
 #+END_SRC
 
 Display line and column number in the mode line:
@@ -708,11 +711,13 @@ silently:
 directories first, refresh automatically directories, intelligently
 guess where to copy (other window), and does not ask for confirmation
 for recursive copies and deletes. Switch to WDired mode (to 'write'
-file names) with ~C-S-F5~, and go to bookmarks with ~$~:
+file names) with ~C-S-F5~, go to bookmarks with ~$~, and dynamically
+filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]):
 
 #+BEGIN_SRC emacs-lisp
   (setq
    dired-listing-switches "-aBhl  --group-directories-first"
+   ;; dired-omit-files "^\\.$"
    dired-auto-revert-buffer t
    dired-dwim-target t
    dired-recursive-copies (quote always)
@@ -725,7 +730,28 @@ file names) with ~C-S-F5~, and go to bookmarks with ~$~:
     '(progn
        (hl-line-mode)
        (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
-       (define-key dired-mode-map "$" 'my-ido-bookmark-jump)))
+       (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
+       (define-key dired-mode-map "/" 'dired-narrow)))
+#+END_SRC
+
+In addition, [[https://www.emacswiki.org/emacs/DiredPlus][Dired+]] allows to use a single buffer for visited folders
+with Dired (as well as providing richer highlighting including
+mouse-over highlighting, and wrap around navigation), and we want the
+Dired buffer to start with details displayed:
+
+#+BEGIN_SRC emacs-lisp
+  (setq diredp-hide-details-initially-flag nil)
+  (diredp-toggle-find-file-reuse-dir 1)
+#+END_SRC
+
+Remove =.= from the list of files/folders (and be silent about it):
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dired-omit-files-p t)
+  (setq
+   dired-omit-verbose nil
+   dired-omit-files "^\\.$"
+   dired-omit-extensions nil)
 #+END_SRC
 
 Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https://github.com/sabof/project-explorer][project-explorer]] (the later bound
