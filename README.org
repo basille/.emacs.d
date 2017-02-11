@@ -14,6 +14,7 @@
    - [[#special][Special]]
    - [[#file-manager][File manager]]
    - [[#polymode][Polymode]]
+   - [[#org-mode][Org mode]]
    - [[#pdf-tools][PDF tools]]
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
@@ -203,13 +204,13 @@ status.showUntrackedFiles normal=)
 
 ** Special
 
-| Key name  | Operation                                                    |
-|-----------+--------------------------------------------------------------|
-| ~C-f~     | In IDO mode, fall back to normal prompt                      |
-| ~TAB~     | Complete anything                                            |
-| or        | Fold/unfold functions/regions (if code indented)             |
-| ~C-f~     | GitFlow from within Magit                                    |
-| ~C-c C-q~ | Add a Tag in Org mode                                        |
+| Key name | Operation                                        |
+|----------+--------------------------------------------------|
+| ~C-f~    | In IDO mode, fall back to normal prompt          |
+| ~TAB~    | Complete anything                                |
+| or       | Fold/unfold functions/regions (if code indented) |
+| ~C-f~    | GitFlow from within Magit                        |
+
 
 
 ** File manager
@@ -256,6 +257,13 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~C-S-PAGE DOWN~ | Move to previous chunk of the same type |
 | ~C-S-PAGE UP~   | Move to next chunk of the same type     |
 
+
+** Org mode
+
+| Key name  | Operation               |
+|-----------+-------------------------|
+| ~C-c C-q~ | Add a Tag in Org mode   |
+| ~<s TAB>~ | Add a source code block |
 
 
 ** PDF tools
