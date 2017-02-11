@@ -146,6 +146,12 @@ folder of the Emacs profile:
 
 * Interface
 
+Disable the splash screen:
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-screen t)
+#+END_SRC
+
 
 ** Color theme
 
@@ -226,10 +232,10 @@ Visible bells (flashes the frame):
 
 ** Buffers
 
-Disable the splash screen:
+Empty scratch buffer:
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-screen t)
+  (setq initial-scratch-message nil)
 #+END_SRC
 
 Lines soft wrapped at word boundary (with fringe indicators):
