@@ -1214,9 +1214,19 @@ options in =.pandoc/config.pandoc= with ~C-S-F8~:
 
 ** SQL
 
-SQL works already well out of the box. However, more configuration is
-required to have a beautiful code and readable output. First of all,
-[[https://github.com/bsvingen/sql-indent][sql-indent]] allows to indent correctly SQL code:
+SQL works already well out of the box. I set ~C-return~ to send a
+region (if selected) or the current paragraph:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'sql-mode-hook
+            (lambda ()
+              (load-library "sql-send")
+              (local-set-key (kbd "<C-return>") 'sql-send-region-or-paragrap)))
+#+END_SRC
+
+However, more configuration is required to have a beautiful code and
+readable output. First of all, [[https://github.com/bsvingen/sql-indent][sql-indent]] allows to indent correctly
+SQL code:
 
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'sql (load-library "sql-indent"))
@@ -1231,7 +1241,7 @@ with ~C-c u~ on a region:
   (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
   (add-hook 'sql-mode-hook
             (lambda ()
-               (local-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)))
+              (local-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)))
 #+END_SRC
 
 To make it a step further, [[https://github.com/emacsmirror/format-sql][format-sql]] integrates the Python library of
@@ -1257,15 +1267,15 @@ with ~C-M-]~ (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beau
 # ;;                                              nil
 # ;;                                              (get-file-type)))
 
-# If only one server:
+Set up default PostgreSQL credentials:
 
-# #+BEGIN_SRC emacs-lisp
-#   ;; (setq sql-postgres-login-params
-#   ;;       '((server :default "localhost")
-#   ;;         (port :default 5432)
-#   ;;         (user :default "postgres")
-#   ;;         (database :default "postgres")))
-# #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq sql-postgres-login-params
+        '((server :default "localhost")
+          (port :default 5432)
+          (user :default "mathieu")
+          (database :default "test")))
+#+END_SRC
   
 # If several servers
 
@@ -1285,12 +1295,14 @@ with ~C-M-]~ (an alternative is [[https://github.com/ldeck/SqlBeautify][SQL-beau
 #   ;;                  (sql-database "db2"))))
 # #+END_SRC
 
-In the output, we first make sure that lines are not truncated:
+In the output, we first make sure that lines are not truncated (DOES
+NOT ):
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-interactive-mode-hook
             (lambda ()
-              (toggle-truncate-lines t))) 
+              ;; (toggle-truncate-lines t)))
+              (setq truncate-lines t)))
 #+END_SRC
 
 And that table formating is not off when using =sql-send-region= to
@@ -1299,32 +1311,32 @@ on the same row as the the prompt). We [[https://www.emacswiki.org/emacs/SqlMode
 comint output (for all queries, even queries run at the prompt):
 
 #+BEGIN_SRC emacs-lisp
-  (defvar sql-last-prompt-pos 1
-    "position of last prompt when added recording started")
-  (make-variable-buffer-local 'sql-last-prompt-pos)
-  (put 'sql-last-prompt-pos 'permanent-local t) 
-  (defun sql-add-newline-first (output)
-    "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'
-    This fixes up the display of queries sent to the inferior buffer
-    programatically."
-    (let ((begin-of-prompt
-           (or (and comint-last-prompt-overlay
-                    ;; sometimes this overlay is not on prompt
-                    (save-excursion
-                      (goto-char (overlay-start comint-last-prompt-overlay))
-                      (looking-at-p comint-prompt-regexp)
-                      (point)))
-               1)))
-      (if (> begin-of-prompt sql-last-prompt-pos)
-          (progn
-            (setq sql-last-prompt-pos begin-of-prompt)
-            (concat "\n" output))
-        output))) 
-  (defun sqli-add-hooks ()
-    "Add hooks to `sql-interactive-mode-hook'."
-    (add-hook 'comint-preoutput-filter-functions
-              'sql-add-newline-first)) 
-  (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
+  ;; (defvar sql-last-prompt-pos 1
+  ;;   "position of last prompt when added recording started")
+  ;; (make-variable-buffer-local 'sql-last-prompt-pos)
+  ;; (put 'sql-last-prompt-pos 'permanent-local t) 
+  ;; (defun sql-add-newline-first (output)
+  ;;   "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'
+  ;;   This fixes up the display of queries sent to the inferior buffer
+  ;;   programatically."
+  ;;   (let ((begin-of-prompt
+  ;;          (or (and comint-last-prompt-overlay
+  ;;                   ;; sometimes this overlay is not on prompt
+  ;;                   (save-excursion
+  ;;                     (goto-char (overlay-start comint-last-prompt-overlay))
+  ;;                     (looking-at-p comint-prompt-regexp)
+  ;;                     (point)))
+  ;;              1)))
+  ;;     (if (> begin-of-prompt sql-last-prompt-pos)
+  ;;         (progn
+  ;;           (setq sql-last-prompt-pos begin-of-prompt)
+  ;;           (concat "\n" output))
+  ;;       output))) 
+  ;; (defun sqli-add-hooks ()
+  ;;   "Add hooks to `sql-interactive-mode-hook'."
+  ;;   (add-hook 'comint-preoutput-filter-functions
+  ;;             'sql-add-newline-first)) 
+  ;; (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
 #+END_SRC
 
 

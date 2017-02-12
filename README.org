@@ -18,6 +18,7 @@
    - [[#pdf-tools][PDF tools]]
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
+   - [[#sql][SQL]]
    - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
  - [[#screenshots][Screenshots]]
  - [[#to-do][To-do]]
@@ -294,6 +295,13 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~C-c C-o~    | Delete everything from last command to current prompt      |
 | ~C-return~   | Add a fenced R code block (in RMarkdown file)              |
 | ~C-S-return~ | Add inline R code (in RMarkdown file)                      |
+
+
+** SQL
+
+| Key name   | Operation                          |
+|------------+------------------------------------|
+| ~C-return~ | Send paragraph or region if active |
 
 
 ** Function keys (~F1–F12~)
