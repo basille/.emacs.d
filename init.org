@@ -1181,8 +1181,9 @@ is bound to C-M-\ ou 'M-x indent-region'.
 In (R)Markdown, add a fenced R code block (~C-return~) or inline R
 code (~C-S-return~):
 
-Weave with ~F8~; export (pandoc) with ~C-F8~; use =knitr::pandoc= with
-options in =.pandoc/config.pandoc= with ~C-S-F8~:
+Weave with ~F7~; export with ~C-F7~; use =knitr::pandoc= with options
+in =.pandoc/config.pandoc= with ~F8~, and render a bookdown with
+~C-F8~:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
@@ -1220,7 +1221,7 @@ region (if selected) or the current paragraph:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sql-mode-hook
             (lambda ()
-              (load-library "sql-send")
+              (load-library "sql-library")
               (local-set-key (kbd "<C-return>") 'sql-send-region-or-paragrap)))
 #+END_SRC
 
@@ -1277,22 +1278,29 @@ Set up default PostgreSQL credentials:
           (database :default "test")))
 #+END_SRC
   
-# If several servers
+# If several servers:
+
+# #+BEGIN_SRC emacs-lisp :tangle no
+#   (setq sql-connection-alist
+#         '((server1
+#            (sql-product 'postgres)
+#            (sql-server "localhost")
+#            (sql-port 5432)
+#            (sql-database "DATABASE")
+#            (sql-user "USER"))
+#           (eurodeer
+#            (sql-product 'postgres)
+#            (sql-server "www.server.org")
+#            (sql-port 5432)
+#            (sql-database "DATABASE")
+#            (sql-user "USER")
+#            (sql-password "PASSWORD"))))
+# #+END_SRC
 
 # #+BEGIN_SRC emacs-lisp
-#   ;; (setq sql-connection-alist
-#   ;;       '((server1 (sql-product 'postgres)
-#   ;;                  (sql-server "localhost")
-#   ;;                  (sql-port 5432)
-#   ;;                  (sql-user "user")
-#   ;;                  (sql-password "password")
-#   ;;                  (sql-database "db1"))
-#   ;;         (server2 (sql-product 'postgres)
-#   ;;                  (sql-server "localhost")
-#   ;;                  (sql-port 5432)
-#   ;;                  (sql-user "user")
-#   ;;                  (sql-password "password")
-#   ;;                  (sql-database "db2"))))
+#   (add-hook 'sql-mode-hook
+#             (lambda ()
+#               (load-library "sql-connection-alist")))
 # #+END_SRC
 
 In the output, we first make sure that lines are not truncated (DOES

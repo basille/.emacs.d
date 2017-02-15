@@ -326,8 +326,8 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-F6~   | Eshell                                               |
 | ~F7~     | Polymode Weave                                       |
 | ~C-F7~   | Polymode Export                                      |
-| ~C-F8~   | Run knitr::pandoc (with custom options) on .Rmd file |
-| ~C-S-F8~ | Run bookdown::render on index.Rmd                    |
+| ~F8~     | Run knitr::pandoc (with custom options) on .Rmd file |
+| ~C-F8~   | Run bookdown::render on index.Rmd                    |
 
 | Key name  | Operation                            |
 |-----------+--------------------------------------|

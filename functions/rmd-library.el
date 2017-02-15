@@ -32,6 +32,43 @@
         (switch-to-buffer rmd-buf)
         (ess-show-buffer (buffer-name sbuffer) nil)))))
 
+
+;; Function ess-render to use rmarkdown::render with output as PDF
+(defun ess-render ()
+  "Run rmarkdown::render on the visited buffer."
+  (interactive)
+  (let* ((rmd-buf (current-buffer)))
+    (update-ess-process-name-list)
+    (cond ((= 0 (length ess-process-name-list))
+           (message "No ESS processes running; starting R")
+           (sit-for 1); so the user notices before the next msgs/prompt
+           (R)
+           (set-buffer rmd-buf)
+           )
+          ((not (string= "R" (ess-make-buffer-current))); e.g. Splus, need R
+           (ess-force-buffer-current "R process to load into: "))
+          )
+    (setq-local ess-dialect "R")
+    (ess-force-buffer-current)
+
+    (save-excursion
+      (let* ((output-format-table (make-hash-table :test 'equal)))
+          (puthash "HTML" "html_document" output-format-table)
+          (puthash "PDF" "pdf_document" output-format-table)
+          (puthash "All" "all" output-format-table)
+          (let* ((sprocess (ess-get-process ess-current-process-name))
+                 (sbuffer (process-buffer sprocess))
+                 (buf-filename (buffer-file-name))
+                 (output-format-user (completing-read "Output format: " '("HTML" "PDF" "All")))
+                 (output-format (gethash output-format-user output-format-table))
+                 (render-cmd
+                  (format "rmarkdown::render(\"%s\", output_format = \"%s\")" buf-filename output-format)))
+            (message "Running Render on %s" buf-filename)
+            (ess-execute render-cmd 'buffer nil nil)
+            (switch-to-buffer rmd-buf)
+            (ess-show-buffer (buffer-name sbuffer) nil))))))
+
+
 ;; Function rmd-bookdown to use bookdown::render on index.Rmd
 ;; Inspiration borrowed from ess-swv-run-in-R (ess-swv.el)
 (defun rmd-bookdown ()
