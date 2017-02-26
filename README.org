@@ -261,10 +261,11 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** Org mode
 
-| Key name  | Operation               |
-|-----------+-------------------------|
-| ~C-c C-q~ | Add a Tag in Org mode   |
-| ~<s TAB>~ | Add a source code block |
+| Key name  | Operation                                        |
+|-----------+--------------------------------------------------|
+| ~C-c C-q~ | Add a Tag in Org mode                            |
+|           | (use =:TOC:= for an automatic table of contents) |
+| ~<s TAB~  | Add a source code block                          |
 
 
 ** PDF tools
@@ -282,9 +283,10 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 | Key name     | Operation                                            |
 |--------------+------------------------------------------------------|
-| ~C-c C-l~    | Show compilation logs in LaTeX                       |
+| ~C-c C-l~    | Shows compilation logs in LaTeX                      |
 | ~C-c C-v~    | Calls viewer with forward search from LaTeX document |
 | ~Ctrl+click~ | Inverse search in PDF document                       |
+| ~C-c =~      | Displays a dynamic table of contents                 |
 
 
 ** ESS
