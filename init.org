@@ -78,7 +78,7 @@ repositories. We first list these packages:
                        company
                        company-auctex
                        color-theme-sanityinc-tomorrow 
-                       diminish
+                       dim
                        dired+
                        dired-narrow
                        eshell-git-prompt
@@ -319,9 +319,9 @@ the code is already indented) for Programming mode:
   (add-hook 'prog-mode-hook
             (lambda()
               (hs-org/minor-mode)
-              (diminish 'hs-minor-mode)
               (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               ))
+  (dim-minor-name 'hs-minor-mode "")
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
@@ -393,7 +393,7 @@ mode-line, and show replacement interactively. Replace is bound to
 #+BEGIN_SRC emacs-lisp
   (global-anzu-mode 1)
   (anzu-mode 1)
-  (with-eval-after-load 'anzu (diminish 'anzu-mode))
+  (dim-minor-name 'anzu-mode "")
   (global-set-key (kbd "C-r") 'anzu-query-replace)
   (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
 #+END_SRC
@@ -406,13 +406,14 @@ content), =visual-line-mode= (word wrapping at the end of long lines),
 Interaction (replaced with just "Lisp"):
 
 #+BEGIN_SRC emacs-lisp
-  (diminish 'auto-fill-function)
-  (diminish 'auto-revert-mode)
-  (diminish 'visual-line-mode)
-  (diminish 'eldoc-mode)
+  (dim-minor-name 'auto-fill-function "")
+  (dim-minor-name 'auto-revert-mode "")
+  (dim-minor-name 'visual-line-mode "")
+  (dim-minor-name 'eldoc-mode "")
+  (dim-minor-name 'eldoc-mode "")
   (add-hook 'emacs-lisp-mode-hook 
             (lambda()
-              (setq mode-name "Lisp"))) 
+              (setq mode-name "Lisp")))
 #+END_SRC
 
 
@@ -588,7 +589,7 @@ it with "," in the mode line):
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook 'subword-mode)
-  (with-eval-after-load 'subword (diminish 'subword-mode))
+  (dim-minor-name 'subword-mode "" 'subword)
 #+END_SRC
 
 Complete anything (=company=), with ~TAB~ (=(kbd "TAB")= for terminal;
@@ -597,10 +598,10 @@ aggressive completion:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook 'global-company-mode)
+  (dim-minor-name 'company-mode "" 'company)
   (with-eval-after-load 'company
     (define-key company-active-map (kbd "TAB") #'company-complete-common)
-    (define-key company-active-map [tab] #'company-complete-common)
-    (diminish 'company-mode))
+    (define-key company-active-map [tab] #'company-complete-common))
   (setq company-idle-delay 0
         company-echo-delay 0
         company-dabbrev-downcase nil
@@ -768,7 +769,7 @@ saves its cache in the =cache= folder:
   (projectile-global-mode +1)
   (setq projectile-known-projects-file
         (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
-  (diminish 'projectile-mode "Proj")
+  (dim-minor-name 'projectile-mode " Proj")
   (setq pe/width 20)
   (setq pe/cache-directory
         (concat user-emacs-directory "cache/project-explorer-cache/"))
@@ -1034,8 +1035,10 @@ mode):
               (turn-on-reftex)          ; RefTeX on
               (outline-minor-mode 1)	; Fold LaTeX sections
               (TeX-fold-mode 1)         ; Fold LaTeX environments
-              )) 
-        #+END_SRC
+              ))
+  (dim-minor-name 'reftex-mode "" 'reftex)
+  (dim-minor-name 'outline-minor-mode "" 'outline)
+#+END_SRC
 
 The compilation by LatexMk (a single call to perform all necessary
 LaTeX/BibTeX compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]]
@@ -1052,7 +1055,8 @@ We also enable completion for LaTeX commands using Company:
 
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load "tex"
-    (company-auctex-init))
+    (company-auctex-init)
+    )
 #+END_SRC
 
 Finally, we enable the use of PDF tools to visualize the resulting PDF
@@ -1149,7 +1153,6 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
-              (diminish 'hs-minor-mode)
               (hs-org/minor-mode) 
               (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               ;; (aggressive-indent-mode)
