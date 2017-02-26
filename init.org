@@ -1017,8 +1017,8 @@ AUCTeX integrates RefTeX (references), LatexMk (compilation) and PDF
 Tools (visualization). Note that compilation logs are not shown by
 default (use ~C-c C-l~ to see them, or add =(setqTeX-show-compilation
 t)= in the =LaTeX-mode-hook=). We start by configuring the LaTeX mode
-(notably forward and inverse search, RefTeX, compilation as PDF, Math
-mode):
+(notably RefTeX, fold LaTeX environments [F], Math mode [M],
+compilation as PDF [P], forward and inverse search [S]):
 
 #+BEGIN_SRC emacs-lisp
   (setq TeX-parse-self t                ; Enable parse on load.
