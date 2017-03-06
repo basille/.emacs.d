@@ -622,6 +622,7 @@ the selection (use then arrows to select more/less):
   (global-set-key [(f11)] 'mc/edit-lines)
   (global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
   (global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
+  (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
 #+END_SRC
 
 Magnar Sveen wrote a [[https://github.com/magnars/.emacs.d/blob/master/defuns/lisp-defuns.el][very useful function]] to evaluate and directly
@@ -765,10 +766,13 @@ Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https:/
 to ~F5~). Project-explorer is set to a width of 20 characters, and
 saves its cache in the =cache= folder:
 
+[problem with projectile and Tramp?]
+
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode +1)
   (setq projectile-known-projects-file
         (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
+  ;; (setq projectile-mode-line "Projectile")
   (dim-minor-name 'projectile-mode " Proj")
   (setq pe/width 20)
   (setq pe/cache-directory

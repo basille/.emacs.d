@@ -331,21 +331,22 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~F8~     | Run knitr::pandoc (with custom options) on .Rmd file |
 | ~C-F8~   | Run bookdown::render on index.Rmd                    |
 
-| Key name  | Operation                            |
-|-----------+--------------------------------------|
-| ~F9~      | Highlight region (like a marker)     |
-| ~C-F9~    | to move to the next highlighted text |
-| ~C-S-F9~  | Un-highlight everything              |
-| ~F10~     | Toggle line wrapping                 |
-| ~C-F10~   | Toggle current line highlight mode   |
-| ~C-S-F10~ | Toggle column highlight mode         |
-| ~C-S-F10~ | Fold/unfold functions/regions        |
-| ~F11~     | Multiple cursors in all lines        |
-| ~C-F11~   | Smart multiple cursors               |
-| ~C-S-F11~ | Multiple cursors: next like selected |
-| ~F12~     | Flyspell correction suggestions      |
-| ~C-F12~   | Toggle Flyspell                      |
-| ~C-S-F12~ | Change Ispell dictionary             |
+| Key name         | Operation                            |
+|------------------+--------------------------------------|
+| ~F9~             | Highlight region (like a marker)     |
+| ~C-F9~           | to move to the next highlighted text |
+| ~C-S-F9~         | Un-highlight everything              |
+| ~F10~            | Toggle line wrapping                 |
+| ~C-F10~          | Toggle current line highlight mode   |
+| ~C-S-F10~        | Toggle column highlight mode         |
+| ~C-S-F10~        | Fold/unfold functions/regions        |
+| ~F11~            | Multiple cursors in all lines        |
+| ~C-F11~          | Smart multiple cursors               |
+| ~C-S-F11~        | Multiple cursors: next like selected |
+| ~C-S-Left click~ | Multiple cursors on mouse click      |
+| ~F12~            | Flyspell correction suggestions      |
+| ~C-F12~          | Toggle Flyspell                      |
+| ~C-S-F12~        | Change Ispell dictionary             |
 
 
 * Screenshots
