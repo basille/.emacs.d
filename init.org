@@ -183,10 +183,17 @@ Emacs starts split horizontaly in the middle:
   (split-window-horizontally)
 #+END_SRC
 
-Open a file in the other window:
+Open a file in the other window with ~C-x C-o~:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-r") 'ido-find-file-other-window)
+  (global-set-key (kbd "C-x C-o") 'ido-find-file-other-window)
+#+END_SRC
+
+List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
+=list-buffers=):
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in

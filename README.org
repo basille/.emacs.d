@@ -177,7 +177,7 @@ status.showUntrackedFiles normal=)
 | ~C-TAB~      | Cycle through buffers (this window)  |
 | ~C-S-TAB~    | Cycle through buffers (other window) |
 | ~C-x k~      | Kill THIS buffer                     |
-| ~C-x C-b~    | Buffer menu (list of buffers)        |
+| ~C-x C-b~    | ibuffer (list of buffers)            |
 
 | Key name  | Operation                                   |
 |-----------+---------------------------------------------|
@@ -225,7 +225,7 @@ When opening a file with IDO (~C-x C-f~):
 | ~C-d~    | Enter Dired in this directory |
 | ~$~      | Go to a bookmark              |
 
-In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Marks-vs-Flags.html][here]], and operations on file [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Operating-on-Files.html#Operating-on-Files][here]]):
+In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Marks-vs-Flags.html][here]], and operations on file [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Operating-on-Files.html#Operating-on-Files][here]]) or ibuffer:
 
 | Key name | Operation                                                  |
 |----------+------------------------------------------------------------|
@@ -234,6 +234,7 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~s~      | Sort by date or filename                                   |
 | ~i~      | Include subdirectory                                       |
 |----------+------------------------------------------------------------|
+| ~o~      | Open in other window                                       |
 | ~m~      | Mark a file/folder                                         |
 | ~* /~    | Mark all folders                                           |
 | ~* s~    | Mark all files and folders                                 |
