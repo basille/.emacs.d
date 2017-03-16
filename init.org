@@ -81,6 +81,7 @@ repositories. We first list these packages:
                        dim
                        dired+
                        dired-narrow
+                       dired-subtree
                        eshell-git-prompt
                        ess
                        ess-smart-underscore
@@ -98,10 +99,9 @@ repositories. We first list these packages:
                        markdown-mode
                        markdown-toc
                        multiple-cursors
+                       neotree
                        pdf-tools
                        polymode
-                       project-explorer
-                       projectile
                        org
                        org-bullets
                        powerline
@@ -726,8 +726,9 @@ silently:
 directories first, refresh automatically directories, intelligently
 guess where to copy (other window), and does not ask for confirmation
 for recursive copies and deletes. Switch to WDired mode (to 'write'
-file names) with ~C-S-F5~, go to bookmarks with ~$~, and dynamically
-filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]):
+file names) with ~C-S-F5~, go to bookmarks with ~$~, insert/remove
+subdirectories with ~i~ and ~<backspace>~ (with [[https://github.com/Fuco1/dired-hacks#dired-subtree][Dired-subtree]]), and
+dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]):
 
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -746,7 +747,10 @@ filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hack
        (hl-line-mode)
        (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
        (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
-       (define-key dired-mode-map "/" 'dired-narrow)))
+       (define-key dired-mode-map "i" 'dired-subtree-insert)
+       (define-key dired-mode-map (kbd "<backspace>") 'dired-subtree-remove)
+       (define-key dired-mode-map "/" 'dired-narrow)
+       ))
 #+END_SRC
 
 In addition, [[https://www.emacswiki.org/emacs/DiredPlus][Dired+]] allows to use a single buffer for visited folders
@@ -769,22 +773,12 @@ Remove =.= from the list of files/folders (and be silent about it):
    dired-omit-extensions nil)
 #+END_SRC
 
-Manage projects with [[http://batsov.com/projectile/][projectile]] and [[https://github.com/sabof/project-explorer][project-explorer]] (the later bound
-to ~F5~). Project-explorer is set to a width of 20 characters, and
-saves its cache in the =cache= folder:
-
-[problem with projectile and Tramp?]
+Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to
+~F5~):
 
 #+BEGIN_SRC emacs-lisp
-  (projectile-global-mode +1)
-  (setq projectile-known-projects-file
-        (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
-  ;; (setq projectile-mode-line "Projectile")
-  (dim-minor-name 'projectile-mode " Proj")
-  (setq pe/width 20)
-  (setq pe/cache-directory
-        (concat user-emacs-directory "cache/project-explorer-cache/"))
-  (global-set-key [(f5)] 'project-explorer-toggle)
+  (setq neo-theme 'ascii)
+  (global-set-key [(f5)] 'neotree-toggle)
 #+END_SRC
 
 TRAMP history of connections in =.emacs.d/cache/tramp=, make
