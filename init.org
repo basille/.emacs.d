@@ -787,10 +787,24 @@ saves its cache in the =cache= folder:
   (global-set-key [(f5)] 'project-explorer-toggle)
 #+END_SRC
 
-TRAMP history of connections in =.emacs.d/cache/tramp=:
+TRAMP history of connections in =.emacs.d/cache/tramp=, make
+completion faster, shell history in standard location
+("$HOME/.sh_history"), backups of remote files disabled, and just to
+be sure, version control is disabled on remote files (although VC is
+already disable entirely below:
 
 #+BEGIN_SRC emacs-lisp
-  (setq tramp-persistency-file-name (concat user-emacs-directory "cache/tramp"))
+  (setq
+   tramp-persistency-file-name (concat user-emacs-directory "cache/tramp")
+   tramp-completion-reread-directory-timeout nil
+   tramp-histfile-override nil
+   )
+  (add-to-list 'backup-directory-alist
+               (cons tramp-file-name-regexp nil))
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp))
 #+END_SRC
 
 
@@ -806,9 +820,12 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(f6)] 'magit-status)
-  (setq vc-handled-backends (delq 'Git vc-handled-backends))
-  (setq magit-completing-read-function 'magit-ido-completing-read)
-  (setq magit-view-git-manual-method 'man)
+  ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
+  (setq vc-handled-backends nil)
+  (setq
+   magit-completing-read-function 'magit-ido-completing-read
+   magit-view-git-manual-method 'man
+   )
   (with-eval-after-load 'magit
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
