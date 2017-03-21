@@ -81,6 +81,7 @@ repositories. We first list these packages:
                        dim
                        dired+
                        dired-narrow
+                       dired-quick-sort
                        dired-subtree
                        eshell-git-prompt
                        ess
@@ -756,11 +757,13 @@ dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco
 In addition, [[https://www.emacswiki.org/emacs/DiredPlus][Dired+]] allows to use a single buffer for visited folders
 with Dired (as well as providing richer highlighting including
 mouse-over highlighting, and wrap around navigation), and we want the
-Dired buffer to start with details displayed:
+Dired buffer to start with details displayed. [[https://gitlab.com/xuhdev/dired-quick-sort][dired-quick-sort]] allows
+to interactively sort Dired buffers:
 
 #+BEGIN_SRC emacs-lisp
   (setq diredp-hide-details-initially-flag nil)
   (diredp-toggle-find-file-reuse-dir 1)
+  (dired-quick-sort-setup)
 #+END_SRC
 
 Remove =.= from the list of files/folders (and be silent about it):
