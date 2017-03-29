@@ -19,6 +19,7 @@
    - [[#latex][LaTeX]]
    - [[#ess][ESS]]
    - [[#sql][SQL]]
+   - [[#screen][Screen]]
    - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
  - [[#screenshots][Screenshots]]
  - [[#to-do][To-do]]
@@ -300,12 +301,61 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~C-return~   | Add a fenced R code block (in RMarkdown file)              |
 | ~C-S-return~ | Add inline R code (in RMarkdown file)                      |
 
+*Special:* Ask for password in R and hide it while typing:
+
+#+BEGIN_SRC R
+cat("Password: "); pwd <- readLines(file("stdin"), 1)
+#+END_SRC
+
 
 ** SQL
 
 | Key name   | Operation                          |
 |------------+------------------------------------|
 | ~C-return~ | Send paragraph or region if active |
+
+
+** Screen
+
+=screen= key bindings collide with Emacs own key bindings in the
+Shell. To prevent this, every =screen= key needs to be prefixed by
+~C-l~. For instance, to detach a =screen= session (normally ~C-a
+C-d~), use ~C-l C-a C-l C-d~. 
+
+=screen= operations:
+
+- List existing sessions:
+  #+BEGIN_SRC sh
+    screen -ls
+  #+END_SRC
+- Open a session (note that sessions must be open in a regular
+  terminal first to prevent printing issues in Emacs):
+  #+BEGIN_SRC sh
+    screen -S <session_name>
+  #+END_SRC
+- Detach a session:
+  #+BEGIN_SRC sh
+    screen -d <number/name>
+  #+END_SRC
+  or interactively in the session: ~C-a C-d~
+- Attach a session:
+  #+BEGIN_SRC sh
+    screen -r <number/name>
+  #+END_SRC
+  If need be, detach the session at the same time:
+  #+BEGIN_SRC sh
+    screen -d -r <number/name>
+  #+END_SRC
+  If really necessary:
+  #+BEGIN_SRC sh
+    screen -D -RR <number/name>
+  #+END_SRC
+  ("Attach here and now. Whatever that means, just do it.")
+- Kill a session
+  #+BEGIN_SRC sh
+    screen -X -S <number/name> quit
+  #+END_SRC
+  or interactively in the session: ~C-a :quit~
 
 
 ** Function keys (~F1–F12~)
@@ -327,7 +377,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-F5~   | Dired in current directory                           |
 | ~C-S-F5~ | Activate write mode in Dired (~C-c C-c~ to exit)     |
 | ~F6~     | Magit                                                |
-| ~C-F6~   | Eshell                                               |
+| ~C-F6~   | shell-xterm (Shell with clearing capabilities)       |
 | ~F7~     | Polymode Weave                                       |
 | ~C-F7~   | Polymode Export                                      |
 | ~F8~     | Run knitr::pandoc (with custom options) on .Rmd file |

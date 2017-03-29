@@ -278,6 +278,8 @@ Highlight regions ([[https://www.emacswiki.org/emacs/highlight.el][highlight]]):
 the next highlighted text, ~C-S-F9~ to unhighlight everything.
 
 #+BEGIN_SRC emacs-lisp
+  ;; (set-face-attribute 'highlight nil 
+  ;;                   :background "saddle brown")
   (global-set-key [(f9)] 'hlt-highlight)
   (global-set-key [(ctrl f9)] 'hlt-next-highlight)
   (global-set-key [(ctrl shift f9)] 'hlt-unhighlight-region)
@@ -832,18 +834,34 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 Emacs provide different possibilities to embed a Shell (for instance,
 ~M-x shell~, ~M-x ansi-term~), with different advantages and
-drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~, bound
-to ~F7~), with short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that
-ignores case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]] enables detection of Git repositories
-and brings a nice powerline:
+drawbacks. Here I setup Eshell (the Emacs shell, ~M-x eshell~), with
+short names to [[https://www.emacswiki.org/emacs/EshellRedirection][redirect to buffers]] and completion that ignores
+case. [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]] enables detection of Git repositories and
+brings a nice powerline:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl f6)] 'eshell)
   (setq
    eshell-buffer-shorthand t
    eshell-cmpl-ignore-case t)
   (eshell-git-prompt-use-theme 'powerline)
 #+END_SRC
+
+In Shell, use ~C-l~ to send commands directly to the subshell (useful
+for =screen= for instance):
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'shell
+    (define-key shell-mode-map (kbd "C-l") (lambda (seq) (interactive "k") (process-send-string nil seq))))
+#+END_SRC
+
+Finally, a function =shell-xterm= (~C-F6~) launches a shell with
+clearing capabilities (needed for =screen=):
+
+#+BEGIN_SRC emacs-lisp
+  (load-library "shell-xterm.el")
+  (global-set-key [(ctrl f6)] 'shell-xterm)
+#+END_SRC
+
 
 ** PDF
 
@@ -1097,6 +1115,21 @@ and refresh it automatically:
 # (add-to-list 'LaTeX-clean-intermediate-suffixes "\\.fdb_latexmk" t)
 # (add-to-list 'LaTeX-clean-intermediate-suffixes "\\.vrb" t)
 
+# ;; Pour utiliser le langage de babel en mode LaTeX avec flyspell-babel :
+# ;; http://www.dur.ac.uk/p.j.heslin/Software/Emacs/
+# ;; FAIT PLANTER FLYSPELL ! 
+# ;; (autoload 'flyspell-babel-setup "flyspell-babel")
+# ;; (add-hook 'LaTeX-mode-hook 'flyspell-babel-setup)
+# ;; (setq flyspell-babel-delay 1)  ; Delai avant "reparsing" du block. Ça marche ça ?
+# ;; (setq flyspell-babel-verbose t)
+# ;; (setq flyspell-babel-to-ispell-alist
+# ;;       '(("french" "fr_FR")
+# ;; 	("english" "en")
+# ;; 	("american" "en_US")
+# ;; 	("canadian" "en_CA")
+# ;; 	("british" "en_GB")))
+# ;; Comment avoir à nouveau le \og quand on est en français et qu'on tape " ?
+
 
 ** Markdown
 
@@ -1206,12 +1239,19 @@ is bound to C-M-\ ou 'M-x indent-region'.
                    'ess-indent-region-with-formatr)))
 #+END_SRC
 
-In (R)Markdown, add a fenced R code block (~C-return~) or inline R
-code (~C-S-return~):
+In an ESS inferior buffer, use ~C-l~ to send commands directly to the
+subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][useful for =screen= for instance]]):
 
-Weave with ~F7~; export with ~C-F7~; use =knitr::pandoc= with options
-in =.pandoc/config.pandoc= with ~F8~, and render a bookdown with
-~C-F8~:
+#+BEGIN_SRC emacs-lisp
+  (define-key inferior-ess-mode-map (kbd "C-l")
+    (lambda (seq) (interactive "k")
+      (process-send-string nil seq)))
+#+END_SRC
+
+In (R)Markdown, add a fenced R code block (~C-return~) or inline R
+code (~C-S-return~); weave with ~F7~; export with ~C-F7~; use
+=knitr::pandoc= with options in =.pandoc/config.pandoc= with ~F8~, and
+render a bookdown with ~C-F8~:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
