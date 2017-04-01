@@ -730,8 +730,9 @@ directories first, refresh automatically directories, intelligently
 guess where to copy (other window), and does not ask for confirmation
 for recursive copies and deletes. Switch to WDired mode (to 'write'
 file names) with ~C-S-F5~, go to bookmarks with ~$~, insert/remove
-subdirectories with ~i~ and ~<backspace>~ (with [[https://github.com/Fuco1/dired-hacks#dired-subtree][Dired-subtree]]), and
-dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]):
+subdirectories with ~i~ and ~<backspace>~ (with [[https://github.com/Fuco1/dired-hacks#dired-subtree][Dired-subtree]]),
+dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]),
+and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
 
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -747,12 +748,14 @@ dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco
                     (dired ".")))
   (eval-after-load "dired"
     '(progn
+       (load-library "dired-ediff-files")
        (hl-line-mode)
        (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
        (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
        (define-key dired-mode-map "i" 'dired-subtree-insert)
        (define-key dired-mode-map (kbd "<backspace>") 'dired-subtree-remove)
        (define-key dired-mode-map "/" 'dired-narrow)
+       (define-key dired-mode-map "e" 'dired-ediff-files)
        ))
 #+END_SRC
 

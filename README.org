@@ -250,6 +250,7 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~R~      | Rename (marked) file(s)                                    |
 | ~A~      | Search with regexp content of (marked) file(s)             |
 | ~Q~      | Search and replace with regexp content of (marked) file(s) |
+| ~e~      | =ediff= two marked files                                   |
 
 
 ** Polymode
