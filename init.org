@@ -746,6 +746,7 @@ and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
                   (lambda ()
                     (interactive)
                     (dired ".")))
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
   (eval-after-load "dired"
     '(progn
        (load-library "dired-ediff-files")
