@@ -830,7 +830,7 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
    magit-view-git-manual-method 'man
    )
   (with-eval-after-load 'magit
-    (load-library "magit-ls-files.el")
+    (load-library "magit-ls-files")
     (define-key magit-mode-map (kbd "K") 'magit-ls-files)
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
@@ -864,7 +864,7 @@ Finally, a function =shell-xterm= (~C-F6~) launches a shell with
 clearing capabilities (needed for =screen=):
 
 #+BEGIN_SRC emacs-lisp
-  (load-library "shell-xterm.el")
+  (load-library "shell-xterm")
   (global-set-key [(ctrl f6)] 'shell-xterm)
 #+END_SRC
 
@@ -1262,7 +1262,7 @@ render a bookdown with ~C-F8~:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
             (lambda ()
-              (load-library "rmd-library.el")
+              (load-library "rmd-library")
               (local-set-key [C-return] 'rmd-fenced-r-code-block)
               (local-set-key [C-S-return] 'rmd-inline-r-code)
               ))
