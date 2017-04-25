@@ -830,6 +830,8 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
    magit-view-git-manual-method 'man
    )
   (with-eval-after-load 'magit
+    (load-library "magit-ls-files.el")
+    (define-key magit-mode-map (kbd "K") 'magit-ls-files)
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC

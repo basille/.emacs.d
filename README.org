@@ -212,6 +212,7 @@ status.showUntrackedFiles normal=)
 | ~TAB~    | Complete anything                                |
 | or       | Fold/unfold functions/regions (if code indented) |
 | ~C-f~    | GitFlow from within Magit                        |
+| ~K~      | =git ls-files= from within Magit                 |
 
 
 
