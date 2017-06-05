@@ -229,29 +229,30 @@ When opening a file with IDO (~C-x C-f~):
 
 In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Marks-vs-Flags.html][here]], and operations on file [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Operating-on-Files.html#Operating-on-Files][here]]) or ibuffer:
 
-| Key name | Operation                                                  |
-|----------+------------------------------------------------------------|
-| ~$~      | Go to a bookmark                                           |
-| ~(~      | Hide/show details                                          |
-| ~s~      | Sort by date or filename                                   |
-| ~S~      | Interactively sort (by filename, date, reverse, etc.)      |
-| ~i~      | Include subdirectory                                       |
-|----------+------------------------------------------------------------|
-| ~o~      | Open in other window                                       |
-| ~m~      | Mark a file/folder                                         |
-| ~* /~    | Mark all folders                                           |
-| ~* s~    | Mark all files and folders                                 |
-| ~u~      | Unmark a file/folder                                       |
-| ~U~      | Unmark all                                                 |
-| ~t~      | Toggle mark                                                |
-| ~/~      | Dynamically filter files/folders (=dired-narrow=)          |
-|----------+------------------------------------------------------------|
-| ~C~      | Copy (marked) file(s)                                      |
-| ~D~      | Delete (marked) file(s)                                    |
-| ~R~      | Rename (marked) file(s)                                    |
-| ~A~      | Search with regexp content of (marked) file(s)             |
-| ~Q~      | Search and replace with regexp content of (marked) file(s) |
-| ~e~      | =ediff= two marked files                                   |
+| Key name | Operation                                                    |
+|----------+--------------------------------------------------------------|
+| ~$~      | Go to a bookmark                                             |
+| ~(~      | Hide/show details                                            |
+| ~s~      | Sort by date or filename                                     |
+| ~S~      | Interactively sort (by filename, date, reverse, etc.)        |
+| ~i~      | Include subdirectory                                         |
+|----------+--------------------------------------------------------------|
+| ~o~      | Open in other window                                         |
+| ~m~      | Mark a file/folder                                           |
+| ~* /~    | Mark all folders                                             |
+| ~* s~    | Mark all files and folders                                   |
+| ~u~      | Unmark a file/folder                                         |
+| ~U~      | Unmark all                                                   |
+| ~t~      | Toggle mark                                                  |
+| ~/~      | Dynamically filter files/folders (=dired-narrow=)            |
+|----------+--------------------------------------------------------------|
+| ~C~      | Copy (marked) file(s)                                        |
+| ~D~      | Delete (marked) file(s)                                      |
+| ~R~      | Rename (marked) file(s)                                      |
+| ~A~      | Search with regexp content of (marked) file(s)               |
+| ~Q~      | Search and replace with regexp content of (marked) file(s)   |
+| ~e~      | =ediff= two marked files                                     |
+| ~=~      | Launch =ediff= file at point, requesting for file to compare |
 
 
 ** Polymode
