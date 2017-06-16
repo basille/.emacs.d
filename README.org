@@ -13,6 +13,7 @@
    - [[#interface][Interface]]
    - [[#special][Special]]
    - [[#file-manager][File manager]]
+   - [[#web-browser][Web browser]]
    - [[#polymode][Polymode]]
    - [[#org-mode][Org mode]]
    - [[#pdf-tools][PDF tools]]
@@ -253,6 +254,14 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~Q~      | Search and replace with regexp content of (marked) file(s)   |
 | ~e~      | =ediff= two marked files                                     |
 | ~=~      | Launch =ediff= file at point, requesting for file to compare |
+
+
+** Web browser
+
+| Key name      | Operation                       |
+|---------------+---------------------------------|
+| ~<backspace>~ | Go to previous page             |
+| ~f~           | Open page with external browser |
 
 
 ** Polymode
