@@ -202,7 +202,12 @@ additionally, there is no confirmation to kill unmodified buffers
 
   (setq ibuffer-saved-filter-groups
         '(("buffer-groups"
-           ("emacs-config" (filename . ".emacs.d"))
+           ("Magit" (name . "^\\*magit"))
+           ("Help" (or (name . "^\\*Help\\*$")
+                       (name . "^\\*Apropos\\*$")
+                       (name . "^\\*Messages\\*$")
+                       (name . "^\\*scratch\\*$")
+                       (name . "^\\*info\\*$")))
            ("Org" (or (mode . org-mode)
                       (filename . ".org$")))
            ("R" (or (mode . ess-mode)
@@ -214,12 +219,7 @@ additionally, there is no confirmation to kill unmodified buffers
                     (filename . ".tex$")))
            ("Web Dev" (or (mode . html-mode)
                           (mode . css-mode)))
-           ("Magit" (name . "^\\*magit"))
-           ("Help" (or (name . "^\\*Help\\*$")
-                       (name . "^\\*Apropos\\*$")
-                       (name . "^\\*Messages\\*$")
-                       (name . "^\\*scratch\\*$")
-                       (name . "^\\*info\\*$"))))))
+           ("emacs-config" (filename . ".emacs.d")))))
 
   (setq
    ibuffer-show-empty-filter-groups nil
