@@ -192,10 +192,44 @@ Open a file in the other window with ~C-x C-o~:
 #+END_SRC
 
 List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
-=list-buffers=):
+=list-buffers=); the list automatically refreshes, and group buffers
+according to =ibuffer-saved-filter-groups= (empty groups are hidden);
+additionally, there is no confirmation to kill unmodified buffers
+(=ibuffer-expert=), and kill is bound to ~k~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+  (setq ibuffer-saved-filter-groups
+        '(("buffer-groups"
+           ("emacs-config" (filename . ".emacs.d"))
+           ("Org" (or (mode . org-mode)
+                      (filename . ".org$")))
+           ("R" (or (mode . ess-mode)
+                    (filename . ".R$")
+                    (filename . ".Rmd$")
+                    (filename . ".Rnw$")
+                    (name . "^\\*ESS\\*$")))
+           ("LaTeX" (or (mode . latex-mode)
+                    (filename . ".tex$")))
+           ("Web Dev" (or (mode . html-mode)
+                          (mode . css-mode)))
+           ("Magit" (name . "^\\*magit"))
+           ("Help" (or (name . "^\\*Help\\*$")
+                       (name . "^\\*Apropos\\*$")
+                       (name . "^\\*Messages\\*$")
+                       (name . "^\\*scratch\\*$")
+                       (name . "^\\*info\\*$"))))))
+
+  (setq
+   ibuffer-show-empty-filter-groups nil
+   ibuffer-expert t)
+          
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-auto-mode 1)
+               (ibuffer-switch-to-saved-filter-groups "buffer-groups")
+               (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)))
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
