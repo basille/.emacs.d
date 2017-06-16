@@ -23,6 +23,7 @@
    - [[#git][GIT]]
    - [[#shell][Shell]]
    - [[#pdf][PDF]]
+   - [[#eww-web-browser][EWW web browser]]
  - [[#major-modes][Major modes]]
    - [[#yaml][YAML]]
    - [[#org][Org]]
@@ -881,6 +882,18 @@ From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to
 the height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~
 opens the help of PDF tools.
 
+
+** EWW web browser
+
+Emacs comes with a built-in web browser: EWW. Use ~M-x eww~ to run it;
+~<backspace>~ goes to previous page; ~f~ opens the page in external
+browser (Firefox for me).
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'eww
+    (define-key eww-mode-map "f" 'eww-browse-with-external-browser)
+    (define-key eww-mode-map [backspace] 'eww-back-url))
+#+END_SRC
 
 
 * Major modes
