@@ -13,6 +13,7 @@
    - [[#interface][Interface]]
    - [[#special][Special]]
    - [[#file-manager][File manager]]
+   - [[#magit][Magit]]
    - [[#web-browser][Web browser]]
    - [[#polymode][Polymode]]
    - [[#org-mode][Org mode]]
@@ -212,9 +213,6 @@ status.showUntrackedFiles normal=)
 | ~C-f~    | In IDO mode, fall back to normal prompt          |
 | ~TAB~    | Complete anything                                |
 | or       | Fold/unfold functions/regions (if code indented) |
-| ~C-f~    | GitFlow from within Magit                        |
-| ~K~      | =git ls-files= from within Magit                 |
-
 
 
 ** File manager
@@ -254,6 +252,17 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~Q~      | Search and replace with regexp content of (marked) file(s)   |
 | ~e~      | =ediff= two marked files                                     |
 | ~=~      | Launch =ediff= file at point, requesting for file to compare |
+
+
+
+
+** Magit
+
+| Key name | Operation                                        |
+|----------+--------------------------------------------------|
+| ~y~      | Show information on branches and commits         |
+| ~C-f~    | GitFlow from within Magit                        |
+| ~K~      | =git ls-files= from within Magit                 |
 
 
 ** Web browser

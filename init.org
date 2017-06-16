@@ -829,13 +829,14 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
   (setq
    magit-completing-read-function 'magit-ido-completing-read
    magit-view-git-manual-method 'man
-   )
+   magit-refs-show-commit-count 'all)
   (with-eval-after-load 'magit
     (load-library "magit-ls-files")
     (define-key magit-mode-map (kbd "K") 'magit-ls-files)
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 #+END_SRC
+
 
 ** Shell
 
