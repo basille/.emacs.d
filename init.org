@@ -157,13 +157,10 @@ Disable the splash screen:
 
 ** Color theme
 
-Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomorrow-eighties]] for Emacs GUI, and [[https://github.com/bbatsov/zenburn-emacs][Zenburn]] for Emacs
-in the terminal:
+Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomorrow-eighties]] for Emacs:
 
 #+BEGIN_SRC emacs-lisp
-  (if (display-graphic-p) 
-      (load-theme 'sanityinc-tomorrow-eighties t)
-    (load-theme 'zenburn t))
+  (load-theme 'sanityinc-tomorrow-eighties t)
 #+END_SRC
 
 
@@ -179,10 +176,11 @@ Frames (generally called windows) have a title instead of
 
 ** Windows
 
-Emacs starts split horizontaly in the middle:
+Emacs starts split horizontaly in the middle (only if started as GUI):
 
 #+BEGIN_SRC emacs-lisp
-  (split-window-horizontally)
+  (if (display-graphic-p)
+      (split-window-horizontally))
 #+END_SRC
 
 Open a file in the other window with ~C-x C-o~:

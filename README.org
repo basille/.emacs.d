@@ -8,6 +8,7 @@
  - [[#getting-started][Getting started]]
    - [[#pre-requisites][Pre-requisites]]
    - [[#configuring-emacs][Configuring Emacs]]
+   - [[#emacs-daemon][Emacs daemon]]
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#key-bindings][Key bindings]]
    - [[#interface][Interface]]
@@ -89,6 +90,18 @@ the =home= directory :
 And that's it! Opening Emacs will then do the magic!
 
 
+** Emacs daemon
+
+This configuration uses Emacs as a daemon, which allows to call Emacs
+as a client. As a result, Emacs (client) loads blazing fast! Two
+things are necessary for this: 1) have the daemon loaded at startup
+(which only slightly increases startup time), and 2) provide a desktop
+entry for Emacs as a client. Both operations are automatically taken
+care of by this configuration. On Gnome, Emacs Client sometimes comes
+with issues of focus; one way to solve the problem is to install the
+extension [[https://extensions.gnome.org/extension/1005/focus-my-window/][Focus my window]].
+
+
 ** A note on the use of =org-mode= for literate configuration
 
 The [[https://github.com/larstvei/dot-emacs][original idea]] is to embed configuration bits into an Org file
@@ -126,6 +139,43 @@ This file looks like that:
 
   " nil "~/.Xresources" 'append)
   (shell-command "xrdb -merge ~/.Xresources")
+
+  ;; Create a starter for Emacs daemon
+  (mkdir "~/.config/systemd/user/")
+  (write-region "[Unit]
+  Description=GNU Emacs 25 (daemon)
+  Documentation=man:emacs(1) info:Emacs
+  
+  [Service]
+  Type=forking
+  ExecStart=/usr/bin/emacs --daemon
+  ExecStop=/usr/bin/emacsclient --eval \"(progn (setq kill-emacs-hook nil) (kill-emacs))\"
+  Restart=always
+  #Environment=DISPLAY=:%i
+  TimeoutStartSec=0
+  
+  [Install]
+  WantedBy=default.target
+  
+  " nil "~/.config/systemd/user/emacs.service")
+  (shell-command "systemctl --user enable emacs")
+  (shell-command "systemctl --user start emacs")
+  
+  ;; Create a Desktop entry for Emacs client
+  (write-region "[Desktop Entry]
+  Version=1.0
+  Name=GNU Emacs 25 (client)
+  GenericName=Text Editor
+  Comment=GNU Emacs using the daemon
+  MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+  Exec=/usr/bin/emacsclient --create-frame --alternate-editor "" %F
+  Icon=emacs25
+  Type=Application
+  Terminal=false
+  Categories=Utility;Development;TextEditor;
+  StartupWMClass=Emacs
+  
+" nil "~/.local/share/applications/emacsclient.desktop")
 
   ;; Create necessary directories and save abbrev silently
   (mkdir (concat user-emacs-directory "cache"))
