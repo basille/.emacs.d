@@ -176,10 +176,21 @@ Frames (generally called windows) have a title instead of
 
 ** Windows
 
-Emacs starts split horizontaly in the middle (only if started as GUI):
+Emacs starts split horizontaly in the middle (only if started as GUI,
+and not with =-nw=):
 
 #+BEGIN_SRC emacs-lisp
-  (if (display-graphic-p)
+  (defun my-frame-config (frame)
+    "Split the current frame if in a GUI"
+    (with-selected-frame frame
+      (if (display-graphic-p)
+          (progn
+            (message "after-make-frame-functions hook: split-window-horizontally")
+            (split-window-horizontally)))))
+
+  (add-hook 'after-make-frame-functions 'my-frame-config)
+
+  (if (not (daemonp))
       (split-window-horizontally))
 #+END_SRC
 
