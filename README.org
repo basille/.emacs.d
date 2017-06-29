@@ -12,7 +12,6 @@
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#key-bindings][Key bindings]]
    - [[#interface][Interface]]
-   - [[#special][Special]]
    - [[#file-manager][File manager]]
    - [[#magit][Magit]]
    - [[#web-browser][Web browser]]
@@ -100,6 +99,18 @@ entry for Emacs as a client. Both operations are automatically taken
 care of by this configuration. On Gnome, Emacs Client sometimes comes
 with issues of focus; one way to solve the problem is to install the
 extension [[https://extensions.gnome.org/extension/1005/focus-my-window/][Focus my window]].
+
+To start the daemon, run:
+
+#+BEGIN_SRC sh
+  systemctl --user start emacs
+#+END_SRC
+
+To stop the daemon, run:
+
+#+BEGIN_SRC sh
+  systemctl --user stop emacs
+#+END_SRC
 
 
 ** A note on the use of =org-mode= for literate configuration
@@ -255,14 +266,17 @@ status.showUntrackedFiles normal=)
 | ~C-x r b~ | Jump to a bookmark                                           |
 | ~C-x r l~ | List bookmarks                                               |
 
-
-** Special
-
 | Key name | Operation                                        |
 |----------+--------------------------------------------------|
 | ~C-f~    | In IDO mode, fall back to normal prompt          |
 | ~TAB~    | Complete anything                                |
 | or       | Fold/unfold functions/regions (if code indented) |
+
+| Key name              | Operation                                |
+|-----------------------+------------------------------------------|
+| ~C-c ! v~             | Verify Flycheck setup for current buffer |
+| ~C-c ! n~ / ~C-c ! p~ | Next and previous error                  |
+| ~C-c ! l~             | List all errors in a buffer              |
 
 
 ** File manager

@@ -88,6 +88,7 @@ repositories. We first list these packages:
                        ess
                        ess-smart-underscore
                        expand-region
+                       flycheck
                        flx-ido
                        format-sql
                        hideshow-org
@@ -709,6 +710,13 @@ click) opens the list of correction suggestions:
   (global-set-key [f12] 'flyspell-correct-word-before-point)
   (global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
   (global-set-key [C-S-f12] 'ispell-change-dictionary)
+#+END_SRC
+
+Syntax can be checked with the [[https://github.com/flycheck/flycheck][Flycheck]] package (need to install
+=lintr= package for R):
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook #'global-flycheck-mode)
 #+END_SRC
 
 
