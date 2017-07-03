@@ -228,7 +228,8 @@ additionally, there is no confirmation to kill unmodified buffers
            ("LaTeX" (or (mode . latex-mode)
                     (filename . ".tex$")))
            ("Web Dev" (or (mode . html-mode)
-                          (mode . css-mode)))
+                          (mode . css-mode)
+                          (mode . js-mode)))
            ("emacs-config" (filename . ".emacs.d")))))
 
   (setq
