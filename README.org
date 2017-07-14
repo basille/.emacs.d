@@ -383,6 +383,8 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 |--------------+------------------------------------------------------------|
 | ~C-c C-r~    | Move cursor to previous command + at the top of the window |
 | ~C-c C-o~    | Delete everything from last command to current prompt      |
+| ~C-M-\~      | Indent region (using formatR)                              |
+| ~C-x C-i~    | Indent buffer (using rfmt)                                 |
 | ~C-return~   | Add a fenced R code block (in RMarkdown file)              |
 | ~C-S-return~ | Add inline R code (in RMarkdown file)                      |
 

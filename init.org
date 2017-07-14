@@ -1311,6 +1311,20 @@ is bound to C-M-\ ou 'M-x indent-region'.
                    'ess-indent-region-with-formatr)))
 #+END_SRC
 
+An alternative is to use Google's R source code formatter
+([[https://github.com/google/rfmt][rfmt]]), but it only works for an entire
+buffer (bound to ~C-x C-i~):
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "/home/mathieu/.R-site/site-library/rfmt/elisp")
+  (add-hook 'ess-mode-hook
+            (lambda ()
+              (setq rfmt-executable "/home/mathieu/.R-site/site-library/rfmt/python/rfmt.py")
+              (load-library "rfmt-emacs")
+              (local-set-key (kbd "C-x C-i") 'rfmt-buffer)))
+#+END_SRC
+
+
 In an ESS inferior buffer, use ~C-l~ to send commands directly to the
 subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][useful for =screen= for instance]]):
 
