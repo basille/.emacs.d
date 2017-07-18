@@ -360,6 +360,12 @@ Backward search with ~C-S-s~:
   (define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
 #+END_SRC
 
+Recenter with ~C-l~ starts with top, then middle, then bottom:
+
+#+BEGIN_SRC emacs-lisp
+  (setq recenter-positions '(top middle bottom))
+#+END_SRC
+
 [[https://github.com/magnars/expand-region.el][Expand region]] with ~C-=~ (then continue to expand by pressing ~=~ or
 contract by pressing ~-~):
 
