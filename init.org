@@ -1147,6 +1147,7 @@ compilation as PDF [P], forward and inverse search [S]):
         TeX-source-correlate-mode t	; Forward and inverse search
         TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
         reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
+        reftex-default-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib") ; Default bib
         TeX-auto-untabify t             ; Replace Tabs by spaces on save
         )
   (add-hook 'LaTeX-mode-hook 
