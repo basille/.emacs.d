@@ -369,12 +369,14 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** LaTeX
 
-| Key name     | Operation                                            |
-|--------------+------------------------------------------------------|
-| ~C-c C-l~    | Shows compilation logs in LaTeX                      |
-| ~C-c C-v~    | Calls viewer with forward search from LaTeX document |
-| ~Ctrl+click~ | Inverse search in PDF document                       |
-| ~C-c =~      | Displays a dynamic table of contents                 |
+| Key name         | Operation                                            |
+|------------------+------------------------------------------------------|
+| ~C-c C-l~        | Shows compilation logs in LaTeX                      |
+| ~C-c C-v~        | Calls viewer with forward search from LaTeX document |
+| ~C-<left click>~ | Inverse search in PDF document                       |
+| ~C-c =~          | Displays a dynamic table of contents                 |
+| ~C-c (~          | RefTeX inserts label                                 |
+| ~C-c )~          | RefTeX references label                              |
 
 
 ** ESS
