@@ -377,6 +377,7 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~C-c =~          | Displays a dynamic table of contents                 |
 | ~C-c (~          | RefTeX inserts label                                 |
 | ~C-c )~          | RefTeX references label                              |
+| ~C-c [~          | RefTeX inserts citation (from BibTeX)                |
 
 
 ** ESS
