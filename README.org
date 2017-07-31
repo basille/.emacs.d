@@ -463,15 +463,14 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 
 | Key name | Operation                                            |
 |----------+------------------------------------------------------|
-| ~F5~     | Project explorer                                     |
-| ~C-F5~   | Dired in current directory                           |
-| ~C-S-F5~ | Activate write mode in Dired (~C-c C-c~ to exit)     |
-| ~F6~     | Magit                                                |
-| ~C-F6~   | shell-xterm (Shell with clearing capabilities)       |
+| ~F5~     | NeoTree in side panel                                |
+| ~C-F5~   | Minimap in side panel                                |
+| ~F6~     | Dired in current directory                           |
+| ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to exit)     |
 | ~F7~     | Polymode Weave                                       |
-| ~C-F7~   | Polymode Export                                      |
-| ~F8~     | Run knitr::pandoc (with custom options) on .Rmd file |
-| ~C-F8~   | Run bookdown::render on index.Rmd                    |
+| ~C-F7~   | Run knitr::pandoc (with custom options) on .Rmd file |
+| ~F8~     | Magit                                                |
+| ~C-F8~   | shell-xterm (Shell with clearing capabilities)       |
 
 | Key name         | Operation                            |
 |------------------+--------------------------------------|

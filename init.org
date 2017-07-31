@@ -101,6 +101,7 @@ repositories. We first list these packages:
                        magit-gitflow
                        markdown-mode
                        markdown-toc
+                       minimap
                        multiple-cursors
                        neotree
                        pdf-tools
@@ -281,6 +282,12 @@ Visible bells (flashes the frame):
 
 #+BEGIN_SRC emacs-lisp
   visible-bell t
+#+END_SRC
+
+Minimap in side panel with ~C-F5~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [(ctrl f5)] 'minimap-mode)
 #+END_SRC
 
 
@@ -784,11 +791,11 @@ silently:
 
 ** File manager
 
-=Dired= (launched in current directory with with ~C-F5~) list
+=Dired= (launched in current directory with with ~F6~) list
 directories first, refresh automatically directories, intelligently
 guess where to copy (other window), and does not ask for confirmation
 for recursive copies and deletes. Switch to WDired mode (to 'write'
-file names) with ~C-S-F5~, go to bookmarks with ~$~, insert/remove
+file names) with ~C-F6~, go to bookmarks with ~$~, insert/remove
 subdirectories with ~i~ and ~<backspace>~ (with [[https://github.com/Fuco1/dired-hacks#dired-subtree][Dired-subtree]]),
 dynamically filter files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]),
 and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
@@ -801,7 +808,7 @@ and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
    dired-dwim-target t
    dired-recursive-copies (quote always)
    dired-recursive-deletes (quote always))
-  (global-set-key (kbd "C-<f5>")
+  (global-set-key (kbd "<f6>")
                   (lambda ()
                     (interactive)
                     (dired ".")))
@@ -810,7 +817,7 @@ and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
     '(progn
        (load-library "dired-ediff-files")
        (hl-line-mode)
-       (define-key dired-mode-map [(ctrl shift f5)] #'dired-toggle-read-only)
+       (define-key dired-mode-map [(ctrl f6)] #'dired-toggle-read-only)
        (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
        (define-key dired-mode-map "i" 'dired-subtree-insert)
        (define-key dired-mode-map (kbd "<backspace>") 'dired-subtree-remove)
@@ -877,12 +884,12 @@ installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
 of backends handled by Emacs version control; use IDO to complete;
 links to Git-man; automatically refresh the repository's status after
-file save). We also bound Magit to ~F6~, and integrate Git-flow to
+file save). We also bound Magit to ~F8~, and integrate Git-flow to
 Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 #+BEGIN_SRC emacs-lisp
   (shell-command "git config --global status.showUntrackedFiles all") ; List files in folders
-  (global-set-key [(f6)] 'magit-status)
+  (global-set-key [(f8)] 'magit-status)
   ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   (setq vc-handled-backends nil)
   (setq
@@ -921,12 +928,12 @@ for =screen= for instance):
     (define-key shell-mode-map (kbd "C-l") (lambda (seq) (interactive "k") (process-send-string nil seq))))
 #+END_SRC
 
-Finally, a function =shell-xterm= (~C-F6~) launches a shell with
+Finally, a function =shell-xterm= (~C-F8~) launches a shell with
 clearing capabilities (needed for =screen=):
 
 #+BEGIN_SRC emacs-lisp
   (load-library "shell-xterm")
-  (global-set-key [(ctrl f6)] 'shell-xterm)
+  (global-set-key [(ctrl f8)] 'shell-xterm)
 #+END_SRC
 
 
@@ -1343,9 +1350,8 @@ subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][usefu
 #+END_SRC
 
 In (R)Markdown, add a fenced R code block (~C-return~) or inline R
-code (~C-S-return~); weave with ~F7~; export with ~C-F7~; use
-=knitr::pandoc= with options in =.pandoc/config.pandoc= with ~F8~, and
-render a bookdown with ~C-F8~:
+code (~C-S-return~); weave with ~F7~; use =knitr::pandoc= with options
+in =.pandoc/config.pandoc= with ~C-F7~:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
@@ -1356,9 +1362,7 @@ render a bookdown with ~C-F8~:
               ))
   (with-eval-after-load 'polymode
     (define-key polymode-mode-map [(f7)] #'polymode-weave)
-    (define-key polymode-mode-map [(ctrl f7)] #'polymode-export)
-    (define-key polymode-mode-map [(f8)] #'rmd-pandoc-custom)
-    (define-key polymode-mode-map [(ctrl f8)] #'rmd-bookdown))
+    (define-key polymode-mode-map [(ctrl f7)] #'rmd-pandoc-custom))
 #+END_SRC
 
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
