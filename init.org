@@ -881,6 +881,7 @@ file save). We also bound Magit to ~F6~, and integrate Git-flow to
 Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
 
 #+BEGIN_SRC emacs-lisp
+  (shell-command "git config --global status.showUntrackedFiles all") ; List files in folders
   (global-set-key [(f6)] 'magit-status)
   ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   (setq vc-handled-backends nil)

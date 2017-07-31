@@ -84,7 +84,7 @@ the =home= directory :
 
 #+BEGIN_SRC sh  
   git clone https://github.com/basille/.emacs.d ~
-  #+END_SRC
+#+END_SRC
 
 And that's it! Opening Emacs will then do the magic!
 
