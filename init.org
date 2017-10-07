@@ -70,6 +70,7 @@ repositories. We first list these packages:
 
 #+BEGIN_SRC emacs-lisp
   (setq package-list '(
+                       2048-game
                        aggressive-indent
                        anzu
                        auctex
@@ -178,22 +179,22 @@ Frames (generally called windows) have a title instead of
 
 ** Windows
 
-Emacs starts split horizontaly in the middle (only if started as GUI,
-and not with =-nw=):
-
 #+BEGIN_SRC emacs-lisp
-  (defun my-frame-config (frame)
-    "Split the current frame if in a GUI"
-    (with-selected-frame frame
-      (if (display-graphic-p)
-          (progn
-            (message "after-make-frame-functions hook: split-window-horizontally")
-            (split-window-horizontally)))))
+;; Emacs starts split horizontaly in the middle (only if started as GUI,
+;; and not with =-nw=):
+  
+  ;; (defun my-frame-config (frame)
+  ;;   "Split the current frame if in a GUI"
+  ;;   (with-selected-frame frame
+  ;;     (if (display-graphic-p)
+  ;;         (progn
+  ;;           (message "after-make-frame-functions hook: split-window-horizontally")
+  ;;           (split-window-horizontally)))))
 
-  (add-hook 'after-make-frame-functions 'my-frame-config)
+  ;; (add-hook 'after-make-frame-functions 'my-frame-config)
 
-  (if (not (daemonp))
-      (split-window-horizontally))
+  ;; (if (not (daemonp))
+  ;;     (split-window-horizontally))
 #+END_SRC
 
 Open a file in the other window with ~C-x C-o~:
@@ -288,6 +289,14 @@ Minimap in side panel with ~C-F5~:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [(ctrl f5)] 'minimap-mode)
+#+END_SRC
+
+Ediff tries to split sensibly, and keep the Ediff window in the same
+frame:
+
+#+BEGIN_SRC emacs-lisp
+  (setq ediff-split-window-function 'split-window-sensibly)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
 
