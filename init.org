@@ -736,11 +736,8 @@ click) opens the list of correction suggestions:
 #+END_SRC
 
 Syntax can be checked with the [[https://github.com/flycheck/flycheck][Flycheck]] package (need to install
-=lintr= package for R):
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-#+END_SRC
+=lintr= package for R); I recommend to turn it on on demand (=M-x
+flycheck-mode=).
 
 
 ** File saving
