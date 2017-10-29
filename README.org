@@ -358,13 +358,19 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** PDF tools
 
-| Key name | Operation                   |
-|----------+-----------------------------|
-| ~P~      | Fit to the page             |
-| ~H~      | Fit to the height           |
-| ~W~      | Fit to the width            |
-| ~g~      | refreshes the PDF           |
-| ~h~      | opens the help of PDF tools |
+| Key name    | Operation                                         |
+|-------------+---------------------------------------------------|
+| ~P~         | Fit to the page                                   |
+| ~H~         | Fit to the height                                 |
+| ~W~         | Fit to the width                                  |
+| ~g~         | refreshes the PDF                                 |
+| ~h~         | opens the help of PDF tools                       |
+|-------------+---------------------------------------------------|
+| ~C-c C-a h~ | Highlight text and annotate (~C-c C-c~ to commit) |
+| ~C-c C-a t~ | Annotate anywhere (~C-c C-c~ to commit)           |
+| ~C-c C-a o~ | Strike through text                               |
+| ~C-c C-a D~ | Delete annotation                                 |
+| ~C-c C-a l~ | List annotations                                  |
 
 
 ** LaTeX

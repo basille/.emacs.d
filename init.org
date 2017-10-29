@@ -949,11 +949,18 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-tools-install))
+  (setq-default pdf-view-display-size 'fit-page) ; Start PDF in full page
+  (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
 #+END_SRC
 
-From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to
-the height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~
-opens the help of PDF tools.
+From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to the
+height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~ opens
+the help of PDF tools. Highlight: select text with the mouse, then
+~C-c C-a h~, annotate, then ~C-c C-c~ to commit; ~C-c C-a t~ and then
+mouse click to add a text note somewhere to the pdf page; ~C-c C-a o~
+to strike-through text, and ~C-c C-a D~ and then click to delete an
+annotation. List annotations with ~C-c C-a l~. Don't forget to save
+the PDF (~C-x C-s~)!
 
 
 ** EWW web browser
@@ -1158,7 +1165,7 @@ compilation as PDF [P], forward and inverse search [S]):
 #+BEGIN_SRC emacs-lisp
   (setq TeX-parse-self t                ; Enable parse on load.
         TeX-auto-save t                 ; Enable parse on save.
-        TeX-source-correlate-mode t	; Forward and inverse search
+        TeX-source-correlate-mode t	; Forward and inverse search with Synctex
         TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
         reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
         reftex-default-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib") ; Default bib
