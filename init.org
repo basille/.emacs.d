@@ -1604,10 +1604,10 @@ with R:
 
 #+BEGIN_SRC emacs-lisp
   ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.[rR]md" . poly-markdown+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.[sS]nw" . poly-noweb+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.[rR]nw" . poly-noweb+r-mode))
-  (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
+  (add-to-list 'auto-mode-alist '("\\.[rR]md\\'" . poly-markdown+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.[sS]nw\\'" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.[rR]nw\\'" . poly-noweb+r-mode))
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . poly-org-mode))
 #+END_SRC
 
 # Diminish them?
