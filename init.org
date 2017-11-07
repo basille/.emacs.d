@@ -179,7 +179,11 @@ Frames (generally called windows) have a title instead of
 
 ** Windows
 
+Emacs will split horizontally if there is at least 25 columns
+available for that window:
+
 #+BEGIN_SRC emacs-lisp
+  (setq split-width-threshold 25)
 ;; Emacs starts split horizontaly in the middle (only if started as GUI,
 ;; and not with =-nw=):
   
