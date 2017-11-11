@@ -73,6 +73,7 @@ repositories. We first list these packages:
                        2048-game
                        aggressive-indent
                        anzu
+                       apropospriate-theme
                        auctex
                        auctex-latexmk
                        bonjourmadame
@@ -105,6 +106,7 @@ repositories. We first list these packages:
                        minimap
                        multiple-cursors
                        neotree
+                       nord-theme
                        pdf-tools
                        polymode
                        org
@@ -163,7 +165,20 @@ Disable the splash screen:
 Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomorrow-eighties]] for Emacs:
 
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'sanityinc-tomorrow-eighties t)
+  ;; (load-theme 'sanityinc-tomorrow-eighties t)
+#+END_SRC
+
+With the help of the package [[https://github.com/hadronzoo/theme-changer][Theme Changer]] (not in ELPA), Emacs can
+switch themes based on sunrise and sunset. I will use
+[[https://github.com/waymondo/apropospriate-theme][apropospriate-light-theme]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night
+(coordinates are for South Florida):
+
+#+BEGIN_SRC emacs-lisp
+  (setq calendar-location-name "Davie, FL")
+  (setq calendar-latitude 26.084534)
+  (setq calendar-longitude -80.238454)
+  (require 'theme-changer)
+  (change-theme 'apropospriate-light 'nord)
 #+END_SRC
 
 
