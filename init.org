@@ -77,6 +77,7 @@ repositories. We first list these packages:
                        auctex
                        auctex-latexmk
                        bonjourmadame
+                       circadian
                        col-highlight
                        company
                        company-auctex
@@ -162,23 +163,19 @@ Disable the splash screen:
 
 ** Color theme
 
-Use the theme [[https://github.com/purcell/color-theme-sanityinc-tomorrow][Tomorrow-eighties]] for Emacs:
+With the help of the package [[https://github.com/guidoschmidt/circadian.el][circadian]], Emacs can switch themes based
+on sunrise and sunset. I will use [[https://github.com/waymondo/apropospriate-theme][apropospriate-light-theme]] during the
+day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night (with brightness of comments at
+15%). Coordinates are for South Florida:
 
 #+BEGIN_SRC emacs-lisp
-  ;; (load-theme 'sanityinc-tomorrow-eighties t)
-#+END_SRC
-
-With the help of the package [[https://github.com/hadronzoo/theme-changer][Theme Changer]] (not in ELPA), Emacs can
-switch themes based on sunrise and sunset. I will use
-[[https://github.com/waymondo/apropospriate-theme][apropospriate-light-theme]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night
-(coordinates are for South Florida):
-
-#+BEGIN_SRC emacs-lisp
-  (setq calendar-location-name "Davie, FL")
+  (setq nord-comment-brightness 20)
+  ;; (load-theme 'nord t)
   (setq calendar-latitude 26.084534)
   (setq calendar-longitude -80.238454)
-  (require 'theme-changer)
-  (change-theme 'apropospriate-light 'nord)
+  (setq circadian-themes '((:sunrise . apropospriate-light)
+                           (:sunset  . nord)))
+  (circadian-setup)
 #+END_SRC
 
 
