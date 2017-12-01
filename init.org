@@ -1267,6 +1267,7 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
    ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
    ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
    ess-swv-plug-into-auctex-p t ; Add integration of Sweave/Kniter into AUCTeX
+   ess-use-ido nil              ; ESS should not use IDO for completion
    )
   (custom-set-variables
    '(ess-own-style-list
