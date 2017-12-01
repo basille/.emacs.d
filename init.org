@@ -81,6 +81,7 @@ repositories. We first list these packages:
                        col-highlight
                        company
                        company-auctex
+                       counsel
                        color-theme-sanityinc-tomorrow 
                        dim
                        dired+
@@ -92,14 +93,11 @@ repositories. We first list these packages:
                        ess-smart-underscore
                        expand-region
                        flycheck
-                       flx-ido
+                       flx
                        format-sql
                        hideshow-org
                        highlight 
                        highlight-indent-guides
-                       ido-completing-read+
-                       ido-ubiquitous
-                       ido-vertical-mode
                        magit
                        magit-gitflow
                        markdown-mode
@@ -135,8 +133,7 @@ packages:
 #+END_SRC
 
 From now on, given that all packages are installed with a purpose,
-Emacs will silently accept redefinitions of functions by packages (for
-instance, =ido-ubiquitous= redefine =ido-completing-read= from =ido=):
+Emacs will silently accept redefinitions of functions by packages:
 
 #+BEGIN_SRC emacs-lisp
   (setq ad-redefinition-action 'accept)
@@ -213,11 +210,7 @@ columns wide:
   ;;     (split-window-horizontally))
 #+END_SRC
 
-Open a file in the other window with ~C-x C-o~:
 
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-o") 'ido-find-file-other-window)
-#+END_SRC
 
 List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
 =list-buffers=); the list automatically refreshes, and group buffers
@@ -385,13 +378,6 @@ Kill THIS buffer with ~C-x k~:
 
 *** Navigation
 
-Backward search with ~C-S-s~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-S-s") 'isearch-backward)
-  (define-key isearch-mode-map (kbd "C-S-s") 'isearch-repeat-backward)
-#+END_SRC
-
 Recenter with ~C-l~ starts with top, then middle, then bottom:
 
 #+BEGIN_SRC emacs-lisp
@@ -513,112 +499,86 @@ Interaction (replaced with just "Lisp"):
 
 ** Minibuffer
 
+Ivy for completion: =[[http://oremacs.com/swiper/][Ivy]]= comes with =Counsel= as dependencies; needs
+to install =flx= for better sorting. Ivy mode everywhere:
+
+#+BEGIN_SRC emacs-lisp
+  (ivy-mode 1)
+#+END_SRC
+
+Simple customization:
+
+#+BEGIN_SRC emacs-lisp
+  (setq
+   ;; Add recent files and bookmarks to ‘ivy-switch-buffer’
+   ivy-use-virtual-buffers t
+   ;; Format counters with (xx/XX)
+   ivy-count-format "(%d/%d) "
+   ;; Use fuzzy matching without space between letters, except for
+   ;; Swiper (search)
+   ivy-re-builders-alist
+   '((swiper . ivy--regex-plus)
+     (t      . ivy--regex-fuzzy))
+   ivy-initial-inputs-alist nil)
+#+END_SRC
+
+Ivy-resume with ~C-c c-r~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+#+END_SRC
+
+Cycle through buffers with =Ivy= with ~C-TAB~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
+#+END_SRC
+
 Answer with y/n instead of yes/no:
 
 #+BEGIN_SRC emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-Enhanced ~M-x~: SMEX, with states saved in the =cache= subfolder (note
-that the "old" =M-x= is the command =execute-extended-command=):
+Use Counsel for enhanced ~M-x~ with SMEX; states are saved in the
+=cache= subfolder (note that the "old" =M-x= is the command
+=execute-extended-command=):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
   (setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
+  (global-set-key (kbd "M-x") 'counsel-M-x)  
 #+END_SRC
 
-
-*** IDO: Interactively Do Things
-
-[[https://www.gnu.org/software/emacs/manual/ido.html][IDO]] allows to Interactively Do Things, more precisely to give
-interactively lists of possibilities when opening a file, executing a
-function, etc. (note that it is possible to fall back to a normal
-prompt using ~C-f~).
-
-Initialize it, and make it work everywhere:
+Use Counsel for enhanced Find File (~C-x C-f~ or ~C-x C-o~ in other
+window):
 
 #+BEGIN_SRC emacs-lisp
-  (ido-mode 1)
-  (ido-everywhere 1)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "C-x C-o") 'find-file-other-window)
+  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
 #+END_SRC
 
-Set up IDO with almost anything that uses completion:
+Use Swiper for enhanced search with ~C-s~ (Swiper comes with Counsel
+as a dependency):
 
 #+BEGIN_SRC emacs-lisp
-  (ido-ubiquitous-mode 1)
+  (global-set-key (kbd "C-s") 'swiper)
 #+END_SRC
 
-Use IDO in vertical mode:
+Counsel interface to shell and system tools:
 
 #+BEGIN_SRC emacs-lisp
-  (ido-vertical-mode 1)
+  ;; (global-set-key (kbd "C-c g") 'counsel-git)
+  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+  ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 #+END_SRC
 
-Use "flex" matching (i.e. typing a few characters will select items
-containing these characters in the given order, but not necessarily in
-a sequence) with =flx-ido=:
-
-#+BEGIN_SRC emacs-lisp
-  (flx-ido-mode 1)
-#+END_SRC
-
-Other settings: IDO uses flexible matching, find file at point
-intelligently, always create new buffers with ~C-x b~, and saves its
-state in the =cache= folder:
-
-#+BEGIN_SRC emacs-lisp
-  (setq
-   ido-use-filename-at-point 'guess
-   ido-create-new-buffer 'always
-   ;; ido-file-extensions-order '(".Rmd" ".R" ".tex" ".el") ; extension order
-   ido-save-directory-list-file (concat user-emacs-directory "cache/ido"))
-#+END_SRC
-
-Cycle through buffers with =IDO= (~C-TAB~ in this window and ~C-S-TAB~
-in the other window):
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<C-tab>") 'ido-switch-buffer)
-  (global-set-key (kbd "<C-iso-lefttab>") 'ido-switch-buffer-other-window) ; C-S-TAB
-#+END_SRC
-
-Type ~$~ in IDO find file to [[https://scottfrazersblog.blogspot.com/2009/12/emacs-using-bookmarked-directories.html][go to a bookmark]]:
-
-#+BEGIN_SRC emacs-lisp
-  (require 'bookmark)
-  
-  (defun my-ido-bookmark-jump ()
-    "Jump to bookmark using ido"
-    (interactive)
-    (let ((dir (my-ido-get-bookmark-dir)))
-      (when dir
-        (find-alternate-file dir))))
-  
-  (defun my-ido-get-bookmark-dir ()
-    "Get the directory of a bookmark."
-    (let* ((name (ido-completing-read "Find bookmark: " (bookmark-all-names) nil t))
-           (bmk (bookmark-get-bookmark name)))
-      (when bmk
-        (setq bookmark-alist (delete bmk bookmark-alist))
-        (push bmk bookmark-alist)
-        (let ((filename (bookmark-get-filename bmk)))
-          (if (file-directory-p filename)
-              filename
-            (file-name-directory filename))))))
-
-  (defun my-ido-use-bookmark-dir ()
-    "Get directory of bookmark"
-    (interactive)
-    (let* ((enable-recursive-minibuffers t)
-           (dir (my-ido-get-bookmark-dir)))
-      (when dir
-        (ido-set-current-directory dir)
-        (setq ido-exit 'refresh)
-        (exit-minibuffer))))
-
-  (define-key ido-file-dir-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
-#+END_SRC
 
 
 * Buffer editing
@@ -840,7 +800,6 @@ and =ediff= two marked files with ~e~ (with =dired-ediff-files=):
        (load-library "dired-ediff-files")
        (hl-line-mode)
        (define-key dired-mode-map [(ctrl f6)] #'dired-toggle-read-only)
-       (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
        (define-key dired-mode-map "i" 'dired-subtree-insert)
        (define-key dired-mode-map (kbd "<backspace>") 'dired-subtree-remove)
        (define-key dired-mode-map "/" 'dired-narrow)
@@ -904,7 +863,7 @@ already disable entirely below:
 [[https://magit.vc/][Magit]] is a interface to Git completely integrated to Emacs. Once
 installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (remove Git from the list
-of backends handled by Emacs version control; use IDO to complete;
+of backends handled by Emacs version control; use Ivy to complete;
 links to Git-man; automatically refresh the repository's status after
 file save). We also bound Magit to ~F8~, and integrate Git-flow to
 Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
@@ -916,7 +875,7 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
   ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   (setq vc-handled-backends nil)
   (setq
-   magit-completing-read-function 'magit-ido-completing-read
+   magit-completing-read-function 'ivy-completing-read
    magit-view-git-manual-method 'man
    magit-refs-show-commit-count 'all)
   (with-eval-after-load 'magit
