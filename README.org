@@ -266,12 +266,12 @@ status.showUntrackedFiles normal=)
 | ~C-x r b~ | Jump to a bookmark                                           |
 | ~C-x r l~ | List bookmarks                                               |
 
-| Key name  | Operation                                          |
-|-----------+----------------------------------------------------|
-| ~C-M-j~   | In Ivy mode, do it now! (e.g. create new file)     |
-| ~C-c C-o~ | =ivy-occur=: save current search into a new buffer |
-| ~TAB~     | Complete anything                                  |
-| or        | Fold/unfold functions/regions (if code indented)   |
+| Key name  | Operation                                                                       |
+|-----------+---------------------------------------------------------------------------------|
+| ~C-p~     | In Ivy mode, use input as candidate                                             |
+| ~C-c C-o~ | =ivy-occur=: save current search into a new buffer (then ~C-d~ to delete lines) |
+| ~TAB~     | Complete anything                                                               |
+| or        | Fold/unfold functions/regions (if code indented)                                |
 
 | Key name              | Operation                                |
 |-----------------------+------------------------------------------|

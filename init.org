@@ -514,6 +514,8 @@ Simple customization:
    ivy-use-virtual-buffers t
    ;; Format counters with (xx/XX)
    ivy-count-format "(%d/%d) "
+   ;; Use input with C-p
+   ivy-use-selectable-prompt t
    ;; Use fuzzy matching without space between letters, except for
    ;; Swiper (search)
    ivy-re-builders-alist
