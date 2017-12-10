@@ -82,6 +82,7 @@ repositories. We first list these packages:
                        company
                        company-auctex
                        counsel
+                       counsel-world-clock
                        color-theme-sanityinc-tomorrow 
                        dim
                        dired+
