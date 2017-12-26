@@ -243,15 +243,16 @@ status.showUntrackedFiles normal=)
 | ~C-x k~      | Kill THIS buffer                     |
 | ~C-x C-b~    | ibuffer (list of buffers)            |
 
-| Key name  | Operation                                   |
-|-----------+---------------------------------------------|
-| ~C-S-s~   | Backward search                             |
-| ~C-r~     | Replace                                     |
-| ~C-M-r~   | Replace using a RegExp                      |
-| ~C-z~     | Undo                                        |
-| ~C-+~     | Count words in region                       |
-| ~C-=~     | Expand region  (more: ~=~; less: ~-~)       |
-| ~C-x C-y~ | Evaluate expression and replace with result |
+| Key name  | Operation                                               |
+|-----------+---------------------------------------------------------|
+| ~C-S-s~   | Backward search                                         |
+| ~C-r~     | Replace                                                 |
+| ~C-M-r~   | Replace using a RegExp                                  |
+| ~C-z~     | Undo                                                    |
+| ~C-+~     | Count words in region                                   |
+| ~C-=~     | Expand region  (more: ~=~; less: ~-~)                   |
+| ~C-x C-y~ | Evaluate expression and replace with result             |
+| ~C-c C-u~ | Cycle between snake_case, lowerCamelCase and kebab-case |
 
 | Key name | Operation                       |
 |----------+---------------------------------|

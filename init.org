@@ -118,6 +118,7 @@ repositories. We first list these packages:
                        smex
                        sql-indent
                        sqlup-mode
+                       string-inflection
                        toc-org
                        web-mode
                        xkcd
@@ -215,7 +216,7 @@ columns wide:
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
-~dimmer~):
+=dimmer=):
 
 #+BEGIN_SRC emacs-lisp
   (dimmer-activate)
@@ -655,6 +656,32 @@ it with "," in the mode line):
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook 'subword-mode)
   (dim-minor-name 'subword-mode "" 'subword)
+#+END_SRC
+
+Cycle between snake_case, lowerCamelCase and kebab-case using ~C-c
+C-u~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-u") 'string-inflection-custom-cycle)
+  (setq string-inflection-skip-backward-when-done t)
+
+  (defun string-inflection-custom-cycle ()
+    "foo_bar => fooBar => foo-bar => foo_bar"
+    (interactive)
+    (string-inflection-insert
+     (string-inflection-custom-cycle-function (string-inflection-get-current-word))))
+
+  (fset 'string-inflection-cycle 'string-inflection-custom-cycle)
+
+  (defun string-inflection-custom-cycle-function (str)
+    "foo_bar => fooBar => foo-bar => foo_bar"
+    (cond
+     ((string-inflection-underscore-p str)
+      (string-inflection-lower-camelcase-function str))
+     ((string-inflection-lower-camelcase-p str)
+      (string-inflection-kebab-case-function str))
+     (t
+      (string-inflection-underscore-function str))))
 #+END_SRC
 
 Complete anything (=company=), with ~TAB~ (=(kbd "TAB")= for terminal;
