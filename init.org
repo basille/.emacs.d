@@ -72,6 +72,7 @@ repositories. We first list these packages:
   (setq package-list '(
                        2048-game
                        aggressive-indent
+                       all-the-icons-dired
                        anzu
                        apropospriate-theme
                        auctex
@@ -85,9 +86,11 @@ repositories. We first list these packages:
                        counsel-world-clock
                        color-theme-sanityinc-tomorrow 
                        dim
+                       dimmer
                        dired+
                        dired-narrow
                        dired-quick-sort
+                       dired-sidebar
                        dired-subtree
                        eshell-git-prompt
                        ess
@@ -211,7 +214,12 @@ columns wide:
   ;;     (split-window-horizontally))
 #+END_SRC
 
+Visually highlight selected buffer, by dimming other buffers (package
+~dimmer~):
 
+#+BEGIN_SRC emacs-lisp
+  (dimmer-activate)
+#+END_SRC
 
 List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
 =list-buffers=); the list automatically refreshes, and group buffers
@@ -839,6 +847,12 @@ Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer
   (setq neo-theme 'ascii)
   (global-set-key [(f5)] 'neotree-toggle)
 #+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+#+END_SRC
+
 
 TRAMP history of connections in =.emacs.d/cache/tramp=, make
 completion faster, shell history in standard location
