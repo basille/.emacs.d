@@ -220,6 +220,7 @@ Visually highlight selected buffer, by dimming other buffers (package
 
 #+BEGIN_SRC emacs-lisp
   (dimmer-activate)
+  (setq dimmer-percent 0.15)
 #+END_SRC
 
 List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
@@ -1639,7 +1640,7 @@ Markdown in =.Rmd= files). It is setup for Mardown and LateX files
 with R:
 
 #+BEGIN_SRC emacs-lisp
-  ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.[rR]md\\'" . poly-markdown+r-mode))
   (add-to-list 'auto-mode-alist '("\\.[sS]nw\\'" . poly-noweb+r-mode))
   (add-to-list 'auto-mode-alist '("\\.[rR]nw\\'" . poly-noweb+r-mode))
