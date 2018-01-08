@@ -1,7 +1,7 @@
 ;; Function rmd-pandoc-custom to use knitr::pandoc with options in
 ;; .pandoc/config.pandoc
 ;; Inspiration borrowed from ess-swv-run-in-R (ess-swv.el)
-(defun rmd-pandoc-custom ()
+(defun ess-md-pandoc ()
   "Run Pandoc on the associated .md file."
   (interactive)
   (let* ((rmd-buf (current-buffer)))
@@ -33,8 +33,8 @@
         (ess-show-buffer (buffer-name sbuffer) nil)))))
 
 
-;; Function ess-render to use rmarkdown::render with output as PDF
-(defun ess-render ()
+;; Function ess-render to use rmarkdown::render with output as HTML or PDF
+(defun ess-rmd-render ()
   "Run rmarkdown::render on the visited buffer."
   (interactive)
   (let* ((rmd-buf (current-buffer)))
@@ -69,9 +69,9 @@
             (ess-show-buffer (buffer-name sbuffer) nil))))))
 
 
-;; Function rmd-bookdown to use bookdown::render on index.Rmd
+;; Function rmd-bookdown to use bookdown::render_book on index.Rmd
 ;; Inspiration borrowed from ess-swv-run-in-R (ess-swv.el)
-(defun rmd-bookdown ()
+(defun ess-rmd-bookdown ()
   "Run Bookdown on index.Rmd."
   (interactive)
   (let* ((rmd-buf (current-buffer)))
@@ -104,15 +104,16 @@
             (switch-to-buffer rmd-buf)
             (ess-show-buffer (buffer-name sbuffer) nil))))))
 
+
 ;; Functions rmd-fenced-r-code-block and rmd-inline-r-code to insert R
 ;; code in a Rmd file.
-(defun rmd-fenced-r-code-block ()
+(defun ess-rmd-fenced-r-code-block ()
   "Adds a fenced block for R code in Markdown"
   (interactive)
   (insert "\n```{r}\n\n```\n")
   (previous-line)
   (previous-line))
-(defun rmd-inline-r-code ()
+(defun ess-rmd-inline-r-code ()
   "Insert inline R code in Markdown"
   (interactive)
   (insert "`r `")

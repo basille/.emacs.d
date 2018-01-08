@@ -1400,19 +1400,21 @@ subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][usefu
 #+END_SRC
 
 In (R)Markdown, add a fenced R code block (~C-return~) or inline R
-code (~C-S-return~); weave with ~F7~; use =knitr::pandoc= with options
-in =.pandoc/config.pandoc= with ~C-F7~:
+code (~C-S-return~); render RMarkdown files (using
+=rmarkdown::render=) with ~F7~; render RMarkdown files (using
+=bookdown::render_book=) with ~C-F7~; :
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'markdown-mode-hook 
             (lambda ()
-              (load-library "rmd-library")
-              (local-set-key [C-return] 'rmd-fenced-r-code-block)
-              (local-set-key [C-S-return] 'rmd-inline-r-code)
+              (load-library "ess-rmd-library")
+              (local-set-key [C-return] 'ess-rmd-fenced-r-code-block)
+              (local-set-key [C-S-return] 'ess-rmd-inline-r-code)
               ))
   (with-eval-after-load 'polymode
-    (define-key polymode-mode-map [(f7)] #'polymode-weave)
-    (define-key polymode-mode-map [(ctrl f7)] #'rmd-pandoc-custom))
+    (define-key polymode-mode-map [(f7)] #'ess-rmd-render)
+    (define-key polymode-mode-map [(ctrl f7)] #'ess-rmd-bookdown)
+    (define-key polymode-mode-map [(shift ctrl f7)] #'ess-md-pandoc))
 #+END_SRC
 
 # (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer

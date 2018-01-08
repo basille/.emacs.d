@@ -469,16 +469,17 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-S-F4~    | List bookmarks                                               |
 
 
-| Key name | Operation                                            |
-|----------+------------------------------------------------------|
-| ~F5~     | NeoTree in side panel                                |
-| ~C-F5~   | Minimap in side panel                                |
-| ~F6~     | Dired in current directory                           |
-| ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to exit)     |
-| ~F7~     | Polymode Weave                                       |
-| ~C-F7~   | Run knitr::pandoc (with custom options) on .Rmd file |
-| ~F8~     | Magit                                                |
-| ~C-F8~   | shell-xterm (Shell with clearing capabilities)       |
+| Key name | Operation                                           |
+|----------+-----------------------------------------------------|
+| ~F5~     | NeoTree in side panel                               |
+| ~C-F5~   | Minimap in side panel                               |
+| ~F6~     | Dired in current directory                          |
+| ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to exit)    |
+| ~F7~     | Run rmarkdown::render on current RMarkdown file     |
+| ~C-F7~   | Run bookdown::render_book on index.Rmd file         |
+| ~S-C-F7~ | Run knitr::pandoc (with custom options) on .md file |
+| ~F8~     | Magit                                               |
+| ~C-F8~   | shell-xterm (Shell with clearing capabilities)      |
 
 | Key name         | Operation                            |
 |------------------+--------------------------------------|
