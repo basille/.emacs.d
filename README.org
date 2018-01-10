@@ -270,6 +270,7 @@ status.showUntrackedFiles normal=)
 | Key name  | Operation                                                                       |
 |-----------+---------------------------------------------------------------------------------|
 | ~C-p~     | In Ivy mode, use input as candidate                                             |
+| ~M-r~     | In Ivy mode, toggle regexp mode                                                 |
 | ~C-c C-o~ | =ivy-occur=: save current search into a new buffer (then ~C-d~ to delete lines) |
 | ~TAB~     | Complete anything                                                               |
 | or        | Fold/unfold functions/regions (if code indented)                                |
@@ -481,22 +482,23 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~F8~     | Magit                                               |
 | ~C-F8~   | shell-xterm (Shell with clearing capabilities)      |
 
-| Key name         | Operation                            |
-|------------------+--------------------------------------|
-| ~F9~             | Highlight region (like a marker)     |
-| ~C-F9~           | to move to the next highlighted text |
-| ~C-S-F9~         | Un-highlight everything              |
-| ~F10~            | Toggle line wrapping                 |
-| ~C-F10~          | Toggle current line highlight mode   |
-| ~C-S-F10~        | Toggle column highlight mode         |
-| ~C-S-F10~        | Fold/unfold functions/regions        |
-| ~F11~            | Multiple cursors in all lines        |
-| ~C-F11~          | Smart multiple cursors               |
-| ~C-S-F11~        | Multiple cursors: next like selected |
-| ~C-S-Left click~ | Multiple cursors on mouse click      |
-| ~F12~            | Flyspell correction suggestions      |
-| ~C-F12~          | Toggle Flyspell                      |
-| ~C-S-F12~        | Change Ispell dictionary             |
+| Key name         | Operation                                             |
+|------------------+-------------------------------------------------------|
+| ~F9~             | Highlight region (like a marker)                      |
+| ~C-F9~           | to move to the next highlighted text                  |
+| ~C-S-F9~         | Un-highlight everything                               |
+| ~F10~            | Toggle line wrapping                                  |
+| ~C-F10~          | Toggle current line highlight mode                    |
+| ~C-S-F10~        | Toggle column highlight mode                          |
+| ~C-S-F10~        | Fold/unfold functions/regions                         |
+| ~F11~            | Multiple cursors in all lines                         |
+| ~C-F11~          | Smart multiple cursors                                |
+| ~C-S-F11~        | Multiple cursors: next like selected                  |
+| ~C-S-Left click~ | Multiple cursors on mouse click                       |
+| ~C-'~            | In multiple cursor mode, narrow to lines with cursors |
+| ~F12~            | Flyspell correction suggestions                       |
+| ~C-F12~          | Toggle Flyspell                                       |
+| ~C-S-F12~        | Change Ispell dictionary                              |
 
 
 * Screenshots
