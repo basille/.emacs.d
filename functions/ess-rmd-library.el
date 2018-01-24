@@ -17,7 +17,6 @@
           )
     (setq-local ess-dialect "R")
     (ess-force-buffer-current)
-
     (save-excursion
       (let* ((sprocess (ess-get-process ess-current-process-name))
              (sbuffer (process-buffer sprocess))
@@ -50,7 +49,6 @@
           )
     (setq-local ess-dialect "R")
     (ess-force-buffer-current)
-
     (save-excursion
       (let* ((output-format-table (make-hash-table :test 'equal)))
           (puthash "HTML" "html_document" output-format-table)
@@ -62,7 +60,7 @@
                  (output-format-user (completing-read "Output format: " '("HTML" "PDF" "All")))
                  (output-format (gethash output-format-user output-format-table))
                  (render-cmd
-                  (format "rmarkdown::render(\"%s\", output_format = \"%s\")" buf-filename output-format)))
+                  (format "rmarkdown::render(\"%s\", encoding = \"UTF-8\", output_format = \"%s\")" buf-filename output-format)))
             (message "Running Render on %s" buf-filename)
             (ess-execute render-cmd 'buffer nil nil)
             (switch-to-buffer rmd-buf)
@@ -86,8 +84,7 @@
            (ess-force-buffer-current "R process to load into: "))
           )
     (setq-local ess-dialect "R")
-    (ess-force-buffer-current)
-      
+    (ess-force-buffer-current)      
     (save-excursion
       (save-some-buffers)
       (let* ((output-format-table (make-hash-table :test 'equal)))

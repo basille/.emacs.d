@@ -47,7 +47,7 @@ official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-st
         '(("gnu" . "https://elpa.gnu.org/packages/")
           ("melpa-stable" . "https://stable.melpa.org/packages/")
           ("melpa" . "https://melpa.org/packages/")
-          ("org" . "http://orgmode.org/elpa/")
+          ("org" . "https://orgmode.org/elpa/")
           )
         package-archive-priorities
         '(("org"          . 20)
@@ -162,6 +162,12 @@ Disable the splash screen:
   (setq inhibit-startup-screen t)
 #+END_SRC
 
+Menu disabled by default. Show it with ~C-S-F1~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [(ctrl shift f1)] 'menu-bar-mode)
+#+END_SRC
+
 
 ** Color theme
 
@@ -173,8 +179,12 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
 #+BEGIN_SRC emacs-lisp
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
+  ;; Fort Lauderdale
   (setq calendar-latitude 26.084534)
   (setq calendar-longitude -80.238454)
+  ;; Stellenbosch
+  ;; (setq calendar-latitude -33.932105)
+  ;; (setq calendar-longitude 18.860152)
   (setq circadian-themes '((:sunrise . apropospriate-light)
                            (:sunset  . nord)))
   (circadian-setup)
@@ -457,7 +467,7 @@ Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
 
 #+BEGIN_SRC emacs-lisp
   (setq bookmark-default-file (concat user-emacs-directory "cache/bookmarks"))
-  (global-set-key [(ctrl shift f1)] 'bookmark-set)
+  (global-set-key [(ctrl shift f3)] 'bookmark-set)
   (global-set-key [(ctrl shift f4)] 'list-bookmarks)
 #+END_SRC
 
@@ -591,6 +601,8 @@ Counsel interface to shell and system tools:
   ;; (global-set-key (kbd "C-x l") 'counsel-locate)
   ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 #+END_SRC
+
+
 
 
 

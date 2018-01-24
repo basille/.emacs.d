@@ -139,11 +139,13 @@ This file looks like that:
   !
   emacs.fullscreen: maximized
   emacs.geometry: 250x250
+  emacs.menuBar: off
   emacs.toolBar: off
   emacs.verticalScrollBars: off
   emacs.horizontalScrollbars: off
   emacs25.fullscreen: maximized
   emacs25.geometry: 250x250
+  emacs25.menuBar: off
   emacs25.toolBar: off
   emacs25.verticalScrollBars: off
   emacs25.horizontalScrollbars: off
@@ -466,7 +468,8 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 |-------------+--------------------------------------------------------------|
 | ~F1–F4~     | Jump to registers                                            |
 | ~C-F1–C-F4~ | Save registers                                               |
-| ~C-S-F1~    | Bookmark a file (works on directories and remote files too!) |
+| ~C-S-F1~    | Show/hide menu                                               |
+| ~C-S-F3~    | Bookmark a file (works on directories and remote files too!) |
 | ~C-S-F4~    | List bookmarks                                               |
 
 
