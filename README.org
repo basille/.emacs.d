@@ -23,6 +23,7 @@
    - [[#sql][SQL]]
    - [[#screen][Screen]]
    - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
+   - [[#misc][Misc]]
  - [[#screenshots][Screenshots]]
  - [[#to-do][To-do]]
 
@@ -255,6 +256,8 @@ status.showUntrackedFiles normal=)
 | ~C-=~     | Expand region  (more: ~=~; less: ~-~)                   |
 | ~C-x C-y~ | Evaluate expression and replace with result             |
 | ~C-c C-u~ | Cycle between snake_case, lowerCamelCase and kebab-case |
+| ~M-q~     | Fill paragraph (indentation and lines)                  |
+| ~C-u M-q~ | Justifies text (fixed width)                            |
 
 | Key name | Operation                       |
 |----------+---------------------------------|
@@ -282,6 +285,7 @@ status.showUntrackedFiles normal=)
 | ~C-c ! v~             | Verify Flycheck setup for current buffer |
 | ~C-c ! n~ / ~C-c ! p~ | Next and previous error                  |
 | ~C-c ! l~             | List all errors in a buffer              |
+
 
 
 ** File manager
@@ -502,6 +506,14 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~F12~            | Flyspell correction suggestions                       |
 | ~C-F12~          | Toggle Flyspell                                       |
 | ~C-S-F12~        | Change Ispell dictionary                              |
+
+
+** Misc
+
+| Key name           | Operation              |
+|--------------------+------------------------|
+| ~M-x lunar-phases~ | Display moon phases.   |
+| ~M-x zone~         | Screen saver. Sort of… |
 
 
 * Screenshots
