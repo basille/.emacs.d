@@ -11,7 +11,7 @@
    - [[#emacs-daemon][Emacs daemon]]
    - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
  - [[#key-bindings][Key bindings]]
-   - [[#interface][Interface]]
+   - [[#general][General]]
    - [[#file-manager][File manager]]
    - [[#magit][Magit]]
    - [[#web-browser][Web browser]]
@@ -235,7 +235,9 @@ status.showUntrackedFiles normal=)
 
 * Key bindings
 
-** Interface
+** General
+
+*** Buffers
 
 | Key name     | Operation                            |
 |--------------+--------------------------------------|
@@ -246,31 +248,68 @@ status.showUntrackedFiles normal=)
 | ~C-x k~      | Kill THIS buffer                     |
 | ~C-x C-b~    | ibuffer (list of buffers)            |
 
+*** Search and replace
+
 | Key name  | Operation                                               |
 |-----------+---------------------------------------------------------|
-| ~C-S-s~   | Backward search                                         |
+| ~C-s~     | Search using Swiper                                     |
 | ~C-r~     | Replace                                                 |
 | ~C-M-r~   | Replace using a RegExp                                  |
-| ~C-z~     | Undo                                                    |
 | ~C-+~     | Count words in region                                   |
 | ~C-=~     | Expand region  (more: ~=~; less: ~-~)                   |
-| ~C-x C-y~ | Evaluate expression and replace with result             |
+
+*** Regular Expressions
+
+| Key name  | Operation                                                                  |
+|-----------+----------------------------------------------------------------------------|
+| ~.~ (dot) | Any single character except a newline                                      |
+| ~*~       | Zero or more repeats                                                       |
+| ~+~       | One or more repeats                                                        |
+| ~?~       | Zero or one repeat                                                         |
+| ~^~       | Matches at line beginning                                                  |
+| ~$~       | Matches at line end                                                        |
+| ~[…]~     | Denotes a class of character to match                                      |
+| ~[^…]~    | Negates the class                                                          |
+| ~\c~      | Quote characters otherwise having a special meaning in regular expressions |
+| ~\w~      | Matches word-syntax character                                              |
+| ~\W~      | Matches non-word-syntax character                                          |
+| ~\<~      | Matches at word beginning                                                  |
+| ~\>~      | Matches at word end                                                        |
+| ~\b~      | Matches at word break                                                      |
+| ~\B~      | Matches at non-word break                                                  |
+| ~\(…\)~   | Groups a series of pattern elements to a single element                    |
+| ~…\|…\|…~ | Matches one of the alternatives ("or")                                     |
+| ~\N~      | Same text as n-th group                                                    |
+
+*** Edit
+
+| ~C-z~     | Undo                                                    |
 | ~C-c C-u~ | Cycle between snake_case, lowerCamelCase and kebab-case |
 | ~M-q~     | Fill paragraph (indentation and lines)                  |
 | ~C-u M-q~ | Justifies text (fixed width)                            |
+| ~M-$~     | Check spelling of word at the cursor                    |
 
-| Key name | Operation                       |
-|----------+---------------------------------|
-| ~C-.~    | Imenu (main sections/headers)   |
-| ~M-x~    | SMEX                            |
-| ~M-!~    | Shell-command in the minibuffer |
-| ~C-h m~  | Check modes in a buffer         |
+*** Operations
+
+| Key name  | Operation                                        |
+|-----------+--------------------------------------------------|
+| ~C-.~     | Imenu (main sections/headers)                    |
+| ~M-x~     | SMEX                                             |
+| ~M-!~     | Shell-command in the minibuffer                  |
+| ~C-h m~   | Check modes in a buffer                          |
+| ~C-x C-e~ | Evaluate lisp expression                         |
+| ~C-x C-y~ | Evaluate lisp expression and replace with result |
+| ~M-g M-g~ | Go to a given line number                        |
+
+*** Bookmarks
 
 | Key name  | Operation                                                    |
 |-----------+--------------------------------------------------------------|
 | ~C-x r m~ | Bookmark a file (works on directories and remote files too!) |
 | ~C-x r b~ | Jump to a bookmark                                           |
 | ~C-x r l~ | List bookmarks                                               |
+
+*** Completion and Ivy
 
 | Key name  | Operation                                                                       |
 |-----------+---------------------------------------------------------------------------------|
@@ -280,12 +319,26 @@ status.showUntrackedFiles normal=)
 | ~TAB~     | Complete anything                                                               |
 | or        | Fold/unfold functions/regions (if code indented)                                |
 
+*** Flycheck
+
 | Key name              | Operation                                |
 |-----------------------+------------------------------------------|
 | ~C-c ! v~             | Verify Flycheck setup for current buffer |
 | ~C-c ! n~ / ~C-c ! p~ | Next and previous error                  |
 | ~C-c ! l~             | List all errors in a buffer              |
 
+*** Rectangles
+
+Need to mark the upper left corner first (~C-Space~) then move to the
+other end of the rectangle.
+
+| Key name  | Operation                           |
+|-----------+-------------------------------------|
+| ~C-x r r~ | Copy rectangle                      |
+| ~C-x r k~ | Kill rectangle                      |
+| ~C-x r y~ | Yank rectangle                      |
+| ~C-x r o~ | Open rectangle, shifting text right |
+| ~C-x r c~ | Blank out rectangle                 |
 
 
 ** File manager
@@ -312,6 +365,8 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~m~      | Mark a file/folder                                           |
 | ~* /~    | Mark all folders                                             |
 | ~* s~    | Mark all files and folders                                   |
+| ~d~      | Mark for deletion                                            |
+| ~x~      | Execute deletion of marked files                             |
 | ~u~      | Unmark a file/folder                                         |
 | ~U~      | Unmark all                                                   |
 | ~t~      | Toggle mark                                                  |
@@ -324,8 +379,6 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~Q~      | Search and replace with regexp content of (marked) file(s)   |
 | ~e~      | =ediff= two marked files                                     |
 | ~=~      | Launch =ediff= file at point, requesting for file to compare |
-
-
 
 
 ** Magit
