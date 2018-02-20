@@ -288,6 +288,7 @@ status.showUntrackedFiles normal=)
 | ~M-q~     | Fill paragraph (indentation and lines)                  |
 | ~C-u M-q~ | Justifies text (fixed width)                            |
 | ~M-$~     | Check spelling of word at the cursor                    |
+| ~C-c C-d~ | Sudden death!                                           |
 
 *** Operations
 

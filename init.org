@@ -78,6 +78,7 @@ repositories. We first list these packages:
                        auctex
                        auctex-latexmk
                        bonjourmadame
+                       centered-window
                        circadian
                        col-highlight
                        company
@@ -119,6 +120,7 @@ repositories. We first list these packages:
                        sql-indent
                        sqlup-mode
                        string-inflection
+                       sudden-death 
                        toc-org
                        web-mode
                        xkcd
@@ -583,6 +585,7 @@ Use Counsel for enhanced Find File (~C-x C-f~ or ~C-x C-o~ in other
 window):
 
 #+BEGIN_SRC emacs-lisp
+  (setq counsel-find-file-at-point t)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-x C-o") 'find-file-other-window)
   ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
@@ -661,6 +664,12 @@ this mode) [NOTE: Disabled because of bugs with Polymode!]:
 
 #+BEGIN_SRC emacs-lisp
   ;; (add-hook 'prog-mode-hook #'aggressive-indent-mode)
+#+END_SRC
+
+[[https://github.com/anler/centered-window-mode/][Center text]] when there is only one window (in the width of the frame):
+
+#+BEGIN_SRC emacs-lisp
+  (centered-window-mode t)
 #+END_SRC
 
 Automatically break long lines (by default after 70 characters, as set
@@ -744,6 +753,12 @@ the expression by =3= (works in any buffer). It is bound to ~C-x C-y~:
 #+BEGIN_SRC emacs-lisp
   (load-library "sexp-eval-and-replace")
   (global-set-key (kbd "C-x C-y") 'sexp-eval-and-replace)
+#+END_SRC
+
+[[https://github.com/yewton/sudden-death.el][Sudden death]]! (with ~C-c C-d~):
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-d") 'sudden-death)
 #+END_SRC
 
 
