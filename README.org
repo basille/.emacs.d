@@ -284,6 +284,7 @@ status.showUntrackedFiles normal=)
 *** Edit
 
 | ~C-z~     | Undo                                                    |
+| ~M-y~     | List kill ring (=counsel-yank-pop=)                     |
 | ~C-c C-u~ | Cycle between snake_case, lowerCamelCase and kebab-case |
 | ~M-q~     | Fill paragraph (indentation and lines)                  |
 | ~C-u M-q~ | Justifies text (fixed width)                            |

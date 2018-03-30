@@ -40,7 +40,7 @@
 Emacs now provide an entire ecosystem of packages, in various
 repositories, and handles them through the =package= utility.  Emacs
 packages can come from different repositories. We only activate the
-official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]]:
+official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-stable]], MELPA and ORG:
 
 #+BEGIN_SRC emacs-lisp
   (setq package-archives 
@@ -108,6 +108,8 @@ repositories. We first list these packages:
                        markdown-mode
                        markdown-toc
                        minimap
+                       ;; minions          ; Will be for Emacs 25.3
+                       ;; moody            ; Will be for Emacs 25.3
                        multiple-cursors
                        neotree
                        nord-theme
@@ -127,6 +129,9 @@ repositories. We first list these packages:
                        xkcd
                        yaml-mode
                        ))
+  ;; Markdown-mode from MELPA, and not MELPA stable
+  (setq package-pinned-packages
+        '((markdown-mode            . "melpa")))
 #+END_SRC
 
 Then fetch the list of packages available and install the missing
@@ -192,6 +197,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; Fort Lauderdale
   (setq calendar-latitude 26.084534)
   (setq calendar-longitude -80.238454)
+  ;; Trondheim
+  ;; (setq calendar-latitude 63.446827)
+  ;; (setq calendar-longitude 10.421906)
   ;; Stellenbosch
   ;; (setq calendar-latitude -33.932105)
   ;; (setq calendar-longitude 18.860152)
@@ -486,6 +494,8 @@ Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
 
 Use a Power line:
 
+(to be replaced by =[[https://github.com/tarsius/moody][moody]]= after Emacs 25.3)
+
 #+BEGIN_SRC emacs-lisp
   (powerline-center-theme)
   (setq powerline-default-separator 'wave)
@@ -509,12 +519,13 @@ mode-line, and show replacement interactively. Replace is bound to
   (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
 #+END_SRC
 
-
 "Diminish" =auto-fill= (automatically break long lines while typing),
 =auto-revert= (which is used by Magit to automatically update file
 content), =visual-line-mode= (word wrapping at the end of long lines),
 =eldoc= (display function arguments in the minibuffer), Lisp
 Interaction (replaced with just "Lisp"):
+
+(to be replaced by =[[https://github.com/tarsius/minions][minions]]= after Emacs 25.3)
 
 #+BEGIN_SRC emacs-lisp
   (dim-minor-name 'auto-fill-function "")
@@ -553,6 +564,12 @@ Simple customization:
    '((swiper . ivy--regex-plus)
      (t      . ivy--regex-fuzzy))
    ivy-initial-inputs-alist nil)
+#+END_SRC
+
+List kill ring (=counsel-yank-pop=) with ~M-y~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
 #+END_SRC
 
 Ivy-resume with ~C-c c-r~:
@@ -905,6 +922,8 @@ Remove =.= from the list of files/folders (and be silent about it):
 
 Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to
 ~F5~):
+
+(to be replaced by =[[https://github.com/sebastiencs/sidebar.el][sidebar]]= when it reaches MELPA)
 
 #+BEGIN_SRC emacs-lisp
   (setq neo-theme 'ascii)
@@ -1602,6 +1621,8 @@ NOT WORK):
 
 
 ** Web
+
+(see =[[https://github.com/hlissner/emacs-counsel-css][counsel-css]]= for integration of CSS selectors with Ivy)
 
 [[http://web-mode.org/][Web-mode]] is a major mode to edit Web files ([s]HTML, CSS, PHP,
 etc.). Here is a standard configuration, with auto-pairing, CSS
