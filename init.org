@@ -93,6 +93,7 @@ repositories. We first list these packages:
                        dired-quick-sort
                        dired-sidebar
                        dired-subtree
+                       ebib
                        eshell-git-prompt
                        ess
                        ess-smart-underscore
