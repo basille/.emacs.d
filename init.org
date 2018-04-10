@@ -475,10 +475,12 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 #+END_SRC
 
 Imenu lists the main parts of a document (sections, headers, etc.) to
-navigate interactively a long document (bound to ~C-M-=~):
+navigate interactively a long document (bound to ~C-M-=~); we ask
+Imenu to stay up to date automatically:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-M-=") #'imenu)
+  (setq imenu-auto-rescan t)
 #+END_SRC
 
 Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
@@ -543,10 +545,12 @@ Interaction (replaced with just "Lisp"):
 ** Minibuffer
 
 Ivy for completion: =[[http://oremacs.com/swiper/][Ivy]]= comes with =Counsel= as dependencies; needs
-to install =flx= for better sorting. Ivy mode everywhere:
+to install =flx= for better sorting. Ivy mode and [[https://github.com/abo-abo/swiper#user-content-counsel][Counsel mode]]
+everywhere:
 
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
+  (counsel-mode 1)
 #+END_SRC
 
 Simple customization:
@@ -567,12 +571,6 @@ Simple customization:
    ivy-initial-inputs-alist nil)
 #+END_SRC
 
-List kill ring (=counsel-yank-pop=) with ~M-y~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-y") 'counsel-yank-pop)
-#+END_SRC
-
 Ivy-resume with ~C-c c-r~:
 
 #+BEGIN_SRC emacs-lisp
@@ -591,13 +589,10 @@ Answer with y/n instead of yes/no:
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-Use Counsel for enhanced ~M-x~ with SMEX; states are saved in the
-=cache= subfolder (note that the "old" =M-x= is the command
-=execute-extended-command=):
+SMEX (`M-X`) states are saved in the =cache= subfolder:
 
 #+BEGIN_SRC emacs-lisp
   (setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
-  (global-set-key (kbd "M-x") 'counsel-M-x)  
 #+END_SRC
 
 Use Counsel for enhanced Find File (~C-x C-f~ or ~C-x C-o~ in other
@@ -605,7 +600,6 @@ window):
 
 #+BEGIN_SRC emacs-lisp
   (setq counsel-find-file-at-point t)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-x C-o") 'find-file-other-window)
   ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
   ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
@@ -1325,7 +1319,7 @@ and refresh it automatically:
 ** Markdown
 
 [[http://jblevins.org/projects/markdown-mode/][Markdown-mode]] is used to edit Markdown files (=.md= or =.markdown=)
-and is loaded automatically. We simply enable Math:
+and is loaded automatically. We simply enable Math and Imenu:
 
 # BUG with markdown-toc; see bug report with M-x markdown-toc-bug-report
 # 
@@ -1335,11 +1329,11 @@ and is loaded automatically. We simply enable Math:
 
 #+BEGIN_SRC emacs-lisp
   (setq markdown-enable-math t)
+  (add-hook 'markdown-mode-hook 
+            (lambda ()
+              (imenu-add-menubar-index)
 #+END_SRC
 
-# (add-hook 'markdown-mode-hook 
-# 		 (lambda ()
-# 		   (imenu-add-menubar-index) ; Add imenu
 
 
 ** ESS
