@@ -637,16 +637,11 @@ Never use Tabs when indenting, use spaces instead:
   (setq-default indent-tabs-mode nil)
 #+END_SRC
 
-Delete selection mode (replace a selection):
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/CUA-Bindings.html][CUA mode]] (~C-x~, ~C-c~, ~C-v~, and ~C-z~; rectangle selection with
+~C-Ret~; global mark with ~C-S-Space~; delete-selection mode):
 
 #+BEGIN_SRC emacs-lisp
-  (delete-selection-mode 1)
-#+END_SRC
-
-Undo with ~C-z~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-z") 'undo)
+  (cua-mode 1)
 #+END_SRC
 
 Electric pair mode: Automatically close double quotes, back quotes,
@@ -1331,9 +1326,8 @@ and is loaded automatically. We simply enable Math and Imenu:
   (setq markdown-enable-math t)
   (add-hook 'markdown-mode-hook 
             (lambda ()
-              (imenu-add-menubar-index)
+              (imenu-add-menubar-index)))
 #+END_SRC
-
 
 
 ** ESS
