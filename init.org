@@ -638,10 +638,12 @@ Never use Tabs when indenting, use spaces instead:
 #+END_SRC
 
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/CUA-Bindings.html][CUA mode]] (~C-x~, ~C-c~, ~C-v~, and ~C-z~; rectangle selection with
-~C-Ret~; global mark with ~C-S-Space~; delete-selection mode):
+~C-S-Ret~; global mark with ~C-S-Space~; delete-selection mode):
 
 #+BEGIN_SRC emacs-lisp
+  (setq cua-rectangle-mark-key (kbd "C-S-RET"))
   (cua-mode 1)
+  (global-set-key [(ctrl shift return)] 'cua-set-rectangle-mark)
 #+END_SRC
 
 Electric pair mode: Automatically close double quotes, back quotes,
