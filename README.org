@@ -315,8 +315,9 @@ status.showUntrackedFiles normal=)
 
 | Key name  | Operation                                                                       |
 |-----------+---------------------------------------------------------------------------------|
-| ~C-p~     | In Ivy mode, use input as candidate                                             |
 | ~M-r~     | In Ivy mode, toggle regexp mode                                                 |
+| ~M-o~     | In Ivy mode, presents valid actions from which to choose                        |
+| ~C-M-j~   | Uses current input instead of current candidate (e.g. useful to create files)   |
 | ~C-c C-o~ | =ivy-occur=: save current search into a new buffer (then ~C-d~ to delete lines) |
 | ~TAB~     | Complete anything                                                               |
 | or        | Fold/unfold functions/regions (if code indented)                                |
