@@ -382,6 +382,9 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~Q~      | Search and replace with regexp content of (marked) file(s)   |
 | ~e~      | =ediff= two marked files                                     |
 | ~=~      | Launch =ediff= file at point, requesting for file to compare |
+|----------+--------------------------------------------------------------|
+| ~w~      | Copy file name in the kill ring                              |
+| ~M-0 w~  | Copy absolute path to the file                               |
 
 
 ** Magit

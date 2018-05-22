@@ -196,17 +196,36 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  (setq calendar-latitude 26.084534)
-  (setq calendar-longitude -80.238454)
+  ;; (setq calendar-latitude 26.084534)
+  ;; (setq calendar-longitude -80.238454)
+  ;; (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
+  ;; (setq calendar-location-name "Trondheim, NO")
   ;; Stellenbosch
   ;; (setq calendar-latitude -33.932105)
   ;; (setq calendar-longitude 18.860152)
+  ;; (setq calendar-location-name "Stellenbosch, SA")
+  ;; London
+  ;; (setq calendar-latitude 53.4084)
+  ;; (setq calendar-longitude -2.9916)
+  ;; (setq calendar-location-name "London, UK")
+  ;; Montpellier
+  (setq calendar-latitude 43.6108)
+  (setq calendar-longitude 3.8767)
+  (setq calendar-location-name "Montpellier, FR")
   (setq circadian-themes '((:sunrise . apropospriate-light)
                            (:sunset  . nord)))
   (circadian-setup)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; ;; Alternatively with theme-changer:
+  ;; (require 'theme-changer)
+  ;; ;; Use color-theme package instead Emacs 24 color theme facility
+  ;; (setq theme-changer-mode "color-theme")
+  ;; (change-theme 'apropospriate-light 'nord)
 #+END_SRC
 
 
