@@ -453,6 +453,11 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 | ~C-c [~          | RefTeX inserts citation (from BibTeX)                 |
 |------------------+-------------------------------------------------------|
 | ~C-c b~          | Launch `ivy-bibtex` (do not need to be in LaTeX mode) |
+| ~C-c C-e C-a~    | Template for new article                              |
+| ~C-c C-e C-t~    | Template for technical reports                        |
+| ~C-c C-e C-b~    | Template for books                                    |
+| ~C-j~            | Moves to the next BibTeX field                        |
+| ~C-c C-c~        | Checks and cleans entry                                                      |
 
 
 ** ESS

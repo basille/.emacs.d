@@ -1366,6 +1366,36 @@ Finally, =ivy-bibtex= is bound to ~C-c b~:
   (global-set-key (kbd "C-c b") 'ivy-bibtex)
 #+END_SRC
 
+In BibTeX mode (e.g. when opening and editing the main bibliography),
+new entries are created with ~C-c C-e~, like ~C-c C-e C-a~ for
+articles, ~C-c C-e C-t~ for technical reports, and ~C-c C-e C-b~ for
+books.  When the point is on an entry, pressing ~C-j~ moves to the next
+field.  ~C-c C-c~ checks and cleans the entry at point (including
+generation of key if it does not exist, alignment, etc.). If necessary
+~C-c C-q~ formats the entry nicely.  Full documentation for BibTex
+mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun current-date ()
+    (format-time-string "%Y.%m.%d"))    
+  (setq
+   bibtex-entry-format '(opts-or-alts required-fields numerical-fields whitespace realign unify-case sort-fields) ; Clean optional fields, remove brackets around numerical fields, remove white space, realign, unify case of entry type and fields, sort fields in predefined order
+   bibtex-align-at-equal-sign t    ; Also align = sign
+   bibtex-autokey-name-year-separator "_" ; Underscore between Name and Year
+   bibtex-autokey-year-length 4           ; Year as YYYY
+   bibtex-autokey-name-case-convert-function 'capitalize ; Name with capitale
+   bibtex-autokey-titlewords 0                           ; No title
+   bibtex-autokey-titleword-length 0                     ; No title
+   bibtex-autokey-edit-before-use nil                    ; Don't edit before use
+   bibtex-user-optional-fields '( ; Additional fields: DOI, url, date, owner, abstract
+                                 ("doi" "DOI for the entry")
+                                 ("url" "URL for the entry")
+                                 ("timestamp" "Time the entry was created" current-date)
+                                 ("owner" "Owner of the entry" user-login-name)
+                                 ("abstract" "Abstract for the entry"))
+   )  
+#+END_SRC
+
 
 ** Markdown
 
