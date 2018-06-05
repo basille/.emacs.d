@@ -1396,6 +1396,11 @@ mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
    )  
 #+END_SRC
 
+With [[https://github.com/cpitclaudel/biblio.el][=biblio.el=]], we can further check out query CrossRef or arXiv
+(using =biblio-lookup=, then copy and insert with ~c~ and ~i~; ~C~ and
+~I~ do the same, but additionally close the search window), or with
+the DOI (using =doi-insert-bibtex=). 
+
 
 ** Markdown
 
