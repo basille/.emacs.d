@@ -104,6 +104,7 @@ repositories. We first list these packages:
                        hideshow-org
                        highlight 
                        highlight-indent-guides
+                       ivy-bibtex
                        magit
                        magit-gitflow
                        markdown-mode
@@ -132,7 +133,8 @@ repositories. We first list these packages:
                        ))
   ;; Markdown-mode from MELPA, and not MELPA stable
   (setq package-pinned-packages
-        '((markdown-mode            . "melpa")))
+        '((markdown-mode         . "melpa")
+          (ivy-bibtex            . "melpa")))
 #+END_SRC
 
 Then fetch the list of packages available and install the missing
@@ -1330,6 +1332,39 @@ and refresh it automatically:
 # ;; 	("canadian" "en_CA")
 # ;; 	("british" "en_GB")))
 # ;; Comment avoir à nouveau le \og quand on est en français et qu'on tape " ?
+
+
+*** BibTeX
+
+BibTex is managed through =[[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]=. It needs to know the location
+of the main bibliography (can handle several), where the PDF are
+stored, 
+# the additional field =File= for additional attached files,
+and the list of potential extensions used there:
+
+#+BEGIN_SRC emacs-lisp
+  (setq
+   bibtex-completion-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib")
+   bibtex-completion-library-path '("/home/mathieu/Work/Biblio/PDF/")
+   ;; bibtex-completion-pdf-field "File"
+   bibtex-completion-pdf-extension '(".pdf" ".djvu" ".ps")
+   )
+#+END_SRC
+
+By default a PDF will be open in Emacs (with =pdf-tools=);
+alternatively, Evince can also be used:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq bibtex-completion-pdf-open-function
+        (lambda (fpath)
+          (call-process "evince" nil 0 nil fpath)))
+#+END_SRC
+
+Finally, =ivy-bibtex= is bound to ~C-c b~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c b") 'ivy-bibtex)
+#+END_SRC
 
 
 ** Markdown
