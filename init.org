@@ -119,6 +119,7 @@ repositories. We first list these packages:
                        polymode
                        org
                        org-bullets
+                       org-plus-contrib
                        powerline
                        rubik
                        smex
@@ -1157,6 +1158,13 @@ Give the correct path to the Ditaa java library:
 
 #+BEGIN_SRC emacs-lisp
   (setq org-ditaa-jar-path (expand-file-name "/usr/share/ditaa/ditaa.jar"))
+#+END_SRC
+
+Integration of [[http://taskjuggler.org/][TaskJuggler]] with =org-mode=, as to export projects to
+Gantt charts:
+
+#+BEGIN_SRC emacs-lisp  
+  (require 'ox-taskjuggler)
 #+END_SRC
 
 
