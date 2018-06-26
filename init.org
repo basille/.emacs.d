@@ -6,34 +6,34 @@
 
 
 * Table of Contents                                            :TOC:
- - [[#emacs-packages][Emacs packages]]
-   - [[#additional-functions][Additional functions]]
- - [[#interface][Interface]]
-   - [[#color-theme][Color theme]]
-   - [[#frames][Frames]]
-   - [[#windows][Windows]]
-   - [[#buffers][Buffers]]
-   - [[#mode-line][Mode line]]
-   - [[#minibuffer][Minibuffer]]
- - [[#buffer-editing][Buffer editing]]
-   - [[#spell-check-and-syntax-check][Spell check and syntax check]]
-   - [[#file-saving][File saving]]
- - [[#utilities][Utilities]]
-   - [[#file-manager][File manager]]
-   - [[#git][GIT]]
-   - [[#shell][Shell]]
-   - [[#pdf][PDF]]
-   - [[#eww-web-browser][EWW web browser]]
- - [[#major-modes][Major modes]]
-   - [[#yaml][YAML]]
-   - [[#org][Org]]
-   - [[#latex][LaTeX]]
-   - [[#markdown][Markdown]]
-   - [[#ess][ESS]]
-   - [[#sql][SQL]]
-   - [[#web][Web]]
-   - [[#polymode][Polymode]]
- - [[#postface][Postface]]
+- [[#emacs-packages][Emacs packages]]
+  - [[#additional-functions][Additional functions]]
+- [[#interface][Interface]]
+  - [[#color-theme][Color theme]]
+  - [[#frames][Frames]]
+  - [[#windows][Windows]]
+  - [[#buffers][Buffers]]
+  - [[#mode-line][Mode line]]
+  - [[#minibuffer][Minibuffer]]
+- [[#buffer-editing][Buffer editing]]
+  - [[#spell-check-and-syntax-check][Spell check and syntax check]]
+  - [[#file-saving][File saving]]
+- [[#utilities][Utilities]]
+  - [[#file-manager][File manager]]
+  - [[#git][GIT]]
+  - [[#shell][Shell]]
+  - [[#pdf][PDF]]
+  - [[#eww-web-browser][EWW web browser]]
+- [[#major-modes][Major modes]]
+  - [[#yaml][YAML]]
+  - [[#org][Org]]
+  - [[#latex][LaTeX]]
+  - [[#markdown][Markdown]]
+  - [[#ess][ESS]]
+  - [[#sql][SQL]]
+  - [[#web][Web]]
+  - [[#polymode][Polymode]]
+- [[#postface][Postface]]
 
 * Emacs packages
 
@@ -51,9 +51,9 @@ official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-st
           )
         package-archive-priorities
         '(("org"          . 20)
-          ("melpa-stable" . 10)
+          ("melpa"        . 10)
           ("gnu"          . 5)
-          ("melpa"        . 0)
+          ("melpa-stable" . 0)
           ))
 #+END_SRC
 
@@ -71,6 +71,7 @@ repositories. We first list these packages:
 #+BEGIN_SRC emacs-lisp
   (setq package-list '(
                        2048-game
+                       ace-window
                        aggressive-indent
                        all-the-icons-dired
                        anzu
@@ -78,6 +79,7 @@ repositories. We first list these packages:
                        auctex
                        auctex-latexmk
                        bonjourmadame
+                       buffer-move
                        centered-window
                        circadian
                        col-highlight
@@ -133,9 +135,9 @@ repositories. We first list these packages:
                        yaml-mode
                        ))
   ;; Markdown-mode from MELPA, and not MELPA stable
-  (setq package-pinned-packages
-        '((markdown-mode         . "melpa")
-          (ivy-bibtex            . "melpa")))
+  ;; (setq package-pinned-packages
+  ;;       '((markdown-mode         . "melpa")
+  ;;         (ivy-bibtex            . "melpa")))
 #+END_SRC
 
 Then fetch the list of packages available and install the missing
@@ -199,9 +201,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  ;; (setq calendar-latitude 26.084534)
-  ;; (setq calendar-longitude -80.238454)
-  ;; (setq calendar-location-name "Fort Lauderdale, FL")
+  (setq calendar-latitude 26.084534)
+  (setq calendar-longitude -80.238454)
+  (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -215,9 +217,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  (setq calendar-latitude 43.6108)
-  (setq calendar-longitude 3.8767)
-  (setq calendar-location-name "Montpellier, FR")
+  ;; (setq calendar-latitude 43.6108)
+  ;; (setq calendar-longitude 3.8767)
+  ;; (setq calendar-location-name "Montpellier, FR")
   (setq circadian-themes '((:sunrise . apropospriate-light)
                            (:sunset  . nord)))
   (circadian-setup)
@@ -316,8 +318,14 @@ additionally, there is no confirmation to kill unmodified buffers
                (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)))
 #+END_SRC
 
+Ace-window with ~M-o~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-o") 'ace-window)
+#+END_SRC
+
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
-Emacs):
+Emacs; see Org section to remove conflicts with Org):
 
 #+BEGIN_SRC emacs-lisp
   (windmove-default-keybindings 'meta)
@@ -327,6 +335,15 @@ Next window with ~C-~~ (key above TAB):
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [C-dead-grave] 'other-window)
+#+END_SRC
+
+Swap buffers with =buffer-move= (~C-x <arrows>~):
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x <up>")     'buf-move-up)
+  (global-set-key (kbd "C-x <down>")   'buf-move-down)
+  (global-set-key (kbd "C-x <left>")   'buf-move-left)
+  (global-set-key (kbd "C-x <right>")  'buf-move-right)
 #+END_SRC
 
 Mouse wheel does not accelerate:
@@ -457,13 +474,13 @@ contract by pressing ~-~):
 the code is already indented) for Programming mode:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'hideshow-org)
-  (add-hook 'prog-mode-hook
-            (lambda()
-              (hs-org/minor-mode)
-              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-              ))
-  (dim-minor-name 'hs-minor-mode "")
+  ;; (require 'hideshow-org)
+  ;; (add-hook 'prog-mode-hook
+  ;;           (lambda()
+  ;;             (hs-org/minor-mode)
+  ;;             (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+  ;;             ))
+  ;; (dim-minor-name 'hs-minor-mode "")
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
@@ -604,7 +621,7 @@ Ivy-resume with ~C-c c-r~:
 Cycle through buffers with =Ivy= with ~C-TAB~:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
+  ;; (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
 #+END_SRC
 
 Answer with y/n instead of yes/no:
@@ -613,7 +630,8 @@ Answer with y/n instead of yes/no:
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-SMEX (`M-X`) states are saved in the =cache= subfolder:
+~M-x~ (=counsel-M-x= with =SMEX=) states are saved in the =cache=
+subfolder:
 
 #+BEGIN_SRC emacs-lisp
   (setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
@@ -1102,14 +1120,23 @@ Org mode comes with its own keybindings, ([[http://orgmode.org/manual/Conflicts.
 with other settings]]).
 
 #+BEGIN_SRC emacs-lisp
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-cb" 'org-switchb)
   (setq org-replace-disputed-keys t)
-  #+END_SRC
+#+END_SRC
 
-Make nice UTF-8 bullet points:
+Turn on indent mode, and use nice UTF-8 bullet points:
 
 #+BEGIN_SRC emacs-lisp
+  (setq org-startup-indented 1)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
+
+
+
+(setq org-catch-invisible-edits smart)
 
 # [not working]
 #
@@ -1152,7 +1179,38 @@ a few languages:
        (sh . t)
        (sql . t)
        (R . t))))
-  #+END_SRC
+#+END_SRC
+
+Conflict of Org with =windmove= (remove meaning or ~M-<arrows>~ in
+Org):
+
+#+BEGIN_SRC emacs-lisp 
+  (with-eval-after-load 'org
+    ;; Prevent Org from overriding the bindings for windmove.
+    (define-key org-mode-map (kbd "M-<left>") nil)
+    (define-key org-mode-map (kbd "M-<right>") nil)
+    (define-key org-mode-map (kbd "M-<up>") nil)
+    (define-key org-mode-map (kbd "M-<down>") nil))
+    ;; (define-key org-agenda-mode-map (kbd "M-<up>") nil)
+    ;; (define-key org-agenda-mode-map (kbd "M-<down>") nil)
+    ;; (define-key org-agenda-mode-map (kbd "M-<left>") nil)
+    ;; (define-key org-agenda-mode-map (kbd "M-<right>") nil)
+    
+    ;; Add replacements for the some of keybindings we just removed. It
+    ;; looks like Org already binds C-up and C-down separately from M-{
+    ;; and M-}, so we can't use those. Users will just have to make do
+    ;; with C-c <up> and C-c <down> for now.
+    ;;
+    ;; Now for Org Agenda on the other hand, we could use C-up and
+    ;; C-down because M-{ and M-} are bound to the same commands. But I
+    ;; think it's best to take the same approach as before, for
+    ;; consistency.
+    ;; (define-key org-mode-map (kbd "C-<left>") #'org-shiftleft)
+    ;; (define-key org-mode-map (kbd "C-<right>") #'org-shiftright)
+    ;; (define-key org-agenda-mode-map (kbd "C-<left>") #'org-agenda-do-date-earlier)
+    ;; (define-key org-agenda-mode-map (kbd "C-<right>") #'org-agenda-do-date-later))
+#+END_SRC
+
 
 Give the correct path to the Ditaa java library:
 
@@ -1494,8 +1552,8 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
-              (hs-org/minor-mode) 
-              (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
+              ;; (hs-org/minor-mode) 
+              ;; (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
               ;; (aggressive-indent-mode)
               ;; (myindent-ess-hook)
               (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
