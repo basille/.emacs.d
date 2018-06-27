@@ -71,7 +71,6 @@ repositories. We first list these packages:
 #+BEGIN_SRC emacs-lisp
   (setq package-list '(
                        2048-game
-                       ace-window
                        aggressive-indent
                        all-the-icons-dired
                        anzu
@@ -316,12 +315,6 @@ additionally, there is no confirmation to kill unmodified buffers
                (ibuffer-auto-mode 1)
                (ibuffer-switch-to-saved-filter-groups "buffer-groups")
                (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)))
-#+END_SRC
-
-Ace-window with ~M-o~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-o") 'ace-window)
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
@@ -618,10 +611,12 @@ Ivy-resume with ~C-c c-r~:
   (global-set-key (kbd "C-c C-r") 'ivy-resume)
 #+END_SRC
 
-Cycle through buffers with =Ivy= with ~C-TAB~:
+Cycle through buffers with =Ivy= with ~C-TAB~ (see Magit section to
+remove conflicts with Magit; see Org section to remove conflicts with
+Org):
 
 #+BEGIN_SRC emacs-lisp
-  ;; (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
+  (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
 #+END_SRC
 
 Answer with y/n instead of yes/no:
@@ -1033,6 +1028,9 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
     (define-key magit-mode-map (kbd "K") 'magit-ls-files)
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+  (with-eval-after-load 'magit-mode
+    ;; C-tab is for ivy-switch-buffer
+    (define-key magit-mode-map [C-tab] nil))
 #+END_SRC
 
 
@@ -1186,6 +1184,8 @@ Org):
 
 #+BEGIN_SRC emacs-lisp 
   (with-eval-after-load 'org
+    ;; C-tab is for ivy-switch-buffer
+    (define-key org-mode-map (kbd "<C-tab>") nil)
     ;; Prevent Org from overriding the bindings for windmove.
     (define-key org-mode-map (kbd "M-<left>") nil)
     (define-key org-mode-map (kbd "M-<right>") nil)
