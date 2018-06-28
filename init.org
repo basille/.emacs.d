@@ -722,10 +722,11 @@ this mode) [NOTE: Disabled because of bugs with Polymode!]:
 #+END_SRC
 
 Automatically break long lines (by default after 70 characters, as set
-in the variable =fill-column=): 
+in the variable =fill-column=); turn it on and off with ~C-c q~:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
 
 Consider CamelCase as two words in programming modes (but don't show
