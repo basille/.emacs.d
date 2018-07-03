@@ -676,12 +676,18 @@ Never use Tabs when indenting, use spaces instead:
   (setq-default indent-tabs-mode nil)
 #+END_SRC
 
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/CUA-Bindings.html][CUA mode]] (~C-x~, ~C-c~, ~C-v~, and ~C-z~; rectangle selection with
-~C-S-Ret~; global mark with ~C-S-Space~; delete-selection mode):
+~C-z~ undo:
+
+#+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/CUA-Bindings.html][CUA mode]] used for rectangle selection with ~C-S-Ret~; global mark with
+~C-S-Space~:
 
 #+BEGIN_SRC emacs-lisp
   (setq cua-rectangle-mark-key (kbd "C-S-RET"))
-  (cua-mode 1)
+  (cua-selection-mode t)
   (global-set-key [(ctrl shift return)] 'cua-set-rectangle-mark)
 #+END_SRC
 
@@ -1078,8 +1084,11 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
   (add-hook 'pdf-view-mode-hook 
             '(lambda () 
-               (cua-mode 0) ; Turn off CUA so copy works
-               (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))) ; Use normal isearch
+               ;; (cua-mode 0) ; Turn off CUA so copy works
+               (define-key pdf-view-mode-map (kbd "M-w") 'pdf-view-kill-ring-save) ; Use normal isearch
+               (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward) ; Use normal isearch
+               (define-key pdf-view-mode-map (kbd "<C-home>") 'pdf-view-first-page) ; First page with C-Home
+               (define-key pdf-view-mode-map (kbd "<C-end>") 'pdf-view-last-page))) ; Last page with C-End
 #+END_SRC
 
 From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to the
