@@ -1076,6 +1076,10 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-tools-install))
   (setq-default pdf-view-display-size 'fit-page) ; Start PDF in full page
   (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
+  (add-hook 'pdf-view-mode-hook 
+            '(lambda () 
+               (cua-mode 0) ; Turn off CUA so copy works
+               (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))) ; Use normal isearch
 #+END_SRC
 
 From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to the
