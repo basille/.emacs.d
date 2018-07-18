@@ -28,6 +28,7 @@
   - [[#yaml][YAML]]
   - [[#org][Org]]
   - [[#latex][LaTeX]]
+  - [[#bibtex][BibTeX]]
   - [[#markdown][Markdown]]
   - [[#ess][ESS]]
   - [[#sql][SQL]]
@@ -222,6 +223,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
                            (:sunset  . nord)))
+  (add-hook 'circadian-before-load-theme-hook
+            #'(lambda (theme)
+                (setq custom-face-attributes '())))
   (circadian-setup)
 #+END_SRC
 
@@ -534,7 +538,8 @@ Add column number to the mode line:
 #+END_SRC
 
 Custom mode-line, mostly simplified (shows if file modified, file
-name, Git branch, remote file, line:col (percent), and major mode):
+name, Git branch, remote file, major mode, and position as `line:col
+(percent)`:
 
 #+BEGIN_SRC emacs-lisp
   (setq-default mode-line-format (list
@@ -543,13 +548,17 @@ name, Git branch, remote file, line:col (percent), and major mode):
                                   "%* " ; Modified or read-only buffer
                                   ;; mode-line-frame-identification
                                   mode-line-buffer-identification
+                                  "      "
                                   '(vc-mode vc-mode)
-                                  "   "
+                                  "  "
                                   mode-line-remote ; Remote file?
-                                  "   %l:%c (%p)   " ; line number : column number (percent)
-                                  "   %m   " ; Only major mode
+                                  "      "
                                   ;; mode-line-modes ; This includes minor modes
-                                  ;; mode-line-misc-info ; Not sure…
+                                  "%m" ; Only major mode
+                                  "      "
+                                  ;; mode-line-position
+                                  "%l:%c (%p)" ; line number : column number (percent) (does not work with PDF mode)
+                                  mode-line-misc-info ; Not sure…
                                   mode-line-end-spaces
                                   ))
 #+END_SRC
@@ -1072,10 +1081,14 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (setq-default pdf-view-display-size 'fit-page) ; Start PDF in full page
   (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
   (add-hook 'pdf-view-mode-hook 
-            '(lambda () 
+            '(lambda ()
+               (pdf-misc-size-indication-minor-mode) ; Show page number in mode line
+               (pdf-links-minor-mode)                ; Activate links
+               (pdf-isearch-minor-mode)              ; Incremental search using normal isearch
+               (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward) ; bound to `C-s`
                ;; (cua-mode 0) ; Turn off CUA so copy works
                (define-key pdf-view-mode-map (kbd "M-w") 'pdf-view-kill-ring-save) ; Use normal isearch
-               (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward) ; Use normal isearch
+
                (define-key pdf-view-mode-map (kbd "<C-home>") 'pdf-view-first-page) ; First page with C-Home
                (define-key pdf-view-mode-map (kbd "<C-end>") 'pdf-view-last-page))) ; Last page with C-End
 #+END_SRC
@@ -1405,7 +1418,7 @@ and refresh it automatically:
 # ;; Comment avoir à nouveau le \og quand on est en français et qu'on tape " ?
 
 
-*** BibTeX
+** BibTeX
 
 BibTex is managed through =[[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]=. It needs to know the location
 of the main bibliography (can handle several), where the PDF are
@@ -1429,6 +1442,30 @@ alternatively, Evince can also be used:
   (setq bibtex-completion-pdf-open-function
         (lambda (fpath)
           (call-process "evince" nil 0 nil fpath)))
+#+END_SRC
+
+Add =journal= and =booktitle= to fields to be searched; fields to be
+displayed: PDF, author, title, year, and journal/booktitle/type:
+
+#+BEGIN_SRC emacs-lisp
+  (setq bibtex-completion-additional-search-fields
+        '(journal booktitle)
+        bibtex-completion-display-formats
+        '(
+          (article        . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} ${journal:40}")
+          (book           . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
+          (inbook         . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
+          (incollection   . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
+          (inproceedings  . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
+          (t              . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Type: ${=type=:34}")))
+#+END_SRC
+
+BibTeX file displayed in the order of the file (first entries at the
+top):
+
+#+BEGIN_SRC emacs-lisp
+  (advice-add 'bibtex-completion-candidates
+              :filter-return 'reverse)
 #+END_SRC
 
 Finally, =ivy-bibtex= is bound to ~C-c b~:
@@ -1549,7 +1586,7 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
   (add-hook 'ess-mode-hook 
             (lambda ()
               (flyspell-prog-mode)
-              (require 'ess-smart-underscore) 
+              ;; (require 'ess-smart-underscore) 
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
               (subword-mode) ; Consider CamelCase as two words             
