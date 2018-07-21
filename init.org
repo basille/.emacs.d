@@ -958,13 +958,21 @@ Remove =.= from the list of files/folders (and be silent about it):
 #+END_SRC
 
 Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to
-~F5~):
+~F5~; turn off wrapping long lines):
 
 (to be replaced by =[[https://github.com/sebastiencs/sidebar.el][sidebar]]= when it reaches MELPA)
 
 #+BEGIN_SRC emacs-lisp
   (setq neo-theme 'ascii)
   (global-set-key [(f5)] 'neotree-toggle)
+  ;; (define-key neotree-mode-map (kb "RET")
+  ;;   (neotree-make-executor
+  ;;    :file-fn 'neo-open-file
+  ;;    :dir-fn 'neo-open-dir))
+  (add-hook 'neo-after-create-hook
+            #'(lambda (_)
+                (with-current-buffer (get-buffer neo-buffer-name)
+                  (setq truncate-lines t))))
 #+END_SRC
 
 
@@ -1882,7 +1890,7 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 ** Polymode
 
 [[https://github.com/vitoshka/polymode][Polymode]] allows multiple major modes in the same document (e.g. R +
-Markdown in =.Rmd= files). It is setup for Mardown and LateX files
+Markdown in =.Rmd= files). It is setup for Markdown and LateX files
 with R:
 
 #+BEGIN_SRC emacs-lisp
