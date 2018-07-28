@@ -106,13 +106,15 @@ repositories. We first list these packages:
                        highlight 
                        highlight-indent-guides
                        ivy-bibtex
+                       ivy-rich
+                       ;; ivy-posframe     ; For Emacs 26.0
                        magit
                        magit-gitflow
                        markdown-mode
                        markdown-toc
                        minimap
-                       ;; minions          ; Will be for Emacs 25.3
-                       ;; moody            ; Will be for Emacs 25.3
+                       ;; minions          ; For Emacs 25.3
+                       ;; moody            ; For Emacs 25.3
                        multiple-cursors
                        neotree
                        nord-theme
@@ -278,48 +280,6 @@ Visually highlight selected buffer, by dimming other buffers (package
 #+BEGIN_SRC emacs-lisp
   (dimmer-activate)
   (setq dimmer-percent 0.15)
-#+END_SRC
-
-List of buffers with =ibuffer= bound to ~C-x C-b~ (replaces
-=list-buffers=); the list automatically refreshes, and group buffers
-according to =ibuffer-saved-filter-groups= (empty groups are hidden);
-additionally, there is no confirmation to kill unmodified buffers
-(=ibuffer-expert=), and kill is bound to ~k~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-  (setq ibuffer-saved-filter-groups
-        '(("buffer-groups"
-           ("Magit" (name . "^\\*magit"))
-           ("Help" (or (name . "^\\*Help\\*$")
-                       (name . "^\\*Apropos\\*$")
-                       (name . "^\\*Messages\\*$")
-                       (name . "^\\*scratch\\*$")
-                       (name . "^\\*info\\*$")))
-           ("Org" (or (mode . org-mode)
-                      (filename . ".org$")))
-           ("R" (or (mode . ess-mode)
-                    (filename . ".R$")
-                    (filename . ".Rmd$")
-                    (filename . ".Rnw$")
-                    (name . "^\\*ESS\\*$")))
-           ("LaTeX" (or (mode . latex-mode)
-                    (filename . ".tex$")))
-           ("Web Dev" (or (mode . html-mode)
-                          (mode . css-mode)
-                          (mode . js-mode)))
-           ("emacs-config" (filename . ".emacs.d")))))
-
-  (setq
-   ibuffer-show-empty-filter-groups nil
-   ibuffer-expert t)
-          
-  (add-hook 'ibuffer-mode-hook
-            '(lambda ()
-               (ibuffer-auto-mode 1)
-               (ibuffer-switch-to-saved-filter-groups "buffer-groups")
-               (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)))
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
@@ -578,9 +538,16 @@ mode-line, and show replacement interactively. Replace is bound to
 
 ** Minibuffer
 
+Answer with y/n instead of yes/no:
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
 Ivy for completion: =[[http://oremacs.com/swiper/][Ivy]]= comes with =Counsel= as dependencies; needs
 to install =flx= for better sorting. Ivy mode and [[https://github.com/abo-abo/swiper#user-content-counsel][Counsel mode]]
 everywhere:
+
 
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
@@ -607,10 +574,10 @@ Simple customization:
    ivy-initial-inputs-alist nil)
 #+END_SRC
 
-Ivy-resume with ~C-c c-r~:
+Ivy-resume (go back to state of last search) with ~C-S-s~:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "C-S-s") 'ivy-resume)
 #+END_SRC
 
 Cycle through buffers with =Ivy= with ~C-TAB~ (see Magit section to
@@ -621,10 +588,16 @@ Org):
   (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
 #+END_SRC
 
-Answer with y/n instead of yes/no:
+Use =ivy-rich= to add more information to IVY results (only to switch
+buffer so far):
+
+(check 'customize' branch for all IVY functions: https://github.com/Yevgnen/ivy-rich/tree/customize)
 
 #+BEGIN_SRC emacs-lisp
-  (fset 'yes-or-no-p 'y-or-n-p)
+  (ivy-rich-mode 1)  
+  (setq ivy-virtual-abbreviate 'full                   ; Align virtual buffers
+        ivy-rich-switch-buffer-align-virtual-buffer t
+        ivy-rich-path-style 'abbrev)          ; Abbreviate file name with ~
 #+END_SRC
 
 ~M-x~ (=counsel-M-x= with =SMEX=) states are saved in the =cache=
@@ -665,9 +638,6 @@ Counsel interface to shell and system tools:
   ;; (global-set-key (kbd "C-x l") 'counsel-locate)
   ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 #+END_SRC
-
-
-
 
 
 * Buffer editing

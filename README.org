@@ -4,28 +4,28 @@
 
 
 * Table of Contents                                                     :TOC:
- - [[#preface][Preface]]
- - [[#getting-started][Getting started]]
-   - [[#pre-requisites][Pre-requisites]]
-   - [[#configuring-emacs][Configuring Emacs]]
-   - [[#emacs-daemon][Emacs daemon]]
-   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
- - [[#key-bindings][Key bindings]]
-   - [[#general][General]]
-   - [[#file-manager][File manager]]
-   - [[#magit][Magit]]
-   - [[#web-browser][Web browser]]
-   - [[#polymode][Polymode]]
-   - [[#org-mode][Org mode]]
-   - [[#pdf-tools][PDF tools]]
-   - [[#latex][LaTeX]]
-   - [[#ess][ESS]]
-   - [[#sql][SQL]]
-   - [[#screen][Screen]]
-   - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
-   - [[#misc][Misc]]
- - [[#screenshots][Screenshots]]
- - [[#to-do][To-do]]
+- [[#preface][Preface]]
+- [[#getting-started][Getting started]]
+  - [[#pre-requisites][Pre-requisites]]
+  - [[#configuring-emacs][Configuring Emacs]]
+  - [[#emacs-daemon][Emacs daemon]]
+  - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
+- [[#key-bindings][Key bindings]]
+  - [[#general][General]]
+  - [[#file-manager][File manager]]
+  - [[#magit][Magit]]
+  - [[#web-browser][Web browser]]
+  - [[#polymode][Polymode]]
+  - [[#org-mode][Org mode]]
+  - [[#pdf-tools][PDF tools]]
+  - [[#latex][LaTeX]]
+  - [[#ess][ESS]]
+  - [[#sql][SQL]]
+  - [[#screen][Screen]]
+  - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
+  - [[#misc][Misc]]
+- [[#screenshots][Screenshots]]
+- [[#to-do][To-do]]
 
 * Preface
 
@@ -239,14 +239,13 @@ status.showUntrackedFiles normal=)
 
 *** Buffers
 
-| Key name     | Operation                            |
-|--------------+--------------------------------------|
-| ~M-<arrows>~ | Move between windows                 |
-| ~C-~~        | Next window (key above TAB)          |
-| ~C-TAB~      | Cycle through buffers (this window)  |
-| ~C-S-TAB~    | Cycle through buffers (other window) |
-| ~C-x k~      | Kill THIS buffer                     |
-| ~C-x C-b~    | ibuffer (list of buffers)            |
+| Key name       | Operation                      |
+|----------------+--------------------------------|
+| ~M-<arrows>~   | Move between windows           |
+| ~M-x <arrows>~ | Swap buffer between windows    |
+| ~C-~~          | Next window (key above TAB)    |
+| ~C-TAB~        | Cycle through buffers with IVY |
+| ~C-x k~        | Kill THIS buffer               |
 
 *** Search and replace
 
@@ -315,9 +314,10 @@ status.showUntrackedFiles normal=)
 
 | Key name  | Operation                                                                       |
 |-----------+---------------------------------------------------------------------------------|
+| ~C-S-s~   | =ivy-resume=: go back to state of last search                                   |
 | ~M-r~     | In Ivy mode, toggle regexp mode                                                 |
 | ~M-o~     | In Ivy mode, presents valid actions from which to choose                        |
-| ~C-M-j~   | Uses current input instead of current candidate (e.g. useful to create files)   |
+| ~↑~       | Uses current input instead of current candidate (e.g. useful to create files)   |
 | ~C-c C-o~ | =ivy-occur=: save current search into a new buffer (then ~C-d~ to delete lines) |
 | ~TAB~     | Complete anything                                                               |
 | or        | Fold/unfold functions/regions (if code indented)                                |
@@ -593,7 +593,7 @@ here is Emacs in action:
 
   #+CAPTION: Emacs in Org mode + project explorer + Magit
   #+NAME: emacs-org
-  [[emacs-proj-org-magit.png]]
+  [[emacs-neotree-org-magit.png]]
 
 - Emacs opened with a RMarkdown file (=.Rmd=), including YAML headers
   and R code chunks, with the help page of a function in the right
