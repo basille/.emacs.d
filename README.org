@@ -4,11 +4,9 @@
 
 
 * Table of Contents                                                     :TOC:
-- [[#preface][Preface]]
 - [[#getting-started][Getting started]]
   - [[#pre-requisites][Pre-requisites]]
   - [[#configuring-emacs][Configuring Emacs]]
-  - [[#emacs-daemon][Emacs daemon]]
   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
 - [[#key-bindings][Key bindings]]
   - [[#general][General]]
@@ -25,22 +23,15 @@
   - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
   - [[#misc][Misc]]
 - [[#screenshots][Screenshots]]
-- [[#to-do][To-do]]
-
-* Preface
-
-…
-
 
 * Getting started
 
 
 ** Pre-requisites
 
-This is a configuration for Emacs on Debian Testing (currently
-Stretch). While most of it should work pretty much on any platform,
-installing Emacs (Emacs 25.1 at the time of writing) is Debian
-specific:
+This is a configuration for Emacs on Debian Stretch. While most of it
+should work pretty much on any platform, installing Emacs (Emacs 25.1
+at the time of writing) is Debian specific:
 
 #+BEGIN_SRC sh
   sudo apt install emacs25
@@ -87,31 +78,8 @@ the =home= directory :
   git clone https://github.com/basille/.emacs.d ~
 #+END_SRC
 
-And that's it! Opening Emacs will then do the magic!
-
-
-** Emacs daemon
-
-This configuration uses Emacs as a daemon, which allows to call Emacs
-as a client. As a result, Emacs (client) loads blazing fast! Two
-things are necessary for this: 1) have the daemon loaded at startup
-(which only slightly increases startup time), and 2) provide a desktop
-entry for Emacs as a client. Both operations are automatically taken
-care of by this configuration. On Gnome, Emacs Client sometimes comes
-with issues of focus; one way to solve the problem is to install the
-extension [[https://extensions.gnome.org/extension/1005/focus-my-window/][Focus my window]].
-
-To start the daemon, run:
-
-#+BEGIN_SRC sh
-  systemctl --user start emacs
-#+END_SRC
-
-To stop the daemon, run:
-
-#+BEGIN_SRC sh
-  systemctl --user stop emacs
-#+END_SRC
+And that's it! Opening Emacs will then do the magic! (several openings
+may be necessary for the magic to fully operate)
 
 
 ** A note on the use of =org-mode= for literate configuration
@@ -252,10 +220,11 @@ status.showUntrackedFiles normal=)
 | Key name  | Operation                                               |
 |-----------+---------------------------------------------------------|
 | ~C-s~     | Search using Swiper                                     |
+| ~C-S-s~   | =ivy-resume=: go back to state of last search                                   |
 | ~C-r~     | Replace                                                 |
 | ~C-M-r~   | Replace using a RegExp                                  |
 | ~C-+~     | Count words in region                                   |
-| ~C-=~     | Expand region  (more: ~=~; less: ~-~)                   |
+| ~C-=~     | Expand region (more: ~=~; less: ~-~)                    |
 
 *** Regular Expressions
 
@@ -314,6 +283,7 @@ status.showUntrackedFiles normal=)
 
 | Key name  | Operation                                                                       |
 |-----------+---------------------------------------------------------------------------------|
+| ~C-s~     | Search using Swiper                                     |
 | ~C-S-s~   | =ivy-resume=: go back to state of last search                                   |
 | ~M-r~     | In Ivy mode, toggle regexp mode                                                 |
 | ~M-o~     | In Ivy mode, presents valid actions from which to choose                        |
@@ -335,13 +305,11 @@ status.showUntrackedFiles normal=)
 Need to mark the upper left corner first (~C-Space~) then move to the
 other end of the rectangle.
 
-| Key name  | Operation                           |
-|-----------+-------------------------------------|
-| ~C-x r r~ | Copy rectangle                      |
-| ~C-x r k~ | Kill rectangle                      |
-| ~C-x r y~ | Yank rectangle                      |
-| ~C-x r o~ | Open rectangle, shifting text right |
-| ~C-x r c~ | Blank out rectangle                 |
+| Key name       | Operation                            |
+|----------------+--------------------------------------|
+| ~C-S-<return>~ | Start rectangle mode                 |
+| ~<return>~     | Moves cursor to next corner          |
+| ~M-<arrows>~   | Moves the entire rectangle selection |
 
 
 ** File manager
@@ -406,12 +374,12 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** Polymode
 
-| Key name        | Operation                               |
-|-----------------+-----------------------------------------|
-| ~C-PAGE DOWN~   | Move to previous chunk                  |
-| ~C-PAGE UP~     | Move to next chunk                      |
-| ~C-S-PAGE DOWN~ | Move to previous chunk of the same type |
-| ~C-S-PAGE UP~   | Move to next chunk of the same type     |
+| Key name          | Operation                               |
+|-------------------+-----------------------------------------|
+| ~C-<page down>~   | Move to previous chunk                  |
+| ~C-<page up>~     | Move to next chunk                      |
+| ~C-S-<page down>~ | Move to previous chunk of the same type |
+| ~C-S-<page up>~   | Move to next chunk of the same type     |
 
 
 ** Org mode
@@ -543,35 +511,33 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~C-S-F4~    | List bookmarks                                               |
 
 
-| Key name | Operation                                           |
-|----------+-----------------------------------------------------|
-| ~F5~     | NeoTree in side panel                               |
-| ~C-F5~   | Minimap in side panel                               |
-| ~F6~     | Dired in current directory                          |
-| ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to exit)    |
-| ~F7~     | Run rmarkdown::render on current RMarkdown file     |
-| ~C-F7~   | Run bookdown::render_book on index.Rmd file         |
-| ~S-C-F7~ | Run knitr::pandoc (with custom options) on .md file |
-| ~F8~     | Magit                                               |
-| ~C-F8~   | shell-xterm (Shell with clearing capabilities)      |
+| Key name | Operation                                                 |
+|----------+-----------------------------------------------------------|
+| ~F5~     | NeoTree in side panel                                     |
+| ~F6~     | Dired in current directory                                |
+| ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to save and exit) |
+| ~F7~     | Run rmarkdown::render on current RMarkdown file           |
+| ~C-F7~   | Run bookdown::render_book on index.Rmd file               |
+| ~S-C-F7~ | Run knitr::pandoc (with custom options) on .md file       |
+| ~F8~     | Magit                                                     |
+| ~C-F8~   | shell-xterm (Shell with clearing capabilities)            |
 
-| Key name         | Operation                                             |
-|------------------+-------------------------------------------------------|
-| ~F9~             | Highlight region (like a marker)                      |
-| ~C-F9~           | to move to the next highlighted text                  |
-| ~C-S-F9~         | Un-highlight everything                               |
-| ~F10~            | Toggle line wrapping                                  |
-| ~C-F10~          | Toggle current line highlight mode                    |
-| ~C-S-F10~        | Toggle column highlight mode                          |
-| ~C-S-F10~        | Fold/unfold functions/regions                         |
-| ~F11~            | Multiple cursors in all lines                         |
-| ~C-F11~          | Smart multiple cursors                                |
-| ~C-S-F11~        | Multiple cursors: next like selected                  |
-| ~C-S-Left click~ | Multiple cursors on mouse click                       |
-| ~C-'~            | In multiple cursor mode, narrow to lines with cursors |
-| ~F12~            | Flyspell correction suggestions                       |
-| ~C-F12~          | Toggle Flyspell                                       |
-| ~C-S-F12~        | Change Ispell dictionary                              |
+| Key name                 | Operation                                             |
+|--------------------------+-------------------------------------------------------|
+| ~F9~                     | Highlight region (like a marker)                      |
+| ~C-F9~                   | Move to the next highlighted text                     |
+| ~C-S-F9~                 | Un-highlight everything                               |
+| ~F10~                    | Toggle line wrapping                                  |
+| ~C-F10~                  | Toggle current line highlight mode                    |
+| ~C-S-F10~                | Toggle column highlight mode                          |
+| ~F11~                    | Multiple cursors in all lines                         |
+| ~C-F11~                  | Smart multiple cursors                                |
+| ~C-S-F11~                | Multiple cursors: next like selected                  |
+| ~C-S-<left click>~       | Multiple cursors on mouse click                       |
+| ~C-'~                    | In multiple cursor mode, narrow to lines with cursors |
+| ~F12~ / ~<middle click>~ | Flyspell correction suggestions                       |
+| ~C-F12~                  | Toggle Flyspell                                       |
+| ~C-S-F12~                | Change Ispell dictionary                              |
 
 
 ** Misc
@@ -587,9 +553,9 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 A good demonstration could not be complete without screenshots, so
 here is Emacs in action:
 
-- Emacs on the =init.org= config file, in Org mode, with
-  Project-explorer in the left window, and Magit in the right window
-  with its main commands at the bottom.
+- Emacs on the =init.org= config file, in Org mode, with Neotree in
+  the left window, and Magit in the right window with its main
+  commands at the bottom.
 
   #+CAPTION: Emacs in Org mode + project explorer + Magit
   #+NAME: emacs-org
@@ -602,16 +568,3 @@ here is Emacs in action:
   #+CAPTION: Emacs on a RMarkdown file (with ESS)
   #+NAME: emacs-ess
   [[emacs-markdown-yaml-ess.png]]
-
-
-* To-do
-
-- Write preface
-- Flycheck
-- R:
-  - Set up Polymode for R (weave/tangle/export, previous/next chunk)
-  - Document ESS
-- Integrate Markdown-toc (bug)
-- SQL server credentials
-- Configure Org mode
-- Additional functions

@@ -102,7 +102,6 @@ repositories. We first list these packages:
                        flycheck
                        flx
                        format-sql
-                       hideshow-org
                        highlight 
                        highlight-indent-guides
                        ivy-bibtex
@@ -112,7 +111,6 @@ repositories. We first list these packages:
                        magit-gitflow
                        markdown-mode
                        markdown-toc
-                       minimap
                        ;; minions          ; For Emacs 25.3
                        ;; moody            ; For Emacs 25.3
                        multiple-cursors
@@ -331,12 +329,6 @@ Visible bells (flashes the frame):
   visible-bell t
 #+END_SRC
 
-Minimap in side panel with ~C-F5~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl f5)] 'minimap-mode)
-#+END_SRC
-
 Ediff tries to split sensibly, and keep the Ediff window in the same
 frame:
 
@@ -480,7 +472,7 @@ Imenu to stay up to date automatically:
 #+END_SRC
 
 Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
-~C-S-F1~ and listed with ~C-S-F4~:
+~C-S-F3~ and listed with ~C-S-F4~:
 
 #+BEGIN_SRC emacs-lisp
   (setq bookmark-default-file (concat user-emacs-directory "cache/bookmarks"))
@@ -588,10 +580,10 @@ Org):
   (global-set-key (kbd "<C-tab>") 'ivy-switch-buffer)
 #+END_SRC
 
-Use =ivy-rich= to add more information to IVY results (only to switch
+Use =ivy-rich= to add more information to Ivy results (only to switch
 buffer so far):
 
-(check 'customize' branch for all IVY functions: https://github.com/Yevgnen/ivy-rich/tree/customize)
+(check 'customize' branch for all Ivy functions: https://github.com/Yevgnen/ivy-rich/tree/customize)
 
 #+BEGIN_SRC emacs-lisp
   (ivy-rich-mode 1)  
@@ -761,7 +753,8 @@ Multiple cursors (=multiple-cursors=), choices are saved in the
 =cache= folder; ~F11~ to have multiple cursors in all lines of a
 region; ~C-F11~ tries to be smart about marking everything you want
 (can be pressed multiple times); ~C-S-F11~ marks the next item like
-the selection (use then arrows to select more/less):
+the selection (use then arrows to select more/less); ~C-S-<left
+click>~ also set multiple cursors at mouse position:
 
 #+BEGIN_SRC emacs-lisp
   (setq mc/list-file (concat user-emacs-directory "cache/mc-lists.el"))
