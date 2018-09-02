@@ -82,14 +82,14 @@ repositories. We first list these packages:
                        buffer-move
                        centered-window
                        circadian
-                       col-highlight
+                       ;; col-highlight    ; EmacsWiki not on MELPA anymore
                        company
                        company-auctex
                        counsel
                        counsel-world-clock
                        color-theme-sanityinc-tomorrow 
                        dimmer
-                       dired+
+                       ;; dired+    ; EmacsWiki not on MELPA anymore
                        dired-narrow
                        dired-quick-sort
                        dired-sidebar
@@ -116,12 +116,12 @@ repositories. We first list these packages:
                        multiple-cursors
                        neotree
                        nord-theme
-                       org
+                       ;; org              ; Comes with org-plus-contrib
                        org-bullets
                        org-plus-contrib
                        pdf-tools
                        polymode
-                       rubik
+                       ;; rubik    ; EmacsWiki not on MELPA anymore
                        smex
                        sql-indent
                        sqlup-mode
@@ -156,6 +156,7 @@ Emacs will silently accept redefinitions of functions by packages:
 #+BEGIN_SRC emacs-lisp
   (setq ad-redefinition-action 'accept)
 #+END_SRC
+
 
 ** Additional functions
 
@@ -200,9 +201,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  (setq calendar-latitude 26.084534)
-  (setq calendar-longitude -80.238454)
-  (setq calendar-location-name "Fort Lauderdale, FL")
+  ;; (setq calendar-latitude 26.084534)
+  ;; (setq calendar-longitude -80.238454)
+  ;; (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -216,9 +217,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  ;; (setq calendar-latitude 43.6108)
-  ;; (setq calendar-longitude 3.8767)
-  ;; (setq calendar-location-name "Montpellier, FR")
+  (setq calendar-latitude 43.6108)
+  (setq calendar-longitude 3.8767)
+  (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -1054,22 +1055,26 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (add-hook 'pdf-view-mode-hook 
             '(lambda ()
                (pdf-misc-size-indication-minor-mode) ; Show page number in mode line
-               (pdf-links-minor-mode)                ; Activate links
+               ;; (pdf-links-minor-mode)                ; Activate links
                (pdf-isearch-minor-mode)              ; Incremental search using normal isearch
+               (define-key pdf-view-mode-map (kbd "h") 'pdf-view-fit-height-to-window) ; Fit height with 'h'
+               (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window) ; Fit width with 'w'
+               (define-key pdf-view-mode-map (kbd "f") 'pdf-view-fit-page-to-window) ; Fit page with 'p'
+               ;; Conflict with Pdf-Links minor mode, which uses 'f' for link search
                (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward) ; bound to `C-s`
                ;; (cua-mode 0) ; Turn off CUA so copy works
                (define-key pdf-view-mode-map (kbd "M-w") 'pdf-view-kill-ring-save) ; Use normal isearch
-
                (define-key pdf-view-mode-map (kbd "<C-home>") 'pdf-view-first-page) ; First page with C-Home
                (define-key pdf-view-mode-map (kbd "<C-end>") 'pdf-view-last-page))) ; Last page with C-End
 #+END_SRC
 
-From within a PDF, use ~P~ to fit the zoom to the page; ~H~ to the
-height, ~W~ to the width; ~g~ refreshes (reverts) the PDF; ~h~ opens
-the help of PDF tools. Highlight: select text with the mouse, then
-~C-c C-a h~, annotate, then ~C-c C-c~ to commit; ~C-c C-a t~ and then
-mouse click to add a text note somewhere to the pdf page; ~C-c C-a o~
-to strike-through text, and ~C-c C-a D~ and then click to delete an
+From within a PDF, use ~P~ to fit the zoom to the page; ~h~ or ~H~ to
+the height, ~w~ or ~W~ to the width; ~g~ refreshes (reverts) the PDF;
+~C-s~ for a regular text search; ~?~ opens the help of PDF
+tools. *Highlight:* select text with the mouse, then ~C-c C-a h~,
+annotate, then ~C-c C-c~ to commit; ~C-c C-a t~ and then mouse click
+to add a text note somewhere to the pdf page; ~C-c C-a o~ to
+strike-through text, and ~C-c C-a D~ and then click to delete an
 annotation. List annotations with ~C-c C-a l~. Don't forget to save
 the PDF (~C-x C-s~)!
 
