@@ -119,6 +119,7 @@ repositories. We first list these packages:
                        ;; org              ; Comes with org-plus-contrib
                        org-bullets
                        org-plus-contrib
+                       pandoc-mode
                        pdf-tools
                        polymode
                        ;; rubik    ; EmacsWiki not on MELPA anymore
@@ -127,9 +128,11 @@ repositories. We first list these packages:
                        sqlup-mode
                        string-inflection
                        sudden-death
+                       super-save
                        tango-plus-theme
                        toc-org
                        web-mode
+                       writeroom-mode
                        xkcd
                        yaml-mode
                        ))
@@ -201,9 +204,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  ;; (setq calendar-latitude 26.084534)
-  ;; (setq calendar-longitude -80.238454)
-  ;; (setq calendar-location-name "Fort Lauderdale, FL")
+  (setq calendar-latitude 26.084534)
+  (setq calendar-longitude -80.238454)
+  (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -217,9 +220,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  (setq calendar-latitude 43.6108)
-  (setq calendar-longitude 3.8767)
-  (setq calendar-location-name "Montpellier, FR")
+  ;; (setq calendar-latitude 43.6108)
+  ;; (setq calendar-longitude 3.8767)
+  ;; (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -821,6 +824,13 @@ which creates tmp lockfiles):
 
 #+BEGIN_SRC emacs-lisp
   (setq create-lockfiles nil)
+#+END_SRC
+
+[[https://github.com/bbatsov/super-save/][Super-save]] to automatically save files on special events (e.g. switch
+between buffers, an Emacs frame loses focus, etc.):
+
+#+BEGIN_SRC emacs-lisp
+  (super-save-mode +1)
 #+END_SRC
 
 [[http://www.emacswiki.org/emacs/AutoSave][Auto-save]] in =~/.emacs.d/save= (after 10 seconds or 100 characters):
