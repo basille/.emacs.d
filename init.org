@@ -85,6 +85,8 @@ repositories. We first list these packages:
                        ;; col-highlight    ; EmacsWiki not on MELPA anymore
                        company
                        company-auctex
+                       company-reftex
+                       company-math
                        counsel
                        counsel-world-clock
                        color-theme-sanityinc-tomorrow 
@@ -122,13 +124,17 @@ repositories. We first list these packages:
                        pandoc-mode
                        pdf-tools
                        polymode
+                       poly-R
+                       poly-markdown
+                       poly-noweb
+                       poly-org
                        ;; rubik    ; EmacsWiki not on MELPA anymore
                        smex
                        sql-indent
                        sqlup-mode
                        string-inflection
                        sudden-death
-                       super-save
+                       ;; super-save       ; Too aggressive
                        tango-plus-theme
                        toc-org
                        web-mode
@@ -544,7 +550,6 @@ Ivy for completion: =[[http://oremacs.com/swiper/][Ivy]]= comes with =Counsel= a
 to install =flx= for better sorting. Ivy mode and [[https://github.com/abo-abo/swiper#user-content-counsel][Counsel mode]]
 everywhere:
 
-
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
   (counsel-mode 1)
@@ -603,14 +608,15 @@ subfolder:
   (setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
 #+END_SRC
 
-Use Counsel for enhanced Find File (~C-x C-f~ or ~C-x C-o~ in other
-window):
+Use Counsel for enhanced M-x, Find File (~C-x C-f~ or ~C-x C-o~ in other
+window), yank (~C-S-y~):
 
 #+BEGIN_SRC emacs-lisp
   (setq counsel-find-file-at-point t)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-x C-o") 'find-file-other-window)
+  (global-set-key (kbd "C-S-s") 'counsel-yank-pop)
   ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
   ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
   ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
@@ -826,10 +832,10 @@ which creates tmp lockfiles):
   (setq create-lockfiles nil)
 #+END_SRC
 
-[[https://github.com/bbatsov/super-save/][Super-save]] to automatically save files on special events (e.g. switch
-between buffers, an Emacs frame loses focus, etc.):
+# [[https://github.com/bbatsov/super-save/][Super-save]] to automatically save files on special events (e.g. switch
+# between buffers, an Emacs frame loses focus, etc.):
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (super-save-mode +1)
 #+END_SRC
 
@@ -1496,6 +1502,13 @@ With [[https://github.com/cpitclaudel/biblio.el][=biblio.el=]], we can further c
 the DOI (using =doi-insert-bibtex=). 
 
 
+#+BEGIN_SRC emacs-lisp
+  (setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
+#+END_SRC
+
+
+
+
 ** Markdown
 
 [[http://jblevins.org/projects/markdown-mode/][Markdown-mode]] is used to edit Markdown files (=.md= or =.markdown=)
@@ -1524,6 +1537,15 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
 
 [[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
 
+# (check ESS news 18-10: "The ESS initialization process has been
+# further streamlined. If you update the autoloads (which installation
+# from package-install does), you should not need to (require
+# 'ess-site) at all, as autoloads should automatically load ESS when
+# it is needed (e.g. the first time an R buffer is opened). In order
+# to defer loading your ESS config, you may want to do something like
+# (with-require-after-load "ess" <ess-config-here>) in your Emacs init
+# file. Users of the popular use-package Emacs package can now do
+# (use-package ess :defer t) to take advantage of this behavior.")
 
 #+BEGIN_SRC emacs-lisp
   (require 'ess-site)
@@ -1556,7 +1578,7 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
        (ess-align-blocks control-flow)
        (ess-indent-from-lhs)
        (ess-indent-from-chain-start)
-       (ess-indent-with-fancy-comments . t)))))  
+       (ess-indent-with-fancy-comments . t)))))
 #+END_SRC
 
 # (defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
