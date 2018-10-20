@@ -78,6 +78,7 @@ repositories. We first list these packages:
                        apropospriate-theme
                        auctex
                        auctex-latexmk
+                       ;; beginend         ; Requires Emacs 25.3
                        bonjourmadame
                        buffer-move
                        centered-window
@@ -107,6 +108,7 @@ repositories. We first list these packages:
                        highlight 
                        highlight-indent-guides
                        ivy-bibtex
+                       ivy-prescient
                        ivy-rich
                        ;; ivy-posframe     ; For Emacs 26.0
                        magit
@@ -377,7 +379,6 @@ Highlight current line globally (and toggle it with ~C-F10~):
   (global-set-key [(ctrl f10)] 'global-hl-line-mode)
 #+END_SRC
 
-
 Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-S-F10~ to toggle column highlight
 mode.
 
@@ -422,6 +423,12 @@ Recenter with ~C-l~ starts with top, then middle, then bottom:
 
 #+BEGIN_SRC emacs-lisp
   (setq recenter-positions '(top middle bottom))
+#+END_SRC
+
+[[https://github.com/DamienCassou/beginend][Beginend]] (with Emacs 25.3):
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (beginend-global-mode)
 #+END_SRC
 
 [[https://github.com/magnars/expand-region.el][Expand region]] with ~C-=~ (then continue to expand by pressing ~=~ or
@@ -500,12 +507,23 @@ Add column number to the mode line:
   (column-number-mode 1)
 #+END_SRC
 
+[[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
+mode-line, and show replacement interactively. Replace is bound to
+~C-r~, and replace using a RegExp is bound to ~C-M-r~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-anzu-mode 1)
+  (anzu-mode 1)
+  (global-set-key (kbd "C-r") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
+#+END_SRC
+
 Custom mode-line, mostly simplified (shows if file modified, file
 name, Git branch, remote file, major mode, and position as `line:col
 (percent)`:
 
 #+BEGIN_SRC emacs-lisp
-  (setq-default mode-line-format (list
+  (setq-default mode-line-format '(
                                   "%e"  ; Error message about full memory
                                   mode-line-front-space
                                   "%* " ; Modified or read-only buffer
@@ -519,24 +537,13 @@ name, Git branch, remote file, major mode, and position as `line:col
                                   ;; mode-line-modes ; This includes minor modes
                                   "%m" ; Only major mode
                                   "      "
-                                  ;; mode-line-position
-                                  "%l:%c (%p)" ; line number : column number (percent) (does not work with PDF mode)
+                                  mode-line-position
+                                  ;; "%l:%c (%p)" ; line number : column number (percent) 
+                                  (does not work with PDF mode)
                                   mode-line-misc-info ; Not sure…
                                   mode-line-end-spaces
                                   ))
 #+END_SRC
-
-[[https://github.com/syohex/emacs-anzu][Anzu]]: display current match and total matches information in the
-mode-line, and show replacement interactively. Replace is bound to
-~C-r~, and replace using a RegExp is bound to ~C-M-r~:
-
-#+BEGIN_SRC emacs-lisp
-  (global-anzu-mode 1)
-  (anzu-mode 1)
-  (global-set-key (kbd "C-r") 'anzu-query-replace)
-  (global-set-key (kbd "C-M-r") 'anzu-query-replace-regexp)
-#+END_SRC
-
 
 
 ** Minibuffer
@@ -549,10 +556,11 @@ Answer with y/n instead of yes/no:
 
 Ivy for completion: =[[http://oremacs.com/swiper/][Ivy]]= comes with =Counsel= as dependencies; needs
 to install =flx= for better sorting. Ivy mode and [[https://github.com/abo-abo/swiper#user-content-counsel][Counsel mode]]
-everywhere:
+everywhere (using '[[https://github.com/raxod502/prescient.el][prescient]]' sorting):
 
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
+  (ivy-prescient-mode 1)
   (counsel-mode 1)
 #+END_SRC
 
@@ -1082,7 +1090,7 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
                (pdf-isearch-minor-mode)              ; Incremental search using normal isearch
                (define-key pdf-view-mode-map (kbd "h") 'pdf-view-fit-height-to-window) ; Fit height with 'h'
                (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window) ; Fit width with 'w'
-               (define-key pdf-view-mode-map (kbd "f") 'pdf-view-fit-page-to-window) ; Fit page with 'p'
+               (define-key pdf-view-mode-map (kbd "f") 'pdf-view-fit-page-to-window) ; Fit page with 'f' DOES NOT WORK!
                ;; Conflict with Pdf-Links minor mode, which uses 'f' for link search
                (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward) ; bound to `C-s`
                ;; (cua-mode 0) ; Turn off CUA so copy works
