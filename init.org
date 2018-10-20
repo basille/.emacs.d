@@ -128,6 +128,7 @@ repositories. We first list these packages:
                        poly-markdown
                        poly-noweb
                        poly-org
+                       powerthesaurus
                        ;; rubik    ; EmacsWiki not on MELPA anymore
                        smex
                        sql-indent
@@ -815,6 +816,12 @@ click) opens the list of correction suggestions:
 Syntax can be checked with the [[https://github.com/flycheck/flycheck][Flycheck]] package (need to install
 =lintr= package for R); I recommend to turn it on on demand (=M-x
 flycheck-mode=).
+
+Thesaurus using [[https://www.powerthesaurus.org/][Power Thesaurus]] with ~C-'~:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-'") 'powerthesaurus-lookup-word-dwim)
+#+END_SRC
 
 
 ** File saving
