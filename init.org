@@ -431,11 +431,11 @@ Recenter with ~C-l~ starts with top, then middle, then bottom:
   (beginend-global-mode)
 #+END_SRC
 
-[[https://github.com/magnars/expand-region.el][Expand region]] with ~C-=~ (then continue to expand by pressing ~=~ or
+[[https://github.com/magnars/expand-region.el][Expand region]] with ~C-@~ (then continue to expand by pressing ~@~ or
 contract by pressing ~-~):
 
 #+BEGIN_SRC emacs-lisp
-  ;;  (require 'expand-region)
+(global-set-key (kbd "C-@") 'er/expand-region)
 #+END_SRC
 
 [[https://github.com/shanecelis/hideshow-org][HideShow]] (fold or unfold functions/regions with ~TAB~ or ~C-S-F10~ if
@@ -1085,7 +1085,7 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
   (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
   (add-hook 'pdf-view-mode-hook 
             '(lambda ()
-               (pdf-misc-size-indication-minor-mode) ; Show page number in mode line
+               (pdf-misc-size-indication-minor-mode) ; Show Top/Bot number in mode line?
                ;; (pdf-links-minor-mode)                ; Activate links
                (pdf-isearch-minor-mode)              ; Incremental search using normal isearch
                (define-key pdf-view-mode-map (kbd "h") 'pdf-view-fit-height-to-window) ; Fit height with 'h'
@@ -1138,14 +1138,16 @@ browser (Firefox for me).
 ** Org
 
 Org mode comes with its own keybindings, ([[http://orgmode.org/manual/Conflicts.html][which can easily conflict
-with other settings]]).
+with other settings]]); ~RET~ follows links.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key "\C-cl" 'org-store-link)
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cc" 'org-capture)
   (global-set-key "\C-cb" 'org-switchb)
-  (setq org-replace-disputed-keys t)
+  (setq
+   org-replace-disputed-keys t
+   org-return-follows-link t)
 #+END_SRC
 
 Turn on indent mode, and use nice UTF-8 bullet points:
@@ -1563,7 +1565,6 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
 # (use-package ess :defer t) to take advantage of this behavior.")
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ess-site)
   (setq
    ess-default-style 'OWN
    inferior-ess-same-window nil         ; Run R in inferior window
@@ -1608,7 +1609,9 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'ess-mode-hook 
             (lambda ()
+              (local-set-key (kbd "C-=") 'ess-cycle-assign) ; C-= cycles through <- = <<- etc.
               (flyspell-prog-mode)
+              (prettify-symbols-mode)   ; Change <- into ←, etc.
               ;; (require 'ess-smart-underscore) 
               (highlight-indent-guides-mode) ; Highlight indentation using
                                         ; 'highlight-indent-guides'
@@ -1659,9 +1662,9 @@ In an ESS inferior buffer, use ~C-l~ to send commands directly to the
 subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][useful for =screen= for instance]]):
 
 #+BEGIN_SRC emacs-lisp
-  (define-key inferior-ess-mode-map (kbd "C-l")
-    (lambda (seq) (interactive "k")
-      (process-send-string nil seq)))
+  ;; (define-key inferior-ess-mode-map (kbd "C-l")
+  ;;   (lambda (seq) (interactive "k")
+  ;;     (process-send-string nil seq)))
 #+END_SRC
 
 In (R)Markdown, add a fenced R code block (~C-return~) or inline R
