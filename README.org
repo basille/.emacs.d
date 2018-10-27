@@ -3,13 +3,23 @@
 #+EMAIL: basille@ufl.edu
 
 
-* Table of Contents                                                     :TOC:
+* Table of Contents                                                     :TOC_3:
 - [[#getting-started][Getting started]]
   - [[#pre-requisites][Pre-requisites]]
   - [[#configuring-emacs][Configuring Emacs]]
   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
 - [[#key-bindings][Key bindings]]
   - [[#general][General]]
+    - [[#windows-and-buffers][Windows and buffers]]
+    - [[#search-and-replace][Search and replace]]
+    - [[#regular-expressions][Regular Expressions]]
+    - [[#edit][Edit]]
+    - [[#operations][Operations]]
+    - [[#keyboard-macros][Keyboard macros]]
+    - [[#bookmarks][Bookmarks]]
+    - [[#completion-and-ivy][Completion and Ivy]]
+    - [[#flycheck][Flycheck]]
+    - [[#rectangles][Rectangles]]
   - [[#file-manager][File manager]]
   - [[#magit][Magit]]
   - [[#web-browser][Web browser]]
@@ -276,6 +286,15 @@ status.showUntrackedFiles normal=)
 | ~C-x C-e~ | Evaluate lisp expression                         |
 | ~C-x C-y~ | Evaluate lisp expression and replace with result |
 | ~M-g M-g~ | Go to a given line number                        |
+
+*** Keyboard macros
+
+| Key name        | Operation                                                              |
+|-----------------+------------------------------------------------------------------------|
+| ~C-x (~         | Start the macro                                                        |
+| ~C-x )~         | Stop the macro                                                         |
+| ~C-x e~         | Execute the macro once                                                 |
+| ~C-u <n> C-x e~ | Execute the macro n times (0 for infinite; can be negative like ~- 5~) |
 
 *** Bookmarks
 
