@@ -165,6 +165,11 @@ This file looks like that:
   (mkdir (concat user-emacs-directory "save"))
   (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
   (setq save-abbrevs 'silently)
+
+  ;; Download a couple of functions from EmacsWiki
+  ;; (url-copy-file "https://www.emacswiki.org/emacs/download/col-highlight.el" (concat user-emacs-directory "functions/col-highlight.el") ok-if-already-exists)
+  ;; (url-copy-file "https://www.emacswiki.org/emacs/download/dired%2b.el" (concat user-emacs-directory "functions/dired+.el") ok-if-already-exists)
+
   
   ;; We can't tangle without org!
   (require 'org)
@@ -205,7 +210,7 @@ status.showUntrackedFiles normal=)
 
 ** General
 
-*** Buffers
+*** Windows and buffers
 
 | Key name       | Operation                      |
 |----------------+--------------------------------|
@@ -214,6 +219,7 @@ status.showUntrackedFiles normal=)
 | ~C-~~          | Next window (key above TAB)    |
 | ~C-TAB~        | Cycle through buffers with IVY |
 | ~C-x k~        | Kill THIS buffer               |
+| ~C-x +~        | Balance the sizes of windows   |
 
 *** Search and replace
 
