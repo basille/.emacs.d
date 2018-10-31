@@ -233,14 +233,15 @@ status.showUntrackedFiles normal=)
 
 *** Search and replace
 
-| Key name  | Operation                                               |
-|-----------+---------------------------------------------------------|
-| ~C-s~     | Search using Swiper                                     |
-| ~C-S-s~   | =ivy-resume=: go back to state of last search                                   |
-| ~C-r~     | Replace                                                 |
-| ~C-M-r~   | Replace using a RegExp                                  |
-| ~C-+~     | Count words in region                                   |
-| ~C-=~     | Expand region (more: ~=~; less: ~-~)                    |
+| Key name | Operation                                     |
+|----------+-----------------------------------------------|
+| ~C-s~    | Search using Swiper                           |
+| ~C-S-s~  | =ivy-resume=: go back to state of last search |
+| ~C-S-y~  | Yank from history                             |
+| ~C-r~    | Replace                                       |
+| ~C-M-r~  | Replace using a RegExp                        |
+| ~C-+~    | Count words in region                         |
+| ~C-=~    | Expand region (more: ~=~; less: ~-~)          |
 
 *** Regular Expressions
 
