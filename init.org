@@ -1494,7 +1494,22 @@ mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
 
 #+BEGIN_SRC emacs-lisp
   (defun current-date ()
-    (format-time-string "%Y.%m.%d"))    
+    (format-time-string "%Y.%m.%d"))
+  (defun bibtex-add-date-owner ()
+    ;; Tyler https://emacs.stackexchange.com/users/262/tyler
+    ;; https://emacs.stackexchange.com/a/46339
+    "Adds a timestamp and owner field to a bibtex entry.
+  Checks to make sure it doesn't exist first."
+    (interactive)
+    (save-excursion
+      (bibtex-beginning-of-entry)
+      (if (assoc "timestamp" (bibtex-parse-entry))
+          (message "timestamp already exists!")
+        (bibtex-make-field '("timestamp" nil current-date) t nil))
+      (if (assoc "timestamp" (bibtex-parse-entry))
+          (message "timestamp already exists!")
+        (bibtex-make-field '("owner" nil user-login-name) t nil))
+      ))
   (setq
    bibtex-entry-format '(opts-or-alts required-fields numerical-fields whitespace realign unify-case sort-fields) ; Clean optional fields, remove brackets around numerical fields, remove white space, realign, unify case of entry type and fields, sort fields in predefined order
    bibtex-align-at-equal-sign t    ; Also align = sign
@@ -1520,7 +1535,8 @@ the DOI (using =doi-insert-bibtex=).
 
 
 #+BEGIN_SRC emacs-lisp
-  (setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
+(add-hook 'bibtex-clean-entry-hook 'bibtex-add-date-owner)
+(setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
 #+END_SRC
 
 
