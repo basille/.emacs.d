@@ -383,11 +383,14 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** Magit
 
-| Key name | Operation                                        |
-|----------+--------------------------------------------------|
-| ~y~      | Show information on branches and commits         |
-| ~C-f~    | GitFlow from within Magit                        |
-| ~K~      | =git ls-files= from within Magit                 |
+| Key name | Operation                                          |
+|----------+----------------------------------------------------|
+| ~y~      | Show information on branches and commits           |
+| ~C-f~    | GitFlow from within Magit                          |
+| ~K~      | =git ls-files= from within Magit                   |
+|----------+----------------------------------------------------|
+| ~e~      | In case of conflicts, open =Ediff= on file         |
+| ~k~      | In case of conclicts, ask to delete our/their file |
 
 
 ** Web browser

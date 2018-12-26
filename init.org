@@ -213,9 +213,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  (setq calendar-latitude 26.084534)
-  (setq calendar-longitude -80.238454)
-  (setq calendar-location-name "Fort Lauderdale, FL")
+  ;; (setq calendar-latitude 26.084534)
+  ;; (setq calendar-longitude -80.238454)
+  ;; (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -229,9 +229,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  ;; (setq calendar-latitude 43.6108)
-  ;; (setq calendar-longitude 3.8767)
-  ;; (setq calendar-location-name "Montpellier, FR")
+  (setq calendar-latitude 43.6108)
+  (setq calendar-longitude 3.8767)
+  (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -1436,7 +1436,8 @@ stored,
 and the list of potential extensions used there:
 
 #+BEGIN_SRC emacs-lisp
-  (setq
+(require 'ivy-bibtex)
+(setq
    bibtex-completion-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib")
    bibtex-completion-library-path '("/home/mathieu/Work/Biblio/PDF/")
    ;; bibtex-completion-pdf-field "File"
@@ -1445,20 +1446,30 @@ and the list of potential extensions used there:
 #+END_SRC
 
 By default a PDF will be open in Emacs (with =pdf-tools=);
-alternatively, Evince can also be used:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq bibtex-completion-pdf-open-function
-        (lambda (fpath)
-          (call-process "evince" nil 0 nil fpath)))
-#+END_SRC
-
-Add =journal= and =booktitle= to fields to be searched; fields to be
-displayed: PDF, author, title, year, and journal/booktitle/type:
+alternatively, Evince can also be used with ~P~:
 
 #+BEGIN_SRC emacs-lisp
-  (setq bibtex-completion-additional-search-fields
-        '(journal booktitle)
+(defun bibtex-completion-open-pdf-external (keys &optional fallback-action)
+  (let ((bibtex-completion-pdf-open-function
+         (lambda (fpath) (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath))))
+    (bibtex-completion-open-pdf keys fallback-action)))
+
+(ivy-bibtex-ivify-action bibtex-completion-open-pdf-external ivy-bibtex-open-pdf-external)
+
+(ivy-add-actions
+ 'ivy-bibtex
+ '(("P" ivy-bibtex-open-pdf-external "Open PDF file in external viewer (if present)")))
+#+END_SRC
+
+Add =keywords=, =journal= and =booktitle= to fields to be searched;
+additional PDFs (starting with BibTeX key) are also detected;
+fields to be displayed: PDF, author, title, year, and
+journal/booktitle/type:
+
+#+BEGIN_SRC emacs-lisp
+(setq bibtex-completion-additional-search-fields
+      '(keywords journal booktitle)
+      bibtex-completion-find-additional-pdfs t
         bibtex-completion-display-formats
         '(
           (article        . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} ${journal:40}")
