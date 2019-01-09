@@ -207,15 +207,15 @@ Screen saver after 5 minutes:
 With the help of the package [[https://github.com/guidoschmidt/circadian.el][circadian]], Emacs can switch themes based
 on sunrise and sunset. I will use [[https://github.com/waymondo/apropospriate-theme][apropospriate-light-theme]] during the
 day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night (with brightness of comments at
-15%). Coordinates are for South Florida:
+20%). Coordinates are for South Florida:
 
 #+BEGIN_SRC emacs-lisp
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  ;; (setq calendar-latitude 26.084534)
-  ;; (setq calendar-longitude -80.238454)
-  ;; (setq calendar-location-name "Fort Lauderdale, FL")
+  (setq calendar-latitude 26.084534)
+  (setq calendar-longitude -80.238454)
+  (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -229,9 +229,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  (setq calendar-latitude 43.6108)
-  (setq calendar-longitude 3.8767)
-  (setq calendar-location-name "Montpellier, FR")
+  ;; (setq calendar-latitude 43.6108)
+  ;; (setq calendar-longitude 3.8767)
+  ;; (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -567,7 +567,9 @@ everywhere (using '[[https://github.com/raxod502/prescient.el][prescient]]' sort
 Simple customization:
 
 #+BEGIN_SRC emacs-lisp
-  (setq
+(setq
+ ;; Maximum size of 30% of screen instead of 25%
+   max-mini-window-height 0.30
    ;; Add recent files and bookmarks to ‘ivy-switch-buffer’
    ivy-use-virtual-buffers t
    ;; Format counters with (xx/XX)
