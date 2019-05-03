@@ -104,6 +104,7 @@ repositories. We first list these packages:
                        expand-region
                        flycheck
                        flx
+                       ;; forge
                        format-sql
                        highlight 
                        highlight-indent-guides
@@ -113,6 +114,7 @@ repositories. We first list these packages:
                        ;; ivy-posframe     ; For Emacs 26.0
                        magit
                        magit-gitflow
+                       magithub
                        markdown-mode
                        markdown-toc
                        ;; minions          ; For Emacs 25.3
@@ -485,7 +487,7 @@ navigate interactively a long document (bound to ~C-M-=~); we ask
 Imenu to stay up to date automatically:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-M-=") #'imenu)
+  (global-set-key (kbd "C-c =") #'imenu)
   (setq imenu-auto-rescan t)
 #+END_SRC
 
@@ -957,7 +959,7 @@ Remove =.= from the list of files/folders (and be silent about it):
 Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to
 ~F5~; turn off wrapping long lines):
 
-(to be replaced by =[[https://github.com/sebastiencs/sidebar.el][sidebar]]= when it reaches MELPA)
+(to be replaced by [[https://github.com/sebastiencs/sidebar.el][sidebar]] when it reaches MELPA)
 
 #+BEGIN_SRC emacs-lisp
   (setq neo-theme 'ascii)
@@ -1005,8 +1007,9 @@ already disable entirely below:
 installed, it pretty much works out of the box, there are just a
 couple of settings to make it even smoother (use Ivy to complete;
 links to Git-man; automatically refresh the repository's status after
-file save). We also bound Magit to ~F8~, and integrate Git-flow to
-Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
+file save). We also bound Magit to ~F8~, and integrate Git-flow
+(=magit-gitflow=, started with ~C-f~) and Forge
+(=forge-dispatch-popup= started with ~'~) to Magit:
 
 #+BEGIN_SRC emacs-lisp
   (load-library "magit-repository-directories")
@@ -1034,13 +1037,15 @@ Magit (=magit-gitflow=, started with ~C-f~ from within Magit):
     ;; (setcdr (cdr magit-repolist-columns)
     ;;         (cons '("D" 1 magit-repolist-column-dirty nil)
     ;;               (cddr magit-repolist-columns)))
-    
+     ;; (require 'forge)
     (define-key magit-mode-map (kbd "K") 'magit-ls-files)
     (add-hook 'after-save-hook 'magit-after-save-refresh-status))
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
   (with-eval-after-load 'magit-mode
     ;; C-tab is for ivy-switch-buffer
-    (define-key magit-mode-map [C-tab] nil))
+    (define-key magit-mode-map [C-tab] nil)
+    ;; (magithub-feature-autoinject t)
+    )
 #+END_SRC
 
 
@@ -1355,12 +1360,13 @@ Gantt charts:
 ** LaTeX
 
 The main package for LaTeX in Emacs is AUCTeX. In this configuration,
-AUCTeX integrates RefTeX (references), LatexMk (compilation) and PDF
-Tools (visualization). Note that compilation logs are not shown by
-default (use ~C-c C-l~ to see them, or add =(setqTeX-show-compilation
-t)= in the =LaTeX-mode-hook=). We start by configuring the LaTeX mode
-(notably RefTeX, fold LaTeX environments [F], Math mode [M],
-compilation as PDF [P], forward and inverse search [S]):
+AUCTeX integrates RefTeX (references), LatexMk and XeLaTeX
+(compilation) and PDF Tools (visualization). Note that compilation
+logs are not shown by default (use ~C-c C-l~ to see them, or add
+=(setqTeX-show-compilation t)= in the =LaTeX-mode-hook=). We start by
+configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
+[F], Math mode [M], compilation as PDF [P], forward and inverse search
+[S]):
 
 #+BEGIN_SRC emacs-lisp
   (setq TeX-parse-self t                ; Enable parse on load.
@@ -1374,6 +1380,7 @@ compilation as PDF [P], forward and inverse search [S]):
   (add-hook 'LaTeX-mode-hook 
             (lambda ()
               (TeX-global-PDF-mode t)   ; Compile as PDF
+              (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
               (LaTeX-math-mode)         ; Math mode
               (turn-on-reftex)          ; RefTeX on
               (outline-minor-mode 1)	; Fold LaTeX sections
@@ -1431,9 +1438,8 @@ and refresh it automatically:
 
 ** BibTeX
 
-BibTex is managed through =[[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]=. It needs to know the location
-of the main bibliography (can handle several), where the PDF are
-stored, 
+BibTex is managed through [[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]. It needs to know the location of
+the main bibliography (can handle several), where the PDF are stored,
 # the additional field =File= for additional attached files,
 and the list of potential extensions used there:
 
@@ -1538,21 +1544,15 @@ mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
                                  ("timestamp" "Time the entry was created" current-date)
                                  ("owner" "Owner of the entry" user-login-name)
                                  ("abstract" "Abstract for the entry"))
-   )  
+   )
+  (add-hook 'bibtex-clean-entry-hook 'bibtex-add-date-owner)
+(setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
 #+END_SRC
 
 With [[https://github.com/cpitclaudel/biblio.el][=biblio.el=]], we can further check out query CrossRef or arXiv
 (using =biblio-lookup=, then copy and insert with ~c~ and ~i~; ~C~ and
 ~I~ do the same, but additionally close the search window), or with
 the DOI (using =doi-insert-bibtex=). 
-
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'bibtex-clean-entry-hook 'bibtex-add-date-owner)
-(setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
-#+END_SRC
-
-
 
 
 ** Markdown
@@ -1567,10 +1567,22 @@ and is loaded automatically. We simply enable Math and Imenu:
 # of contents at point):
 
 #+BEGIN_SRC emacs-lisp
-  (setq markdown-enable-math t)
-  (add-hook 'markdown-mode-hook 
-            (lambda ()
-              (imenu-add-menubar-index)))
+(setq
+ markdown-command
+ (concat ; Use Pandoc to convert Markdown to HTML, to produce a
+         ; standalone HTML document rather than a snippet, to enable
+         ; MathJax (to render LaTeX as MathML), and to use Pygments
+         ; for syntax highlighting of code blocks
+  "/usr/local/bin/pandoc"
+  " --from=markdown --to=html"
+  " --standalone --mathjax --highlight-style=pygments")
+ markdown-asymmetric-header t           ; Asymetric headers (only # on the left)
+ markdown-enable-math t                 ; Enable mathematical expressions (LaTeX)
+ 
+ )
+;; (add-hook 'markdown-mode-hook 
+;;           (lambda ()
+;;             (imenu-add-menubar-index)))
 #+END_SRC
 
 
