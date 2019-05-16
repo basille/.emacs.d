@@ -100,7 +100,7 @@ repositories. We first list these packages:
                        ebib
                        eshell-git-prompt
                        ess
-                       ess-smart-underscore
+                       ;; ess-smart-underscore
                        expand-region
                        flycheck
                        flx
@@ -215,9 +215,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  (setq calendar-latitude 26.084534)
-  (setq calendar-longitude -80.238454)
-  (setq calendar-location-name "Fort Lauderdale, FL")
+  ;; (setq calendar-latitude 26.084534)
+  ;; (setq calendar-longitude -80.238454)
+  ;; (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -231,9 +231,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  ;; (setq calendar-latitude 43.6108)
-  ;; (setq calendar-longitude 3.8767)
-  ;; (setq calendar-location-name "Montpellier, FR")
+  (setq calendar-latitude 43.6108)
+  (setq calendar-longitude 3.8767)
+  (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -1593,8 +1593,6 @@ prepare packages. ESS is simply loaded with:
 
 R is not a =prog-mode=, so it needs its own settings in the ESS hook.
 
-[[https://github.com/mattfidler/ess-smart-underscore.el][ESS Smart Underscore]]
-
 # (check ESS news 18-10: "The ESS initialization process has been
 # further streamlined. If you update the autoloads (which installation
 # from package-install does), you should not need to (require
@@ -1635,7 +1633,7 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
        (ess-align-blocks control-flow)
        (ess-indent-from-lhs)
        (ess-indent-from-chain-start)
-       (ess-indent-with-fancy-comments . t)))))
+     (ess-indent-with-fancy-comments . t)))))
 #+END_SRC
 
 # (defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
@@ -1664,6 +1662,9 @@ R is not a =prog-mode=, so it needs its own settings in the ESS hook.
               (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
                         (lambda ()
                           (ess-nuke-trailing-whitespace)))
+              (define-key ess-r-mode-map ";" #'ess-insert-assign) ; `;` inserts ` <- ` (type twice for a real ";")
+              (define-key inferior-ess-r-mode-map ";" #'ess-insert-assign)
+              
               ))
 #+END_SRC
 
@@ -1697,7 +1698,6 @@ buffer (bound to ~C-x C-i~):
               (load-library "rfmt-emacs")
               (local-set-key (kbd "C-x C-i") 'rfmt-buffer)))
 #+END_SRC
-
 
 In an ESS inferior buffer, use ~C-l~ to send commands directly to the
 subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][useful for =screen= for instance]]):
