@@ -55,11 +55,12 @@
           (puthash "PDF" "pdf_document" output-format-table)
           (puthash "ODT" "odt_document" output-format-table)
           (puthash "Word" "word_document" output-format-table)
+          (puthash "reveal.js" "revealjs_presentation" output-format-table)
           (puthash "All" "all" output-format-table)
           (let* ((sprocess (ess-get-process ess-current-process-name))
                  (sbuffer (process-buffer sprocess))
                  (buf-filename (buffer-file-name))
-                 (output-format-user (completing-read "Output format: " '("HTML" "PDF" "ODT" "Word" "All")))
+                 (output-format-user (completing-read "Output format: " '("HTML" "PDF" "ODT" "Word" "reveal.js" "All")))
                  (output-format (gethash output-format-user output-format-table))
                  (render-cmd
                   (format "rmarkdown::render(\"%s\", encoding = \"UTF-8\", output_format = \"%s\")" buf-filename output-format)))

@@ -215,9 +215,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   (setq nord-comment-brightness 20)
   ;; (load-theme 'nord t)
   ;; Fort Lauderdale
-  ;; (setq calendar-latitude 26.084534)
-  ;; (setq calendar-longitude -80.238454)
-  ;; (setq calendar-location-name "Fort Lauderdale, FL")
+  (setq calendar-latitude 26.084534)
+  (setq calendar-longitude -80.238454)
+  (setq calendar-location-name "Fort Lauderdale, FL")
   ;; Trondheim
   ;; (setq calendar-latitude 63.446827)
   ;; (setq calendar-longitude 10.421906)
@@ -231,9 +231,9 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
   ;; (setq calendar-longitude -2.9916)
   ;; (setq calendar-location-name "London, UK")
   ;; Montpellier
-  (setq calendar-latitude 43.6108)
-  (setq calendar-longitude 3.8767)
-  (setq calendar-location-name "Montpellier, FR")
+  ;; (setq calendar-latitude 43.6108)
+  ;; (setq calendar-longitude 3.8767)
+  ;; (setq calendar-location-name "Montpellier, FR")
   ;; (setq circadian-themes '((:sunrise . apropospriate-light)
   ;;                          (:sunset  . nord)))
   (setq circadian-themes '((:sunrise . tango-plus)
@@ -1591,157 +1591,243 @@ and is loaded automatically. We simply enable Math and Imenu:
 ** ESS
 
 ESS to use R, edit R script, edit R documentation (Roxygen) and
-prepare packages. ESS is simply loaded with:
+prepare packages. R is not a =prog-mode=, so it needs its own settings
+in the ESS hook.
 
-R is not a =prog-mode=, so it needs its own settings in the ESS hook.
+*** Load R
 
-# (check ESS news 18-10: "The ESS initialization process has been
-# further streamlined. If you update the autoloads (which installation
-# from package-install does), you should not need to (require
-# 'ess-site) at all, as autoloads should automatically load ESS when
-# it is needed (e.g. the first time an R buffer is opened). In order
-# to defer loading your ESS config, you may want to do something like
-# (with-require-after-load "ess" <ess-config-here>) in your Emacs init
-# file. Users of the popular use-package Emacs package can now do
-# (use-package ess :defer t) to take advantage of this behavior.")
+Use current directory as working directory
 
 #+BEGIN_SRC emacs-lisp
-  (setq
-   ess-default-style 'OWN
-   inferior-ess-same-window nil         ; Run R in inferior window
-   ess-ask-for-ess-directory nil ; Use current directory as working directory
-   inferior-R-args "--quiet --no-save"  ; No save on exit
-   ess-nuke-trailing-whitespace-p t     ; remove trailing spaces
-   comint-scroll-to-bottom-on-input t ; Always scroll to the end of the R buffer
-   comint-scroll-to-bottom-on-output t ; Scroll automatically when output reaches bottom
-   ;; comint-move-point-for-output t
-   ess-eval-visibly 'nowait             ; Does not wait for R
-   ess-swv-processor 'knitr ; Use knitr instead of Sweave as ESS processor
-   ess-roxy-fontify-examples t ; Syntax highlighting in Roxygen examples
-   ess-swv-plug-into-auctex-p t ; Add integration of Sweave/Kniter into AUCTeX
-   ess-use-ido nil              ; ESS should not use IDO for completion
-   )
-  (custom-set-variables
-   '(ess-own-style-list
-     (quote
-      ((ess-indent-offset . 4)
-       (ess-offset-arguments . prev-line)
-       (ess-offset-arguments-newline . prev-line)
-       (ess-offset-block . prev-line)
-       (ess-offset-continued . straight)
-       (ess-align-nested-calls)
-       (ess-align-arguments-in-calls)
-       (ess-align-continuations-in-calls . prev-line)
-       (ess-align-blocks control-flow)
-       (ess-indent-from-lhs)
-       (ess-indent-from-chain-start)
-     (ess-indent-with-fancy-comments . t)))))
+(setq ess-ask-for-ess-directory nil)
 #+END_SRC
 
-# (defcustom ess-own-style-list (cdr (assoc 'RRR ess-style-alist))
-#   "Indentation using R parser rules"
-#   :group 'ess-edit
-#   :type 'alist
-#   :initialize 'custom-initialize-set
-#   :set (lambda (symbol value)
-#          (set symbol value)
-#          (ess-add-style 'R value)))
+No startup message and no save on exit
 
 #+BEGIN_SRC emacs-lisp
+(setq inferior-R-args "--quiet --no-save")
+#+END_SRC
+
+*** Layout
+
+All R buffers except code on the right side; R buffer dedicated at the
+bottom, R Dired and Help stick to the top:
+
+#+BEGIN_SRC emacs-lisp
+(setq display-buffer-alist
+      `(("*R Dired"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.5)
+         (reusable-frames . nil))
+        ("*R"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . 1)
+         (window-width . 0.5)
+         (reusable-frames . nil)
+         (dedicated . t))
+        ("*Help"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.5)
+         (reusable-frames . nil))))
+#+END_SRC
+
+Width of R buffer automatically adjusted to window:
+
+#+BEGIN_SRC emacs-lisp
+(setq ess-auto-width 'window)
+#+END_SRC
+
+*** Evaluation
+
+When input is sent to the iESS buffer, does not wait for the process to finish, ensuring Emacs is not blocked:
+
+#+BEGIN_SRC emacs-lisp
+(setq ess-eval-visibly 'nowait)
+#+END_SRC
+
+*** Style
+
+#+BEGIN_SRC emacs-lisp
+(setq ess-default-style 'OWN)
+(custom-set-variables
+ '(ess-own-style-list
+   (quote
+    ((ess-indent-offset . 4)
+     (ess-indent-from-lhs)
+     (ess-indent-from-chain-start)
+     (ess-indent-with-fancy-comments . t)
+     (ess-offset-arguments . prev-line)
+     (ess-offset-arguments-newline . prev-line)
+     (ess-offset-block . prev-line)
+     (ess-offset-continued . straight)
+     (ess-align-nested-calls)
+     (ess-align-arguments-in-calls)
+     (ess-align-continuations-in-calls . prev-line)
+     (ess-align-blocks control-flow)))))
+#+END_SRC
+
+Use the R parser (=ess-indent-region-as-r=), =formatR=
+(=ess-indent-region-with-formatr=) or =styler= (=ess-indent-region-with-styler=) to format R code. The later
+is bound to ~C-M-\~ ou =M-x indent-region=.
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook
+            (lambda ()
+            (load-library "ess-indent-region-r")
+            (set (make-local-variable 'indent-region-function)
+               'ess-indent-region-with-styler))))
+#+END_SRC
+
+*** Editing scripts
+
+Automagically delete trailing whitespace when saving R script files:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook
+            '(lambda()
+               (add-hook 'write-contents-functions
+                         (lambda ()
+                           (ess-nuke-trailing-whitespace)))
+               (setq ess-nuke-trailing-whitespace-p t))))
+#+END_SRC
+
+ESS should not use IDO for completion; use company instead:
+
+#+BEGIN_SRC emacs-lisp
+(setq ess-use-ido nil)
+#+END_SRC
+
+~C-=~ to insert =<-= and cycle:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook 
             (lambda ()
-              (local-set-key (kbd "C-=") 'ess-cycle-assign) ; C-= cycles through <- = <<- etc.
-              (flyspell-prog-mode)
-              (prettify-symbols-mode)   ; Change <- into ←, etc.
-              ;; (require 'ess-smart-underscore) 
-              (highlight-indent-guides-mode) ; Highlight indentation using
-                                        ; 'highlight-indent-guides'
-              (subword-mode) ; Consider CamelCase as two words             
-              ;; (hs-org/minor-mode) 
-              ;; (local-set-key [(ctrl shift f10)] 'hs-toggle-hiding)
-              ;; (aggressive-indent-mode)
-              ;; (myindent-ess-hook)
-              (add-hook 'local-write-file-hooks ; Remove trailing white spaces on save
-                        (lambda ()
-                          (ess-nuke-trailing-whitespace)))
-              (define-key ess-r-mode-map ";" #'ess-insert-assign) ; `;` inserts ` <- ` (type twice for a real ";")
-              (define-key inferior-ess-r-mode-map ";" #'ess-insert-assign)
-              
-              ))
+              (define-key ess-r-mode-map (kbd "C-=") #'ess-cycle-assign)
+              (define-key inferior-ess-r-mode-map (kbd "C-=") #'ess-cyle-assign))))
 #+END_SRC
+
+Turn on =flyspell-mode= for comments and strings:
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'ess-R-post-run-hook 
-            'ess-execute-screen-options) ; Sets R option "width" to the width of the R 
-                                        ; buffer on startup
-#+END_SRC
-
-Use the R parser (ess-indent-region-as-r) or formatR
-(ess-indent-region-with-formatr) to format R code. The later
-is bound to C-M-\ ou 'M-x indent-region'.
-
-#+BEGIN_SRC emacs-lisp  
-  (add-hook 'ess-mode-hook
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
             (lambda ()
-              (load-library "ess-indent-region-r")
-              (set (make-local-variable 'indent-region-function)
-                   'ess-indent-region-with-formatr)))
+              (flyspell-prog-mode))))
 #+END_SRC
 
-An alternative is to use Google's R source code formatter
-([[https://github.com/google/rfmt][rfmt]]), but it only works for an entire
-buffer (bound to ~C-x C-i~):
+Change <- into ←, etc.:
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "/home/mathieu/.R-site/site-library/rfmt/elisp")
+(with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook
             (lambda ()
-              (setq rfmt-executable "/home/mathieu/.R-site/site-library/rfmt/python/rfmt.py")
-              (load-library "rfmt-emacs")
-              (local-set-key (kbd "C-x C-i") 'rfmt-buffer)))
+              (prettify-symbols-mode))))
 #+END_SRC
 
-CHECK STYLER!
+Highlight indentation using 'highlight-indent-guides':
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
+            (lambda ()
+            (highlight-indent-guides-mode))))
+#+END_SRC
+
+Consider CamelCase as two words:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
+            (lambda ()
+              (subword-mode))))
+#+END_SRC
+
+*** RMarkdown and LaTex
+
+Integration in AUCTeX menu:
+
+#+BEGIN_SRC emacs-lisp
+(setq ess-swv-plug-into-auctex-p t)
+#+END_SRC
+
+In (R)Markdown, add a fenced R code block (~C-return~) or inline R
+code (~C-S-return~):
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'markdown-mode-hook 
+          (lambda ()
+            (load-library "ess-rmd-library")
+            (local-set-key [C-return] 'ess-rmd-fenced-r-code-block)
+            (local-set-key [C-S-return] 'ess-rmd-inline-r-code)
+            ))
+#+END_SRC
+
+Render RMarkdown files (using =rmarkdown::render=) with ~F7~; render
+RMarkdown files (using =bookdown::render_book=) with ~C-F7~; regular
+Pandoc with ~C-S-F7~:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'polymode
+  (define-key polymode-mode-map [(f7)] #'ess-rmd-render)
+  (define-key polymode-mode-map [(ctrl f7)] #'ess-rmd-bookdown)
+  (define-key polymode-mode-map [(shift ctrl f7)] #'ess-md-pandoc))
+#+END_SRC
+
+
+*** Check
+
+Syntax highlighting in Roxygen examples (removed from source
+code??!?):
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq ess-roxy-fontify-examples t)
+#+END_SRC
 
 In an ESS inferior buffer, use ~C-l~ to send commands directly to the
 subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][useful for =screen= for instance]]):
 
-#+BEGIN_SRC emacs-lisp
-  ;; (define-key inferior-ess-mode-map (kbd "C-l")
-  ;;   (lambda (seq) (interactive "k")
-  ;;     (process-send-string nil seq)))
+#+BEGIN_SRC emacs-lisp :tangle no
+(define-key inferior-ess-mode-map (kbd "C-l")
+   (lambda (seq) (interactive "k")
+     (process-send-string nil seq)))
 #+END_SRC
 
-In (R)Markdown, add a fenced R code block (~C-return~) or inline R
-code (~C-S-return~); render RMarkdown files (using
-=rmarkdown::render=) with ~F7~; render RMarkdown files (using
-=bookdown::render_book=) with ~C-F7~; :
+Prompt sticks to the bottom of the buffer, not editable above:
 
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'markdown-mode-hook 
-            (lambda ()
-              (load-library "ess-rmd-library")
-              (local-set-key [C-return] 'ess-rmd-fenced-r-code-block)
-              (local-set-key [C-S-return] 'ess-rmd-inline-r-code)
-              ))
-  (with-eval-after-load 'polymode
-    (define-key polymode-mode-map [(f7)] #'ess-rmd-render)
-    (define-key polymode-mode-map [(ctrl f7)] #'ess-rmd-bookdown)
-    (define-key polymode-mode-map [(shift ctrl f7)] #'ess-md-pandoc))
+#+BEGIN_SRC emacs-lisp :tangle no
+  (eval-after-load "comint"
+   '(progn
+      (define-key comint-mode-map [up]
+        'comint-previous-matching-input-from-input)
+      (define-key comint-mode-map [down]
+        'comint-next-matching-input-from-input)
+      (setq comint-move-point-for-output 'others)
+      ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
+      (setq comint-scroll-to-bottom-on-input 'this)
+      ))
 #+END_SRC
 
-# (defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
-    #   (interactive) (ess-remote nil "R"))
-# (bind-key "\C-cw" 'ess-execute-screen-options inferior-ess-mode-map) ; C-c w to adjust
-# 					; the width of the R buffer
-# (bind-keys :map ess-mode-map
-             # 	 ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
-                       # 					; should jump to the next block and C-M-x evaluates
-                       # 					; and stays in place)
-                       # 	 ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
-# 	 ;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
-# 	 ;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to
-# associate R remote buffer to ESS buffer
+Others…
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
+  (interactive) (ess-remote nil "R"))
+(bind-keys :map ess-mode-map
+           ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
+                                        ; should jump to the next block and C-M-x evaluates
+                                        ; and stays in place)
+           ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
+;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
+;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
+#+END_SRC
 
 
 ** SQL

@@ -56,3 +56,31 @@ options(oo)})\n"
     (insert string)
     (delete-char -1)
     ))
+
+(defun ess-indent-region-with-styler (beg end)
+  "Format region of code R using styler::style_text()."
+  (interactive "r")
+  (let ((string
+         (replace-regexp-in-string
+          "\"" "\\\\\\&"
+          (replace-regexp-in-string ;; how to avoid this double matching?
+           "\\\\\"" "\\\\\\&"
+           (buffer-substring-no-properties beg end))))
+	(buf (get-buffer-create "*ess-command-output*")))
+    (ess-force-buffer-current "Process to load into:")
+    (ess-command
+     (format
+      "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
+      string) buf)
+    (with-current-buffer buf
+      (goto-char (point-max))
+      ;; (skip-chars-backward "\n")
+      (let ((end (point)))
+	(goto-char (point-min))
+	(goto-char (1+ (point-at-eol)))
+	(setq string (buffer-substring-no-properties (point) end))
+	))
+    (delete-region beg end)
+    (insert string)
+    (delete-char -1)
+    ))
