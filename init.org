@@ -1702,9 +1702,10 @@ ESS should not use IDO for completion; use company instead:
 (setq ess-use-ido nil)
 #+END_SRC
 
-~C-=~ to insert =<-= and cycle:
+~C-=~ to insert =<-= and then cycle between =<-=, =%>%= and =->=:
 
 #+BEGIN_SRC emacs-lisp
+(setq ess-assign-list '(" <- " " %>% " " -> "))
 (with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook 
             (lambda ()
