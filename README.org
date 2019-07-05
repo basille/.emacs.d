@@ -459,15 +459,28 @@ In Dired (see mark [[https://www.gnu.org/software/emacs/manual/html_node/emacs/M
 
 ** ESS
 
-| Key name      | Operation                                                  |
-|---------------+------------------------------------------------------------|
-| ~C-c C-r~     | Move cursor to previous command + at the top of the window |
-| ~C-c C-o~     | Delete everything from last command to current prompt      |
-| ~C-c C-e C-w~ | Readjust width to the window width                         |
-| ~C-M-\~       | Indent region (using formatR)                              |
-| ~C-x C-i~     | Indent buffer (using rfmt)                                 |
-| ~C-return~    | Add a fenced R code block (in RMarkdown file)              |
-| ~C-S-return~  | Add inline R code (in RMarkdown file)                      |
+| Key name | Operation      |
+|----------+----------------|
+| ~M-x r~  | Launch R       |
+| ~C-c r~  | Launch R dired |
+
+*Interactive buffer*
+
+| Key name     | Operation                                                                           |
+|--------------+-------------------------------------------------------------------------------------|
+| ~C-c C-r~    | Move cursor to previous command (only for commands typed in the interactive buffer) |
+| ~C-c C-o~    | Delete everything from last command to current prompt                               |
+
+*Script*
+
+| Key name     | Operation                                     |
+|--------------+-----------------------------------------------|
+| ~C-=~        | Insert =<-=, =%>%=, =->= (cycle)              |
+| ~C-M-\~      | Indent region (using formatR)                 |
+| ~C-return~   | Evaluate line or region (in R code)           |
+| ~C-return~   | Add a fenced R code block (in RMarkdown file) |
+| ~C-S-return~ | Add inline R code (in RMarkdown file)         |
+| ~C-c C-x~    | Evaluate chunk                                |
 
 *Special:* Ask for password in R and hide it while typing:
 

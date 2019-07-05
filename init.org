@@ -187,20 +187,20 @@ folder of the Emacs profile:
 Disable the splash screen:
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-screen t)
+(setq inhibit-startup-screen t)
 #+END_SRC
 
 Menu disabled by default. Show it with ~C-S-F1~:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl shift f1)] 'menu-bar-mode)
+(global-set-key [(ctrl shift f1)] 'menu-bar-mode)
 #+END_SRC
 
 Screen saver after 5 minutes:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'zone)
-  (zone-when-idle 300)
+(require 'zone)
+(zone-when-idle 300)
 #+END_SRC
 
 
@@ -212,44 +212,44 @@ day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night 
 20%). Coordinates are for South Florida:
 
 #+BEGIN_SRC emacs-lisp
-  (setq nord-comment-brightness 20)
-  ;; (load-theme 'nord t)
-  ;; Fort Lauderdale
-  (setq calendar-latitude 26.084534)
-  (setq calendar-longitude -80.238454)
-  (setq calendar-location-name "Fort Lauderdale, FL")
-  ;; Trondheim
-  ;; (setq calendar-latitude 63.446827)
-  ;; (setq calendar-longitude 10.421906)
-  ;; (setq calendar-location-name "Trondheim, NO")
-  ;; Stellenbosch
-  ;; (setq calendar-latitude -33.932105)
-  ;; (setq calendar-longitude 18.860152)
-  ;; (setq calendar-location-name "Stellenbosch, SA")
-  ;; London
-  ;; (setq calendar-latitude 53.4084)
-  ;; (setq calendar-longitude -2.9916)
-  ;; (setq calendar-location-name "London, UK")
-  ;; Montpellier
-  ;; (setq calendar-latitude 43.6108)
-  ;; (setq calendar-longitude 3.8767)
-  ;; (setq calendar-location-name "Montpellier, FR")
-  ;; (setq circadian-themes '((:sunrise . apropospriate-light)
-  ;;                          (:sunset  . nord)))
-  (setq circadian-themes '((:sunrise . tango-plus)
-                           (:sunset  . nord)))
-  (add-hook 'circadian-before-load-theme-hook
-            #'(lambda (theme)
-                (setq custom-face-attributes '())))
-  (circadian-setup)
+(setq nord-comment-brightness 20)
+;; (load-theme 'nord t)
+;; Fort Lauderdale
+(setq calendar-latitude 26.084534)
+(setq calendar-longitude -80.238454)
+(setq calendar-location-name "Fort Lauderdale, FL")
+;; Trondheim
+;; (setq calendar-latitude 63.446827)
+;; (setq calendar-longitude 10.421906)
+;; (setq calendar-location-name "Trondheim, NO")
+;; Stellenbosch
+;; (setq calendar-latitude -33.932105)
+;; (setq calendar-longitude 18.860152)
+;; (setq calendar-location-name "Stellenbosch, SA")
+;; London
+;; (setq calendar-latitude 53.4084)
+;; (setq calendar-longitude -2.9916)
+;; (setq calendar-location-name "London, UK")
+;; Montpellier
+;; (setq calendar-latitude 43.6108)
+;; (setq calendar-longitude 3.8767)
+;; (setq calendar-location-name "Montpellier, FR")
+;; (setq circadian-themes '((:sunrise . apropospriate-light)
+;;                          (:sunset  . nord)))
+(setq circadian-themes '((:sunrise . tango-plus)
+                         (:sunset  . nord)))
+(add-hook 'circadian-before-load-theme-hook
+          #'(lambda (theme)
+              (setq custom-face-attributes '())))
+(circadian-setup)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; ;; Alternatively with theme-changer:
-  ;; (require 'theme-changer)
-  ;; ;; Use color-theme package instead Emacs 24 color theme facility
-  ;; (setq theme-changer-mode "color-theme")
-  ;; (change-theme 'apropospriate-light 'nord)
+;; ;; Alternatively with theme-changer:
+;; (require 'theme-changer)
+;; ;; Use color-theme package instead Emacs 24 color theme facility
+;; (setq theme-changer-mode "color-theme")
+;; (change-theme 'apropospriate-light 'nord)
 #+END_SRC
 
 
@@ -259,7 +259,7 @@ Frames (generally called windows) have a title instead of
 =emacs25@<computer>=:
 
 #+BEGIN_SRC emacs-lisp
-  (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+(setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
 #+END_SRC
 
 
@@ -268,51 +268,51 @@ Frames (generally called windows) have a title instead of
 Emacs will split horizontally if the current window is at least 100
 columns wide:
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq split-width-threshold 160)
-  (setq split-height-threshold 120)
+#+BEGIN_SRC emacs-lisp
+(setq split-height-threshold 30)
+(setq split-width-threshold 60)
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
 =dimmer=):
 
 #+BEGIN_SRC emacs-lisp
-  (dimmer-activate)
-  (setq dimmer-percent 0.15)
+(dimmer-activate)
+(setq dimmer-percent 0.15)
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
 Emacs; see Org section to remove conflicts with Org):
 
 #+BEGIN_SRC emacs-lisp
-  (windmove-default-keybindings 'meta)
+(windmove-default-keybindings 'meta)
 #+END_SRC
 
 Next window with ~C-~~ (key above TAB):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [C-dead-grave] 'other-window)
+(global-set-key [C-dead-grave] 'other-window)
 #+END_SRC
 
 Swap buffers with =buffer-move= (~C-x <arrows>~):
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x <up>")     'buf-move-up)
-  (global-set-key (kbd "C-x <down>")   'buf-move-down)
-  (global-set-key (kbd "C-x <left>")   'buf-move-left)
-  (global-set-key (kbd "C-x <right>")  'buf-move-right)
+(global-set-key (kbd "C-x <up>")     'buf-move-up)
+(global-set-key (kbd "C-x <down>")   'buf-move-down)
+(global-set-key (kbd "C-x <left>")   'buf-move-left)
+(global-set-key (kbd "C-x <right>")  'buf-move-right)
 #+END_SRC
 
 Mouse wheel does not accelerate:
 
 #+BEGIN_SRC emacs-lisp
-  (setq mouse-wheel-progressive-speed nil)
+(setq mouse-wheel-progressive-speed nil)
 #+END_SRC
 
 Scroll 2 lines from the edge:
 
 #+BEGIN_SRC emacs-lisp
-  (setq scroll-margin 2)
+(setq scroll-margin 2)
 #+END_SRC
 
 Prevent lateral scrolling from touchpad to beep:
@@ -1594,6 +1594,12 @@ No startup message and no save on exit
 (setq inferior-R-args "--quiet --no-save")
 #+END_SRC
 
+Run R dired with ~C-c r~:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c r") 'ess-rdired)
+#+END_SRC
+
 *** Layout
 
 All R buffers except code on the right side; R buffer dedicated at the
@@ -1713,15 +1719,6 @@ ESS should not use IDO for completion; use company instead:
               (define-key inferior-ess-r-mode-map (kbd "C-=") #'ess-cyle-assign))))
 #+END_SRC
 
-Turn on =flyspell-mode= for comments and strings:
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "ess" 
-  (add-hook 'ess-mode-hook 
-            (lambda ()
-              (flyspell-prog-mode))))
-#+END_SRC
-
 Change =<-= into =←=, etc.:
 
 #+BEGIN_SRC emacs-lisp
@@ -1729,6 +1726,15 @@ Change =<-= into =←=, etc.:
   (add-hook 'ess-mode-hook
             (lambda ()
               (prettify-symbols-mode))))
+#+END_SRC
+
+Turn on =flyspell-mode= for comments and strings:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
+            (lambda ()
+              (flyspell-prog-mode))))
 #+END_SRC
 
 Highlight indentation using 'highlight-indent-guides':
