@@ -268,23 +268,9 @@ Frames (generally called windows) have a title instead of
 Emacs will split horizontally if the current window is at least 100
 columns wide:
 
-#+BEGIN_SRC emacs-lisp
-  (setq split-width-threshold 100)
-;; Emacs starts split horizontaly in the middle (only if started as GUI,
-;; and not with =-nw=):
-  
-  ;; (defun my-frame-config (frame)
-  ;;   "Split the current frame if in a GUI"
-  ;;   (with-selected-frame frame
-  ;;     (if (display-graphic-p)
-  ;;         (progn
-  ;;           (message "after-make-frame-functions hook: split-window-horizontally")
-  ;;           (split-window-horizontally)))))
-
-  ;; (add-hook 'after-make-frame-functions 'my-frame-config)
-
-  ;; (if (not (daemonp))
-  ;;     (split-window-horizontally))
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq split-width-threshold 160)
+  (setq split-height-threshold 120)
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
@@ -1650,6 +1636,18 @@ When input is sent to the iESS buffer, does not wait for the process to finish, 
 (setq ess-eval-visibly 'nowait)
 #+END_SRC
 
+Evaluate complete chunk with ~C-c C-x~:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
+            (lambda ()
+              (define-key ess-r-mode-map (kbd "C-c C-x")
+                #'polymode-eval-chunk)
+              (define-key inferior-ess-r-mode-map (kbd "C-c C-x")
+                #'polymode-eval-chunk))))
+#+END_SRC
+
 *** Style
 
 #+BEGIN_SRC emacs-lisp
@@ -1723,7 +1721,7 @@ Turn on =flyspell-mode= for comments and strings:
               (flyspell-prog-mode))))
 #+END_SRC
 
-Change <- into ←, etc.:
+Change =<-= into =←=, etc.:
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "ess" 
@@ -1782,13 +1780,20 @@ Pandoc with ~C-S-F7~:
 #+END_SRC
 
 
-*** Check
+*** Check (not active)
 
 Syntax highlighting in Roxygen examples (removed from source
 code??!?):
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq ess-roxy-fontify-examples t)
+#+END_SRC
+
+Remote R buffers
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
+  (interactive) (ess-remote nil "R"))
 #+END_SRC
 
 In an ESS inferior buffer, use ~C-l~ to send commands directly to the
@@ -1800,7 +1805,8 @@ subshell ([[https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html][usefu
      (process-send-string nil seq)))
 #+END_SRC
 
-Prompt sticks to the bottom of the buffer, not editable above:
+Prompt sticks to the bottom of the buffer, not editable above (is
+this necessary?):
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (eval-after-load "comint"
@@ -1813,20 +1819,6 @@ Prompt sticks to the bottom of the buffer, not editable above:
       ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
       (setq comint-scroll-to-bottom-on-input 'this)
       ))
-#+END_SRC
-
-Others…
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun ess-remote-r ()		; Associate R remote buffer to ESS buffer
-  (interactive) (ess-remote nil "R"))
-(bind-keys :map ess-mode-map
-           ("C-c C-x" . ess-eval-chunk)		; C-c C-x to evaluate a R chunk (C-c C-c 
-                                        ; should jump to the next block and C-M-x evaluates
-                                        ; and stays in place)
-           ([(control shift f8)] . ess-swv-tangle)))) ; C-S-F7 to tangle
-;; ([(f8)] . ess-display-vignettes)	 ; F8 to display the list of vignettes
-;; ([(ctrl shift f8)] . ess-remote-r)))) ; C-S-F8 to associate R remote buffer to ESS buffer
 #+END_SRC
 
 
