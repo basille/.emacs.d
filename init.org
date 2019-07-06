@@ -189,13 +189,6 @@ Menu disabled by default. Show it with ~C-S-F1~:
 (global-set-key [(ctrl shift f1)] 'menu-bar-mode)
 #+END_SRC
 
-Screen saver after 5 minutes:
-
-#+BEGIN_SRC emacs-lisp
-(require 'zone)
-(zone-when-idle 300)
-#+END_SRC
-
 
 ** Color theme
 
