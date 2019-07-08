@@ -113,6 +113,7 @@ repositories. We first list these packages:
                      markdown-toc
                      ;; minions          ; For Emacs 25.3
                      ;; moody            ; For Emacs 25.3
+                     move-text
                      multiple-cursors
                      neotree
                      nord-theme
@@ -253,9 +254,9 @@ Frames (generally called windows) have a title instead of
 Emacs will split horizontally if the current window is at least 100
 columns wide:
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq split-height-threshold 30)
-(setq split-width-threshold 60)
+#+BEGIN_SRC emacs-lisp
+(setq split-height-threshold 20)
+(setq split-width-threshold 100)
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
@@ -325,6 +326,12 @@ frame:
 
 
 ** Buffers
+
+[[https://github.com/anler/centered-window-mode/][Center text]] when there is only one window (in the width of the frame):
+
+#+BEGIN_SRC emacs-lisp
+(centered-window-mode t)
+#+END_SRC
 
 Empty scratch buffer:
 
@@ -649,12 +656,6 @@ Show matching parentheses and other characters (without any delay):
 (show-paren-mode 1)
 #+END_SRC
 
-[[https://github.com/anler/centered-window-mode/][Center text]] when there is only one window (in the width of the frame):
-
-#+BEGIN_SRC emacs-lisp
-(centered-window-mode t)
-#+END_SRC
-
 Automatically break long lines (by default after 70 characters, as set
 in the variable =fill-column=); turn it on and off with ~C-c q~:
 
@@ -735,6 +736,13 @@ the expression by =3= (works in any buffer). It is bound to ~C-x C-y~:
 #+BEGIN_SRC emacs-lisp
 (load-library "sexp-eval-and-replace")
 (global-set-key (kbd "C-x C-y") 'sexp-eval-and-replace)
+#+END_SRC
+
+Move line(s) up and down with ~M-S-up~/~M-S-down~:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [M-S-down] 'move-text-down)
+(global-set-key [M-S-up]   'move-text-up)
 #+END_SRC
 
 [[https://github.com/yewton/sudden-death.el][Sudden death]]! (with ~C-c C-d~):
@@ -1563,7 +1571,26 @@ bottom, R Dired and Help stick to the top:
          (side . right)
          (slot . -1)
          (window-width . 0.5)
-         (reusable-frames . nil))))
+         (reusable-frames . nil))
+        ("magit:"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.5)
+         (reusable-frames . nil))
+        ("COMMIT_EDITMSG"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.5)
+         (reusable-frames . nil))
+        ("magit-diff:"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . left)
+         (slot . -1)
+         (window-width . 0.5)
+         (reusable-frames . nil))
+        ))
 #+END_SRC
 
 Width of R buffer automatically adjusted to window:
