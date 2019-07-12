@@ -251,12 +251,33 @@ Frames (generally called windows) have a title instead of
 
 ** Windows
 
-Emacs will split horizontally if the current window is at least 100
-columns wide:
+Emacs will split horizontally preferably, instead of vertically:
 
 #+BEGIN_SRC emacs-lisp
-(setq split-height-threshold 20)
-(setq split-width-threshold 100)
+;; (setq split-height-threshold 20)
+;; (setq split-width-threshold 100)
+
+(defun my-split-window-sensibly (&optional window)
+  (let ((window (or window (selected-window))))
+    (or (and (window-splittable-p window t)
+             ;; Split window horizontally.
+             (with-selected-window window
+               (split-window-right)))
+        (and (window-splittable-p window)
+             ;; Split window vertically.
+             (with-selected-window window
+               (split-window-below)))
+        (and (eq window (frame-root-window (window-frame window)))
+             (not (window-minibuffer-p window))
+             ;; If WINDOW is the only window on its frame and is not the
+             ;; minibuffer window, try to split it horizontally disregarding
+             ;; the value of `split-width-threshold'.
+             (let ((split-width-threshold 0))
+               (when (window-splittable-p window t)
+                 (with-selected-window window
+                   (split-window-right))))))))
+
+(setq split-window-preferred-function 'my-split-window-sensibly)
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
@@ -316,11 +337,11 @@ Visible bells (flashes the frame):
 (setq visible-bell t)
 #+END_SRC
 
-Ediff tries to split sensibly, and keep the Ediff window in the same
-frame:
+Ediff split horizontally instead of vertically, and keep the Ediff
+window in the same frame:
 
 #+BEGIN_SRC emacs-lisp
-(setq ediff-split-window-function 'split-window-sensibly)
+(setq ediff-split-window-function 'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
