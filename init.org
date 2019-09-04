@@ -989,6 +989,7 @@ file save). We also bound Magit to ~F8~, and integrate Git-flow
 ;; (setq vc-handled-backends nil) ; Remove VC altogether
 (setq
  transient-history-file (concat my-cache-dir "transient/history.el")
+ magithub-dir (concat my-cache-dir "magithub/")
  magit-completing-read-function 'ivy-completing-read
  magit-view-git-manual-method 'man
  magit-refs-show-commit-count 'all)
