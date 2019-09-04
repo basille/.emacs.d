@@ -191,6 +191,15 @@ Menu disabled by default. Show it with ~C-S-F1~:
 #+END_SRC
 
 
+
+Define a =my-cache-dir= (=~/.emacs.d/cache/=) folder for later use
+(all caches, auto-saves, etc.).
+
+#+BEGIN_SRC emacs-lisp
+(setq my-cache-dir (concat user-emacs-directory "cache/"))
+#+END_SRC
+
+
 ** Color theme
 
 With the help of the package [[https://github.com/guidoschmidt/circadian.el][circadian]], Emacs can switch themes based
@@ -440,11 +449,11 @@ contract by pressing ~-~):
 #+END_SRC
 
 Saveplace: Go back to last position where the point was in a file
-(save positions in =.emacs.d/cache/saved-places=):
+(save positions in =<cache>/saved-places=):
 
 #+BEGIN_SRC emacs-lisp
 (save-place-mode 1)
-(setq save-place-file (concat user-emacs-directory "cache/saved-places"))
+(setq save-place-file (concat my-cache-dir "saved-places"))
 #+END_SRC
 
 Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
@@ -479,11 +488,11 @@ Imenu to stay up to date automatically:
 ;; (global-set-key [mouse-3] 'imenu)
 #+END_SRC
 
-Bookmarks are saved in =.emacs.d/cache/bookmarks=, are set with
+Bookmarks are saved in =<cache>/bookmarks=, are set with
 ~C-S-F3~ and listed with ~C-S-F4~:
 
 #+BEGIN_SRC emacs-lisp
-(setq bookmark-default-file (concat user-emacs-directory "cache/bookmarks"))
+(setq bookmark-default-file (concat my-cache-dir "bookmarks"))
 (global-set-key [(ctrl shift f3)] 'bookmark-set)
 (global-set-key [(ctrl shift f4)] 'list-bookmarks)
 #+END_SRC
@@ -597,11 +606,11 @@ buffer so far):
       ivy-rich-path-style 'abbrev)
 #+END_SRC
 
-~M-x~ (=counsel-M-x= with =SMEX=) states are saved in the =cache=
-subfolder:
+~M-x~ (=counsel-M-x= with =SMEX=) states are saved in the =<cache>=
+folder:
 
 #+BEGIN_SRC emacs-lisp
-(setq smex-save-file (concat user-emacs-directory "cache/smex-items"))
+(setq smex-save-file (concat my-cache-dir "smex-items"))
 #+END_SRC
 
 Use Counsel for enhanced M-x, Find File (~C-x C-f~ or ~C-x C-o~ in other
@@ -743,7 +752,7 @@ the selection (use then arrows to select more/less); ~C-S-<left
 click>~ also set multiple cursors at mouse position:
 
 #+BEGIN_SRC emacs-lisp
-(setq mc/list-file (concat user-emacs-directory "cache/mc-lists.el"))
+(setq mc/list-file (concat my-cache-dir "mc-lists.el"))
 (global-set-key [(f11)] 'mc/edit-lines)
 (global-set-key [(ctrl f11)] 'mc/mark-all-dwim)
 (global-set-key [(ctrl shift f11)] 'mc/mark-more-like-this-extended)
@@ -821,25 +830,25 @@ which creates tmp lockfiles):
 (setq create-lockfiles nil)
 #+END_SRC
 
-[[http://www.emacswiki.org/emacs/AutoSave][Auto-save]] in =~/.emacs.d/save= (after 10 seconds or 100 characters):
+[[http://www.emacswiki.org/emacs/AutoSave][Auto-save]] in =<cache>/save= (after 10 seconds or 100 characters):
 
 #+BEGIN_SRC emacs-lisp
 (setq
- auto-save-file-name-transforms `((".*" ,"~/.emacs.d/save/\\1" t))
- auto-save-list-file-name (concat user-emacs-directory "cache/save-list")
+ auto-save-file-name-transforms `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
+                                   ,(concat my-cache-dir "save/\\2") t))
+ auto-save-list-file-name (concat my-cache-dir "auto-save-list")
  auto-save-interval 100
  auto-save-timeout 10)
 #+END_SRC
 
-[[http://www.emacswiki.org/emacs/BackupDirectory][Backups]] in =~/.emacs.d/save= (a backup happens everytime a file is
-open, and then on each subsequent saves). Copy backup files, keep a
-versioned (numbered) backup, and only keep the first 2 and last 2
-versions of each backup:
+[[http://www.emacswiki.org/emacs/BackupDirectory][Backups]] in =<cache>/save= (a backup happens everytime a file is open,
+and then on each subsequent saves, except for files under version
+control). Copy backup files, keep a versioned (numbered) backup, and
+only keep the first 2 and last 2 versions of each backup:
 
 #+BEGIN_SRC emacs-lisp
-(defvar save-dir (concat user-emacs-directory "cache/save"))
 (setq
- backup-directory-alist (list (cons "." save-dir))
+ backup-directory-alist `((".*" . ,(concat my-cache-dir "save/")))
  backup-by-copying t
  version-control t
  kept-new-versions 2
@@ -852,7 +861,7 @@ words into longer text. Emacs can save abbreviations in the cache
 directory silently:
 
 #+BEGIN_SRC emacs-lisp
-(setq abbrev-file-name (concat user-emacs-directory "cache/abbrev_defs"))
+(setq abbrev-file-name (concat my-cache-dir "abbrev_defs"))
 (setq save-abbrevs 'silently)
 #+END_SRC
 
@@ -936,15 +945,15 @@ Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer
                 (setq truncate-lines t))))
 #+END_SRC
 
-TRAMP history of connections in =.emacs.d/cache/tramp=, make
-completion faster, shell history in standard location
-("$HOME/.sh_history"), backups of remote files disabled, and just to
-be sure, version control is disabled on remote files (although VC is
-already disable entirely below:
+TRAMP history of connections in =<cache>/tramp=, make completion
+faster, shell history in standard location ("$HOME/.sh_history"),
+backups of remote files disabled, and just to be sure, version control
+is disabled on remote files (although VC is already disable entirely
+below:
 
 #+BEGIN_SRC emacs-lisp
 (setq
- tramp-persistency-file-name (concat user-emacs-directory "cache/tramp")
+ tramp-persistency-file-name (concat my-cache-dir "tramp")
  tramp-completion-reread-directory-timeout nil
  tramp-histfile-override nil
  )
