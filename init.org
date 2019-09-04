@@ -34,6 +34,7 @@
   - [[#sql][SQL]]
   - [[#web][Web]]
   - [[#polymode][Polymode]]
+- [[#miscellaneous][Miscellaneous]]
 - [[#postface][Postface]]
 
 * Emacs packages
@@ -189,8 +190,6 @@ Menu disabled by default. Show it with ~C-S-F1~:
 #+BEGIN_SRC emacs-lisp
 (global-set-key [(ctrl shift f1)] 'menu-bar-mode)
 #+END_SRC
-
-
 
 Define a =my-cache-dir= (=~/.emacs.d/cache/=) folder for later use
 (all caches, auto-saves, etc.).
@@ -856,6 +855,12 @@ only keep the first 2 and last 2 versions of each backup:
  delete-old-versions t)
 #+END_SRC
 
+List of recent files in =<cache>/recentf=:
+
+#+BEGIN_SRC emacs-lisp
+(setq recentf-save-file (expand-file-name "recentf" my-cache-dir))
+#+END_SRC
+
 Abbreviations ([[https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html][Abbrevs]]) are a way to save keystrokes by expanding
 words into longer text. Emacs can save abbreviations in the cache
 directory silently:
@@ -1002,6 +1007,7 @@ file save). We also bound Magit to ~F8~, and integrate Git-flow
   ;;         (cons '("D" 1 magit-repolist-column-dirty nil)
   ;;               (cddr magit-repolist-columns)))
   (require 'forge)
+  (setq forge-database-file (expand-file-name "forge-database.sqlite" my-cache-dir))
   (define-key magit-mode-map (kbd "K") 'magit-ls-files)
   (add-hook 'after-save-hook 'magit-after-save-refresh-status))
 (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
@@ -1336,6 +1342,8 @@ configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
 #+BEGIN_SRC emacs-lisp
 (setq TeX-parse-self t                ; Enable parse on load.
       TeX-auto-save t                 ; Enable parse on save.
+      TeX-auto-local ".auctex-auto"   ; Parsed information saved in .auctex-auto
+      TeX-style-local ".auctex-style" ; Hand-generated information saved in .auctex-style
       TeX-source-correlate-mode t	; Forward and inverse search with Synctex
       TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
       reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
@@ -2062,6 +2070,15 @@ same type:
 # (bind-keys :map polymode-mode-map
 # 		  ([(f8)] . polymode-weave)       ; F7 to weave
 # 		  ([(C-f8)] . polymode-export)))) ; C-F7 to export
+
+
+* Miscellaneous
+
+[[https://github.com/vibhavp/emacs-xkcd][XKCD]]: cache folder
+
+#+BEGIN_SRC emacs-lisp
+(setq xkcd-cache-dir (concat my-cache-dir "xkcd"))
+#+END_SRC
 
 
 * Postface
