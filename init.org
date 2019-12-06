@@ -479,7 +479,8 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 
 Imenu lists the main parts of a document (sections, headers, etc.) to
 navigate interactively a long document (bound to ~C-M-=~); we ask
-Imenu to stay up to date automatically:
+Imenu to stay up to date automatically [NB: =counsel-mode= supersedes
+=imenu= by =counsel-imenu=]:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-M-=") #'imenu)
@@ -1349,7 +1350,7 @@ configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
       TeX-source-correlate-mode t	; Forward and inverse search with Synctex
       TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
       reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
-      reftex-default-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib") ; Default bib
+      reftex-default-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib") ; Default bib
       TeX-auto-untabify t             ; Replace Tabs by spaces on save
       )
 (add-hook 'LaTeX-mode-hook 
@@ -1414,17 +1415,17 @@ and refresh it automatically:
 ** BibTeX
 
 BibTex is managed through [[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]. It needs to know the location of
-the main bibliography (can handle several), where the PDF are stored,
-# the additional field =File= for additional attached files,
-and the list of potential extensions used there:
+the main bibliography (can handle several), where associated files are
+stored (their filename must start with the BibTeX key), and the list
+of potential extensions used there (PDF, DJVU, ZIP, etc.):
 
 #+BEGIN_SRC emacs-lisp
 (require 'ivy-bibtex)
 (setq
- bibtex-completion-bibliography '("/home/mathieu/Work/Biblio/BiblioMB.bib")
- bibtex-completion-library-path '("/home/mathieu/Work/Biblio/PDF/")
- ;; bibtex-completion-pdf-field "File"
- bibtex-completion-pdf-extension '(".pdf" ".djvu" ".ps")
+ bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
+ bibtex-completion-library-path '("/home/mathieu/Work/Bibliography/PDF/")
+ bibtex-completion-find-additional-pdfs t
+ bibtex-completion-pdf-extension '(".pdf" ".djvu" ".ps" ".epub" ".mobi" ".zip")
  )
 #+END_SRC
 
