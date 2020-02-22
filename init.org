@@ -1662,6 +1662,10 @@ Evaluate complete chunk with ~C-c C-x~:
 
 *** Style
 
+Try to match the style of the R parser as much as possible; Roxygen
+string for comments with only one pound for compatibility with
+RStudio:
+
 #+BEGIN_SRC emacs-lisp
 (setq ess-default-style 'OWN)
 (custom-set-variables
@@ -1678,12 +1682,14 @@ Evaluate complete chunk with ~C-c C-x~:
      (ess-align-nested-calls)
      (ess-align-arguments-in-calls)
      (ess-align-continuations-in-calls . prev-line)
-     (ess-align-blocks control-flow)))))
+     (ess-align-blocks control-flow))))
+ '(ess-roxy-str "#'"))
 #+END_SRC
 
 Use the R parser (=ess-indent-region-as-r=), =formatR=
-(=ess-indent-region-with-formatr=) or =styler= (=ess-indent-region-with-styler=) to format R code. The later
-is bound to ~C-M-\~ ou =M-x indent-region=.
+(=ess-indent-region-with-formatr=) or =styler=
+(=ess-indent-region-with-styler=) to format R code. The later is bound
+to ~C-M-\~ ou =M-x indent-region=.
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "ess" 
@@ -1760,6 +1766,7 @@ Consider CamelCase as two words:
             (lambda ()
               (subword-mode))))
 #+END_SRC
+
 
 *** RMarkdown and LaTex
 
