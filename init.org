@@ -370,7 +370,9 @@ Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highl
 mode.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [(ctrl shift f10)] 'column-highlight-mode)
+  (load-library "col-highlight")
+  (load-library "vline")
+  (global-set-key [(ctrl shift f10)] 'column-highlight-mode)
 #+END_SRC
 
 Highlight regions ([[https://www.emacswiki.org/emacs/highlight.el][highlight]]): ~F9~ to highlight, ~C-F9~ to move to
