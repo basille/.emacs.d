@@ -77,7 +77,6 @@ repositories. We first list these packages:
                      apropospriate-theme
                      auctex
                      auctex-latexmk
-                     ;; beginend         ; Requires Emacs 25.3
                      bonjourmadame
                      buffer-move
                      centered-window
@@ -100,25 +99,21 @@ repositories. We first list these packages:
                      expand-region
                      flycheck
                      flx
-                     ;; forge
+                     forge
                      format-sql
                      highlight 
                      highlight-indent-guides
                      ivy-bibtex
                      ivy-prescient
                      ivy-rich
-                     ;; ivy-posframe     ; For Emacs 26.0
                      magit
                      magit-gitflow
                      markdown-mode
                      markdown-toc
-                     ;; minions          ; For Emacs 25.3
-                     ;; moody            ; For Emacs 25.3
                      move-text
                      multiple-cursors
                      neotree
                      nord-theme
-                     ;; org              ; Comes with org-plus-contrib
                      org-bullets
                      org-plus-contrib
                      pandoc-mode
@@ -129,7 +124,6 @@ repositories. We first list these packages:
                      poly-noweb
                      poly-org
                      powerthesaurus
-                     ;; rubik    ; EmacsWiki not on MELPA anymore
                      smex
                      sql-indent
                      sqlup-mode
@@ -209,26 +203,10 @@ for South Florida:
 #+BEGIN_SRC emacs-lisp
 (setq nord-comment-brightness 20)
 ;; (load-theme 'nord t)
-;; Fort Lauderdale
-(setq calendar-location-name "Fort Lauderdale, FL")
-(setq calendar-latitude 26.084534)
-(setq calendar-longitude -80.238454)
-;; Trondheim
-;; (setq calendar-location-name "Trondheim, NO")
-;; (setq calendar-latitude 63.446827)
-;; (setq calendar-longitude 10.421906)
-;; Stellenbosch
-;; (setq calendar-location-name "Stellenbosch, SA")
-;; (setq calendar-latitude -33.932105)
-;; (setq calendar-longitude 18.860152)
-;; London
-;; (setq calendar-location-name "London, UK")
-;; (setq calendar-latitude 53.4084)
-;; (setq calendar-longitude -2.9916)
 ;; Montpellier
-;; (setq calendar-location-name "Montpellier, FR")
-;; (setq calendar-latitude 43.6108)
-;; (setq calendar-longitude 3.8767)
+(setq calendar-location-name "Montpellier, FR")
+(setq calendar-latitude 43.6108)
+(setq calendar-longitude 3.8767)
 (setq circadian-themes '((:sunrise . tango-plus)
                          (:sunset  . nord)))
 (add-hook 'circadian-before-load-theme-hook
@@ -1180,7 +1158,7 @@ a few languages:
      (latex . t)
      (lilypond . t)
      (org . t)
-     (sh . t)
+     (shell . t)
      (sql . t)
      (R . t))))
 #+END_SRC

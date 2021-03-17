@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+<mime-type type="text/x-org">
+<comment>Emacs Org-mode File</comment>
+<comment xml:lang="bg">Emacs Org-mode</comment>
+    <comment xml:lang="cs">Emacs Org-mode</comment>
+    <comment xml:lang="de">Emacs Org-mode</comment>
+    <comment xml:lang="es">Emacs Org-mode</comment>
+    <comment xml:lang="eu">Emacs Org-mode</comment>
+    <comment xml:lang="hu">Emacs Org-mode</comment>
+    <comment xml:lang="it">Emacs Org-mode</comment>
+    <comment xml:lang="ko">Emacs Org-mode</comment>
+    <comment xml:lang="nb">Emacs Org-mode</comment>
+    <comment xml:lang="nl">Emacs Org-mode</comment>
+    <comment xml:lang="nn">Emacs Org-mode</comment>
+    <comment xml:lang="sv">Emacs Org-mode</comment>
+    <comment xml:lang="uk">Emacs Org-mode</comment>
+    <comment xml:lang="vi">Emacs Org-mode</comment>
+<glob pattern="*.org"/>
+</mime-type>
+</mime-info>

@@ -7,6 +7,7 @@
 - [[#getting-started][Getting started]]
   - [[#pre-requisites][Pre-requisites]]
   - [[#configuring-emacs][Configuring Emacs]]
+    - [[#associate-org-files-to-emacs][Associate Org files to Emacs]]
   - [[#a-note-on-the-use-of-org-mode-for-literate-configuration][A note on the use of =org-mode= for literate configuration]]
 - [[#key-bindings][Key bindings]]
   - [[#general][General]]
@@ -32,23 +33,23 @@
   - [[#screen][Screen]]
   - [[#function-keys-f1f12][Function keys (~F1–F12~)]]
   - [[#misc][Misc]]
-- [[#screenshots][Screenshots]]
+- [[#screenshots-outdated][Screenshots (outdated)]]
 
 * Getting started
 
 
 ** Pre-requisites
 
-This is a configuration for Emacs on Debian Stretch. While most of it
-should work pretty much on any platform, installing Emacs (Emacs 25.1
-at the time of writing) is Debian specific:
+This is a configuration for Emacs on Ubuntu Groovy (20.10). While most
+of it should work pretty much on any platform, installing Emacs (Emacs
+26.3 at the time of writing) is Debian specific:
 
 #+BEGIN_SRC sh
-  sudo apt install emacs25
+  sudo apt install emacs
 #+END_SRC
 
-In addition, to addition need to be made for PDF Tools and
-LaTeX. First a library for PDF Tools:
+In addition, a few changes need to be made for PDF Tools and
+LaTeX. First, we need a additional library for PDF Tools:
 
 #+BEGIN_SRC sh
   sudo apt install libpoppler-glib-dev
@@ -70,12 +71,12 @@ bibliographic folder (here =~/Work/Biblio/=) to this folder:
   ln -s ~/Work/Biblio/ ~/.texlive2016/texmf-var/bibtex/bib
 #+END_SRC
 
-Finally, we also add a Python library for SQL formating, and Ditaa
-for ASCII-based diagrams:
+Finally, we also add Ditaa for ASCII-based diagrams and PIP to install
+Python libraries; then =format-sql= for SQL formatting:
 
 #+BEGIN_SRC sh
+  sudo apt install ditaa pip
   sudo pip install format-sql
-  sudo apt install ditaa  
 #+END_SRC
 
 
@@ -90,6 +91,31 @@ the =home= directory :
 
 And that's it! Opening Emacs will then do the magic! (several openings
 may be necessary for the magic to fully operate)
+
+*** Associate Org files to Emacs
+
+For Org users, there is a way to associate Org files to Emacs without
+associating all text files. First copy =org.xml= to the relevant folder in =/usr/=:
+
+#+BEGIN_SRC sh  
+  sudo cp org.xml /usr/share/mime/packages/org.xml
+#+END_SRC
+
+Then run:
+
+#+BEGIN_SRC sh  
+  sudo update-mime-database /usr/share/mime
+#+END_SRC
+
+If you are using Nautilus, restart it:
+
+#+BEGIN_SRC sh  
+  killall nautilus
+  nautilus -n &
+#+END_SRC
+
+Open nautilus, navigate to your file location, right click on it,
+select =Open with=, and search for =Emacs (GUI)=.
 
 
 ** A note on the use of =org-mode= for literate configuration
@@ -111,75 +137,27 @@ This file looks like that:
 
 #+BEGIN_SRC emacs-lisp
   ;; This file replaces itself with the actual configuration at first run.
-
+  
   ;; Add X options to ~/.Xresources and initialize them
   (write-region "
   ! Emacs geometry
   !
   emacs.fullscreen: maximized
-  emacs.geometry: 250x250
   emacs.menuBar: off
   emacs.toolBar: off
   emacs.verticalScrollBars: off
   emacs.horizontalScrollbars: off
-  emacs25.fullscreen: maximized
-  emacs25.geometry: 250x250
-  emacs25.menuBar: off
-  emacs25.toolBar: off
-  emacs25.verticalScrollBars: off
-  emacs25.horizontalScrollbars: off
-
+  
   " nil "~/.Xresources" 'append)
   (shell-command "xrdb -merge ~/.Xresources")
-
-  ;; Create a starter for Emacs daemon
-  (mkdir "~/.config/systemd/user/")
-  (write-region "[Unit]
-  Description=GNU Emacs 25 (daemon)
-  Documentation=man:emacs(1) info:Emacs
   
-  [Service]
-  Type=forking
-  ExecStart=/usr/bin/emacs --daemon
-  ExecStop=/usr/bin/emacsclient --eval \"(progn (setq kill-emacs-hook nil) (kill-emacs))\"
-  Restart=always
-  #Environment=DISPLAY=:%i
-  TimeoutStartSec=0
-  
-  [Install]
-  WantedBy=default.target
-  
-  " nil "~/.config/systemd/user/emacs.service")
-  (shell-command "systemctl --user enable emacs")
-  (shell-command "systemctl --user start emacs")
-  
-  ;; Create a Desktop entry for Emacs client
-  (write-region "[Desktop Entry]
-  Version=1.0
-  Name=GNU Emacs 25 (client)
-  GenericName=Text Editor
-  Comment=GNU Emacs using the daemon
-  MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
-  Exec=/usr/bin/emacsclient --create-frame --alternate-editor "" %F
-  Icon=emacs25
-  Type=Application
-  Terminal=false
-  Categories=Utility;Development;TextEditor;
-  StartupWMClass=Emacs
-  
-" nil "~/.local/share/applications/emacsclient.desktop")
-
   ;; Create necessary directories and save abbrev silently
-  (mkdir (concat user-emacs-directory "cache"))
-  (mkdir (concat user-emacs-directory "functions"))
-  (mkdir (concat user-emacs-directory "save"))
+  (mkdir (concat user-emacs-directory "cache") t)
+  (mkdir (concat user-emacs-directory "functions") t)
+  (mkdir (concat user-emacs-directory "save") t)
+  (mkdir "~/.emacs.d/save/" 1)
   (setq abbrev-file-name "~/.emacs.d/cache/abbrev_defs")
   (setq save-abbrevs 'silently)
-
-  ;; Download a couple of functions from EmacsWiki
-  ;; (url-copy-file "https://www.emacswiki.org/emacs/download/col-highlight.el" (concat user-emacs-directory "functions/col-highlight.el") ok-if-already-exists)
-  ;; (url-copy-file "https://www.emacswiki.org/emacs/download/dired%2b.el" (concat user-emacs-directory "functions/dired+.el") ok-if-already-exists)
-
   
   ;; We can't tangle without org!
   (require 'org)
@@ -190,7 +168,7 @@ This file looks like that:
   ;; load it
   (load-file (concat user-emacs-directory "init.el"))
   ;; finally byte-compile it
-  (byte-compile-file (concat user-emacs-directory "init.el"))
+  (byte-compile-file (concat user-emacs-directory "init.el"))  
 #+END_SRC
 
 Note that this file is "locked" by Git, so that it is not modified
@@ -590,7 +568,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 | ~M-x zone~         | Screen saver. Sort of… |
 
 
-* Screenshots
+* Screenshots (outdated)
 
 A good demonstration could not be complete without screenshots, so
 here is Emacs in action:
