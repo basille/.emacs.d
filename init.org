@@ -664,12 +664,13 @@ Show matching parentheses and other characters (without any delay):
 (show-paren-mode 1)
 #+END_SRC
 
-Automatically break long lines (by default after 70 characters, as set
-in the variable =fill-column=); turn it on and off with ~C-c q~:
+Automatically break long lines (set to 80 characters in the variable
+=fill-column=); turn it on and off with ~C-c q~:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(global-set-key (kbd "C-c q") 'auto-fill-mode)
+  (setq-default fill-column 80)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
 
 Consider CamelCase as two words in programming modes:
