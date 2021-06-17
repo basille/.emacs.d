@@ -96,6 +96,8 @@ repositories. We first list these packages:
                      ebib
                      eshell-git-prompt
                      ess
+                     ess-smart-equals
+                     ess-view-data
                      expand-region
                      flycheck
                      flx
@@ -1701,6 +1703,14 @@ ESS should not use IDO for completion; use company instead:
 (setq ess-use-ido nil)
 #+END_SRC
 
+ESS smart equals to cycle smartly through operators with ~=~:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ess-r-mode
+  (require 'ess-smart-equals)
+  (ess-smart-equals-activate))
+#+END_SRC
+
 ~C-=~ to insert =<-= and then cycle between =<-=, =%>%= and =->=:
 
 #+BEGIN_SRC emacs-lisp
@@ -1746,6 +1756,19 @@ Consider CamelCase as two words:
   (add-hook 'ess-mode-hook 
             (lambda ()
               (subword-mode))))
+#+END_SRC
+
+Data viewer (launch with ~C-c v~; many operations available via =ess-view-data-filter/select/slice/etc.=):
+
+#+BEGIN_SRC emacs-lisp
+(require 'ess-view-data)
+(with-eval-after-load "ess" 
+  (add-hook 'ess-mode-hook 
+            (lambda ()
+              (define-key ess-r-mode-map (kbd "C-c v")
+                #'ess-view-data-print)
+              (define-key inferior-ess-r-mode-map (kbd "C-c v")
+                #'ess-view-data-print))))
 #+END_SRC
 
 
@@ -2030,6 +2053,8 @@ Spell check with flyspell can be further [[http://blog.binchen.org/?p=950][integ
 
 
 ** Polymode
+
+# https://github.com/polymode/polymode/issues/243
 
 [[https://github.com/vitoshka/polymode][Polymode]] allows multiple major modes in the same document (e.g. R +
 Markdown in =.Rmd= files). It is setup for Markdown and LateX files
