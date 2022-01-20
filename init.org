@@ -47,12 +47,14 @@ official GNU repository, as well as [[http://melpa-stable.milkbox.net/][MELPA-st
 #+BEGIN_SRC emacs-lisp
 (setq package-archives 
       '(("gnu" . "https://elpa.gnu.org/packages/")
+        ("non-gnu" . "https://elpa.nongnu.org/nongnu/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
+        ;; ("org" . "https://orgmode.org/elpa/")
         )
       package-archive-priorities
-      '(("org"          . 20)
+      '(
+        ("non-gnu"      . 20)
         ("melpa"        . 10)
         ("gnu"          . 5)
         ("melpa-stable" . 0)
@@ -117,7 +119,7 @@ repositories. We first list these packages:
                      neotree
                      nord-theme
                      org-bullets
-                     org-plus-contrib
+                     org-contrib
                      pandoc-mode
                      pdf-tools
                      polymode
@@ -126,6 +128,7 @@ repositories. We first list these packages:
                      poly-noweb
                      poly-org
                      powerthesaurus
+                     redacted
                      smex
                      sql-indent
                      sqlup-mode
@@ -405,6 +408,14 @@ Kill THIS buffer with ~C-x k~:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+#+END_SRC
+
+Redacted with ~C-S-escape~; when in =redacted= mode, enable =read-only-mode= to
+ensure that we don't change what we can't read:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [(ctrl shift escape)] 'redacted-mode)
+(add-hook 'redacted-mode-hook (lambda () (read-only-mode (if redacted-mode 1 -1))))
 #+END_SRC
 
 
@@ -1146,7 +1157,6 @@ automatically updated on file save):
 (add-hook 'org-mode-hook 'toc-org-enable) 
 #+END_SRC
 
-
 Org-babel can recognize code blocks [[http://orgmode.org/manual/Languages.html][from many different languages]] (Lisp,
 Bash, R, etc.) and provides a way to edit them in their respective
 mode (~C-c '~; and same keybinding to close). However,  =polymode=
@@ -1569,6 +1579,9 @@ Run R dired with ~C-c r~:
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c r") 'ess-rdired)
 #+END_SRC
+
+
+
 
 *** Layout
 
@@ -2062,7 +2075,8 @@ with R:
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.[rR]md\\'" . poly-markdown+r-mode))
+;; (add-to-list 'auto-mode-alist '("\\.[rR]md\\'" . poly-markdown+r-mode))
+(add-to-list 'auto-mode-alist '("\\.[rR]md\\'" . poly-gfm+r-mode))
 (add-to-list 'auto-mode-alist '("\\.[sS]nw\\'" . poly-noweb+r-mode))
 (add-to-list 'auto-mode-alist '("\\.[rR]nw\\'" . poly-noweb+r-mode))
 (add-to-list 'auto-mode-alist '("\\.org\\'" . poly-org-mode))
