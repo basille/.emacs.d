@@ -1721,13 +1721,14 @@ ESS smart equals to cycle smartly through operators with ~=~:
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'ess-r-mode
   (require 'ess-smart-equals)
+  (setq ess-smart-equals-extra-ops '(brace paren percent))
   (ess-smart-equals-activate))
 #+END_SRC
 
-~C-=~ to insert =<-= and then cycle between =<-=, =%>%= and =->=:
+~C-=~ to insert =<-= and then cycle between =<-=, =|>= and =->=:
 
 #+BEGIN_SRC emacs-lisp
-(setq ess-assign-list '(" <- " " %>% " " -> "))
+(setq ess-assign-list '(" <- " " |> " " -> "))
 (with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook 
             (lambda ()
