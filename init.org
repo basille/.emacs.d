@@ -1663,7 +1663,7 @@ string for comments with only one pound for compatibility with
 RStudio:
 
 #+BEGIN_SRC emacs-lisp
-(setq ess-default-style 'OWN)
+(setq ess-style 'OWN)
 (custom-set-variables
  '(ess-own-style-list
    (quote
@@ -1716,13 +1716,36 @@ ESS should not use IDO for completion; use company instead:
 (setq ess-use-ido nil)
 #+END_SRC
 
-ESS smart equals to cycle smartly through operators with ~=~:
+ESS smart equals to cycle smartly through operators with ~=~ (and includes the
+new pipe =|>= instead of magrittr's pipe =%>%=):
 
 #+BEGIN_SRC emacs-lisp
+(custom-set-variables
+ '(ess-smart-equals-contexts
+   '((t
+      (comment)
+      (string)
+      ;; (arglist "=" "==" "!=" "<=" ">=" "<-" "<<-" "%>%")
+      (arglist "=" "==" "!=" "<=" ">=" "<-" "<<-" "|>")
+      (index "==" "!=" "%in%" "<" "<=" ">" ">=" "=")
+      (conditional "==" "!=" "<" "<=" ">" ">=" "%in%")
+      ;; (base "<-" "<<-" "=" "==" "!=" "<=" ">=" "->" "->>" ":=")
+      (base "<-" "<<-" "=" "==" "!=" "<=" ">=" "->" ":=")
+      (% "%*%" "%%" "%/%" "%in%" "%>%" "%<>%" "%o%" "%x%")
+      ;; (not-% "<-" "<<-" "=" "->" "->>" "==" "!=" "<" "<=" ">" ">=" "+" "-" "*" "**" "/" "^" "&" "&&" "|" "||")
+      (not-% "<-" "<<-" "|>" "=" "->" "->>" "==" "!=" "<" "<=" ">" ">=" "+" "-" "*" "**" "/" "^" "&" "&&" "|" "||")
+      ;; (all "<-" "<<-" "=" "->" "->>" "==" "!=" "<" "<=" ">" ">=" "%*%" "%%" "%/%" "%in%" "%x%" "%o%" "%<>%" "%>%" "+" "-" "*" "**" "/" "^" "&" "&&" "|" "||")
+      (all "<-" "<<-" "=" "|>" "->" "->>" "==" "!=" "<" "<=" ">" ">=" "%*%" "%%" "%/%" "%in%" "%x%" "%o%" "%<>%" "%>%" "+" "-" "*" "**" "/" "^" "&" "&&" "|" "||")
+      ;; (t "<-" "<<-" "->" "->>" "%<>%"))
+      (t "<-" "|>" "->" "%<>%" "<<-"))
+     (ess-roxy-mode
+      (comment "<-" "=" "==" "<<-" "->" "->>" "%<>%")))))
+
 (with-eval-after-load 'ess-r-mode
   (require 'ess-smart-equals)
   (setq ess-smart-equals-extra-ops '(brace paren percent))
   (ess-smart-equals-activate))
+
 #+END_SRC
 
 ~C-=~ to insert =<-= and then cycle between =<-=, =|>= and =->=:
