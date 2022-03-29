@@ -775,6 +775,16 @@ Move line(s) up and down with ~M-S-up~/~M-S-down~:
 (global-set-key (kbd "C-c C-d") 'sudden-death)
 #+END_SRC
 
+=sort-lines= is case sensitive by default, which I don't like. This makes it
+case insensitive (to get the default behavior back: ~M-x set-variable [RETURN]
+sort-fold-case [RETURN] nil [RETURN]~):
+
+#+BEGIN_SRC emacs-lisp
+(custom-set-variables
+ '(sort-fold-case t t)
+)
+#+END_SRC
+
 
 ** Spell check and syntax check
 
