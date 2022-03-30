@@ -73,7 +73,7 @@
 
 ;; Function rmd-bookdown to use bookdown::render_book on index.Rmd
 ;; Inspiration borrowed from ess-swv-run-in-R (ess-swv.el)
-(defun ess-rmd-bookdown ()
+(defun ess-rmd-render-book ()
   "Run Bookdown on index.Rmd."
   (interactive)
   (let* ((rmd-buf (current-buffer)))
@@ -101,7 +101,7 @@
                (output-format-user (completing-read "Output format: " '("Guess" "HTML" "PDF" "All")))
                (output-format (gethash output-format-user output-format-table))
                (bkdwn-cmd
-                (format "bookdown::render(\"index.Rmd\", encoding = \"UTF-8\", output_format = %s)" output-format)))
+                (format "bookdown::render_book(\"index.Rmd\", encoding = \"UTF-8\", output_format = %s)" output-format)))
           (message "Running Bookdown on index.Rmd")
           (ess-execute bkdwn-cmd 'buffer nil nil)
           (switch-to-buffer rmd-buf)

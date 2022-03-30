@@ -1846,7 +1846,7 @@ Pandoc with ~C-S-F7~:
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'polymode
   (define-key polymode-mode-map [(f7)] #'ess-rmd-render)
-  (define-key polymode-mode-map [(ctrl f7)] #'ess-rmd-bookdown)
+  (define-key polymode-mode-map [(ctrl f7)] #'ess-rmd-render-book)
   (define-key polymode-mode-map [(shift ctrl f7)] #'ess-md-pandoc))
 #+END_SRC
 
