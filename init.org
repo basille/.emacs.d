@@ -1,6 +1,6 @@
 #+TITLE: Emacs literate configuration 
 #+AUTHOR: Mathieu Basille
-#+EMAIL: basille@ufl.edu
+#+EMAIL: mathieu@basille.org
 #+BABEL: :cache yes
 #+PROPERTY: header-args :tangle yes
 
@@ -133,7 +133,7 @@ repositories. We first list these packages:
                      sql-indent
                      sqlup-mode
                      string-inflection
-                     sudden-death
+                     ;; sudden-death
                      tango-plus-theme
                      toc-org
                      web-mode
@@ -771,7 +771,7 @@ Move line(s) up and down with ~M-S-up~/~M-S-down~:
 
 [[https://github.com/yewton/sudden-death.el][Sudden death]]! (with ~C-c C-d~):
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (global-set-key (kbd "C-c C-d") 'sudden-death)
 #+END_SRC
 
