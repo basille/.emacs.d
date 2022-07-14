@@ -23,7 +23,7 @@
   - [[#git][GIT]]
   - [[#shell][Shell]]
   - [[#pdf][PDF]]
-  - [[#eww-web-browser][EWW web browser]]
+  - [[#web-browser][Web browser]]
 - [[#major-modes][Major modes]]
   - [[#yaml][YAML]]
   - [[#org][Org]]
@@ -1095,7 +1095,9 @@ annotation. List annotations with ~C-c C-a l~. Don't forget to save
 the PDF (~C-x C-s~)!
 
 
-** EWW web browser
+** Web browser
+
+*** EWW
 
 Emacs comes with a built-in web browser: EWW. Use ~M-x eww~ to run it;
 ~<backspace>~ goes to previous page; ~f~ opens the page in external
@@ -1105,6 +1107,26 @@ browser (Firefox for me).
 (with-eval-after-load 'eww
   (define-key eww-mode-map "f" 'eww-browse-with-external-browser)
   (define-key eww-mode-map [backspace] 'eww-back-url))
+#+END_SRC
+
+
+*** Emacs Application Framework (for Ubuntu 22.04?)
+
+git clone --depth=1 -b master
+https://github.com/emacs-eaf/emacs-application-framework.git
+~/.emacs.d/site-lisp/emacs-application-framework/
+
+M-x eaf-install-and-update ???
+
+cd emacs-application-framework
+chmod +x ./install-eaf.py
+./install-eaf.py
+
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
+  (require 'eaf)
+  (require 'eaf-browser)
 #+END_SRC
 
 
@@ -1426,7 +1448,8 @@ of potential extensions used there (PDF, DJVU, ZIP, etc.):
 (require 'ivy-bibtex)
 (setq
  bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
- bibtex-completion-library-path '("/home/mathieu/Work/Bibliography/PDF/")
+ ;; bibtex-completion-library-path '("/home/mathieu/Work/Bibliography/PDF/")
+ bibtex-completion-library-path '("/home/mathieu/Public/Basille/Bibliographie/PDF")
  bibtex-completion-find-additional-pdfs t
  bibtex-completion-pdf-extension '(".pdf" ".djvu" ".ps" ".epub" ".mobi" ".zip")
  )
