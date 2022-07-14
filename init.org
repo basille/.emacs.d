@@ -1447,7 +1447,8 @@ of potential extensions used there (PDF, DJVU, ZIP, etc.):
 #+BEGIN_SRC emacs-lisp
 (require 'ivy-bibtex)
 (setq
- bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
+ ;; bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
+ bibtex-completion-bibliography '("/home/mathieu/.biblio.bib")
  ;; bibtex-completion-library-path '("/home/mathieu/Work/Bibliography/PDF/")
  bibtex-completion-library-path '("/home/mathieu/Public/Basille/Bibliographie/PDF")
  bibtex-completion-find-additional-pdfs t

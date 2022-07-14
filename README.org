@@ -52,7 +52,7 @@ In addition, a few changes need to be made for PDF Tools and
 LaTeX. First, we need a additional library for PDF Tools:
 
 #+BEGIN_SRC sh
-  sudo apt install libpoppler-glib-dev
+  sudo apt install elpa-pdf-tools-server libpoppler-glib-dev
 #+END_SRC
 
 Second, we define a central bibliographic folder at the level of the
