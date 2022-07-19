@@ -95,7 +95,6 @@ repositories. We first list these packages:
                      dired-narrow
                      dired-quick-sort
                      dired-single
-                     ebib
                      eshell-git-prompt
                      ess
                      ess-smart-equals
@@ -1370,8 +1369,8 @@ configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
 #+BEGIN_SRC emacs-lisp
 (setq TeX-parse-self t                ; Enable parse on load.
       TeX-auto-save t                 ; Enable parse on save.
-      TeX-auto-local ".auctex-auto"   ; Parsed information saved in .auctex-auto
-      TeX-style-local ".auctex-style" ; Hand-generated information saved in .auctex-style
+      TeX-auto-local "/home/mathieu/.emacs.d/cache/auctex-auto"   ; Parsed information saved in cache folder
+      TeX-style-local "/home/mathieu/.emacs.d/cache/auctex-style" ; Hand-generated information saved in cache folder
       TeX-source-correlate-mode t	; Forward and inverse search with Synctex
       TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
       reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
@@ -1474,14 +1473,11 @@ alternatively, Evince can also be used with ~P~:
 
 Add =keywords=, =journal= and =booktitle= to fields to be searched
 (=author=, =editor=, =title=, =year=, BibTeX =key=, and entry type by
-default); additional PDFs (starting with BibTeX key) are also
-detected; fields to be displayed: PDF, author, title, year, and
+default); fields to be displayed: PDF, author, title, year, and
 journal/booktitle/type:
 
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-additional-search-fields
-      '(keywords journal booktitle)
-      bibtex-completion-find-additional-pdfs t
+(setq bibtex-completion-additional-search-fields '(keywords journal booktitle)
       bibtex-completion-display-formats
       '(
         (article        . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} ${journal:40}")
@@ -1515,7 +1511,7 @@ generation of key if it does not exist, alignment, etc.). If necessary
 ~C-c C-q~ formats the entry nicely.  Full documentation for BibTex
 mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun current-date ()
   (format-time-string "%Y.%m.%d"))
 (defun bibtex-add-date-owner ()
@@ -1904,16 +1900,16 @@ Prompt sticks to the bottom of the buffer, not editable above (is
 this necessary?):
 
 #+BEGIN_SRC emacs-lisp :tangle no
-  (eval-after-load "comint"
-   '(progn
-      (define-key comint-mode-map [up]
-        'comint-previous-matching-input-from-input)
-      (define-key comint-mode-map [down]
-        'comint-next-matching-input-from-input)
-      (setq comint-move-point-for-output 'others)
-      ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
-      (setq comint-scroll-to-bottom-on-input 'this)
-      ))
+(eval-after-load "comint"
+ '(progn
+    (define-key comint-mode-map [up]
+      'comint-previous-matching-input-from-input)
+    (define-key comint-mode-map [down]
+      'comint-next-matching-input-from-input)
+    (setq comint-move-point-for-output 'others)
+    ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
+    (setq comint-scroll-to-bottom-on-input 'this)
+    ))
 #+END_SRC
 
 
