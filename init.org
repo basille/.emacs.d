@@ -1374,7 +1374,7 @@ configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
       TeX-source-correlate-mode t	; Forward and inverse search with Synctex
       TeX-clean-confirm nil ; Don't ask for confirmation to clean intermediary files
       reftex-plug-into-AUCTeX t       ; Plug RefTeX to AUCTeX
-      reftex-default-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib") ; Default bib
+      reftex-default-bibliography '("/home/mathieu/.biblio.bib") ; Default bib
       TeX-auto-untabify t             ; Replace Tabs by spaces on save
       )
 (add-hook 'LaTeX-mode-hook 
@@ -1392,10 +1392,13 @@ The compilation by LatexMk (a single call to perform all necessary
 LaTeX/BibTeX compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]]
 package, which allows to have LatexMk as the default engine for LaTeX compilation:
 
-#+BEGIN_SRC emacs-lisp
+UPDATE (July 2022): =auctex-latexmk= is no longer maintained. There's a bug with
+=tex-buf= being merged into =tex=, but still being called by =auctex-latexmk=
+(see [[https://github.com/tom-tan/auctex-latexmk/issues/39][bug report]] for possible fixes).
+
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode 
-(with-eval-after-load "tex"
-  (auctex-latexmk-setup))
+(auctex-latexmk-setup)
 (add-hook 'TeX-mode-hook (lambda () (setq TeX-command-default "LatexMk")))
 #+END_SRC
 
@@ -1511,7 +1514,7 @@ generation of key if it does not exist, alignment, etc.). If necessary
 ~C-c C-q~ formats the entry nicely.  Full documentation for BibTex
 mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (defun current-date ()
   (format-time-string "%Y.%m.%d"))
 (defun bibtex-add-date-owner ()
