@@ -551,8 +551,8 @@ everywhere (using '[[https://github.com/raxod502/prescient.el][prescient]]' sort
 
 #+BEGIN_SRC emacs-lisp
 (ivy-mode 1)
-(ivy-prescient-mode 1)
 (counsel-mode 1)
+(ivy-prescient-mode 1)
 #+END_SRC
 
 Simple customization (maximum size of 30% of screen instead of 25%;
@@ -1441,12 +1441,19 @@ and refresh it automatically:
 
 ** BibTeX
 
-BibTex is managed through [[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]. It needs to know the location of
-the main bibliography (can handle several), where associated files are
-stored (their filename must start with the BibTeX key), and the list
-of potential extensions used there (PDF, DJVU, ZIP, etc.):
+BibTex is managed with [[http://www.jonathanleroux.org/bibtex-mode.html][=bibtex-mode=]], and searched through [[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]]. It needs
+to know the location of the main bibliography (can handle several), where
+associated files are stored (their filename must start with the BibTeX key), and
+the list of potential extensions used there (PDF, DJVU, ZIP, etc.):
 
 #+BEGIN_SRC emacs-lisp
+;; (autoload 'ivy-bibtex "ivy-bibtex" "" t)
+;; ;; ivy-bibtex requires ivy's `ivy--regex-ignore-order` regex builder, which
+;; ;; ignores the order of regexp tokens when searching for matching candidates.
+;; ;; Add something like this to your init file:
+;; (setq ivy-re-builders-alist
+;;       '((ivy-bibtex . ivy--regex-ignore-order)
+;;         (t . ivy--regex-plus)))
 (require 'ivy-bibtex)
 (setq
  ;; bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
@@ -1458,45 +1465,43 @@ of potential extensions used there (PDF, DJVU, ZIP, etc.):
  )
 #+END_SRC
 
-By default a PDF will be open in Emacs (with =pdf-tools=);
-alternatively, Evince can also be used with ~P~:
+By default a PDF will be open in Emacs (with =pdf-tools=); alternatively, Evince
+can also be used with ~P~:
 
 #+BEGIN_SRC emacs-lisp
 (defun bibtex-completion-open-pdf-external (keys &optional fallback-action)
   (let ((bibtex-completion-pdf-open-function
          (lambda (fpath) (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath))))
     (bibtex-completion-open-pdf keys fallback-action)))
-
 (ivy-bibtex-ivify-action bibtex-completion-open-pdf-external ivy-bibtex-open-pdf-external)
-
 (ivy-add-actions
  'ivy-bibtex
  '(("P" ivy-bibtex-open-pdf-external "Open PDF file in external viewer (if present)")))
 #+END_SRC
 
-Add =keywords=, =journal= and =booktitle= to fields to be searched
-(=author=, =editor=, =title=, =year=, BibTeX =key=, and entry type by
-default); fields to be displayed: PDF, author, title, year, and
-journal/booktitle/type:
+Add =keywords=, =journal= and =booktitle= to fields to be searched (=author=,
+=title=, =year=, BibTeX =key=, and entry type by default); fields to be
+displayed: PDF, author, title, year, and journal/booktitle/type:
 
 #+BEGIN_SRC emacs-lisp
 (setq bibtex-completion-additional-search-fields '(keywords journal booktitle)
       bibtex-completion-display-formats
       '(
-        (article        . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} ${journal:40}")
-        (book           . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
-        (inbook         . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
-        (incollection   . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
-        (inproceedings  . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Book: ${booktitle:34}")
-        (t              . "${=has-pdf=:1} ${author:36} ${title:*} ${year:4} Type: ${=type=:34}")))
+        (article        . "${=has-pdf=:1} ${author:36} ${year:4} ${title:*} ${journal:40}")
+        ;; (book           . "${=has-pdf=:1} ${author:36} ${year:4} ${title:*} Book                                    ")
+        (inbook         . "${=has-pdf=:1} ${author:36} ${year:4} ${chapter:*} Book: ${title:34}")
+        (incollection   . "${=has-pdf=:1} ${author:36} ${year:4} ${title:*} Book: ${booktitle:34}")
+        (inproceedings  . "${=has-pdf=:1} ${author:36} ${year:4} ${title:*} Book: ${booktitle:34}")
+        (t              . "${=has-pdf=:1} ${author:36} ${year:4} ${title:*} Type: ${=type=:34}")))
 #+END_SRC
 
-BibTeX file displayed in the order of the file (first entries at the
-top):
+BibTeX file displayed in the order of the file (first entries at the top), and
+does not use =prescient= to sort:
 
 #+BEGIN_SRC emacs-lisp
-(advice-add 'bibtex-completion-candidates
-            :filter-return 'reverse)
+  (setq ivy-prescient-sort-commands '(:not swiper swiper-isearch ivy-switch-buffer ivy-bibtex))
+  (advice-add 'bibtex-completion-candidates
+              :filter-return 'reverse)
 #+END_SRC
 
 Finally, =ivy-bibtex= is bound to ~C-c b~:
@@ -1505,14 +1510,16 @@ Finally, =ivy-bibtex= is bound to ~C-c b~:
 (global-set-key (kbd "C-c b") 'ivy-bibtex)
 #+END_SRC
 
-In BibTeX mode (e.g. when opening and editing the main bibliography),
-new entries are created with ~C-c C-e~, like ~C-c C-e C-a~ for
-articles, ~C-c C-e C-t~ for technical reports, and ~C-c C-e b~ for
-books.  When the point is on an entry, pressing ~C-j~ moves to the next
-field.  ~C-c C-c~ checks and cleans the entry at point (including
-generation of key if it does not exist, alignment, etc.). If necessary
-~C-c C-q~ formats the entry nicely.  Full documentation for BibTex
-mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
+In BibTeX mode (e.g. when opening and editing the main bibliography), new
+entries are created with ~C-c C-e~, like ~C-c C-e C-a~ for articles, ~C-c C-e
+C-t~ for technical reports, and ~C-c C-e b~ for books.  When the point is on an
+entry, pressing ~C-j~ moves to the next field.  ~C-c C-c~ checks and cleans the
+entry at point (including generation of key if it does not exist, alignment,
+etc.). Use ~C-c C-q~ to only format the entry nicely. If necessary, use ~M-x
+bibtex-validate~ to clean the entire bibliography. Note that BibTex is set to
+keep alphabetic order of the bibliography; that requires initial sorting of the
+=.bib= file (use ~M-x bibtex-sort-buffer~ if necessary). Full documentation for
+BibTex mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
 
 #+BEGIN_SRC emacs-lisp
 (defun current-date ()
@@ -1551,12 +1558,13 @@ mode is available [[http://www.jonathanleroux.org/bibtex-mode.html][here]].
  )
 (add-hook 'bibtex-clean-entry-hook 'bibtex-add-date-owner)
 (setq biblio-cleanup-bibtex-function #'bibtex-clean-entry)
+(setq bibtex-maintain-sorted-entries t)
 #+END_SRC
 
-With [[https://github.com/cpitclaudel/biblio.el][=biblio.el=]], we can further check out query CrossRef or arXiv
-(using =biblio-lookup=, then copy and insert with ~c~ and ~i~; ~C~ and
-~I~ do the same, but additionally close the search window), or with
-the DOI (using =doi-insert-bibtex=). 
+With [[https://github.com/cpitclaudel/biblio.el][=biblio.el=]], we can further check out query CrossRef or arXiv (using
+=biblio-lookup=, then copy and insert with ~c~ and ~i~; ~C~ and ~I~ do the same,
+but additionally close the search window), or with the DOI (using
+=doi-insert-bibtex=).
 
 
 ** Markdown
