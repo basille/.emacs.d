@@ -79,6 +79,7 @@ repositories. We first list these packages:
                      apropospriate-theme
                      auctex
                      auctex-latexmk
+                     auto-dark
                      bonjourmadame
                      buffer-move
                      centered-window
@@ -95,6 +96,7 @@ repositories. We first list these packages:
                      dired-narrow
                      dired-quick-sort
                      dired-single
+                     doom-themes
                      eshell-git-prompt
                      ess
                      ess-smart-equals
@@ -199,12 +201,12 @@ Define a =my-cache-dir= (=~/.emacs.d/cache/=) folder for later use
 
 ** Color theme
 
-With the help of the package [[https://github.com/guidoschmidt/circadian.el][circadian]], Emacs can switch themes based
-on sunrise and sunset. I will use [[https://github.com/tmalsburg/tango-plus-theme][Tango Plus]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord
-Emacs]] at night (with brightness of comments at 20%). Coordinates are
-for South Florida:
+With the help of the package [[https://github.com/guidoschmidt/circadian.el][circadian]], Emacs can switch themes based on sunrise
+and sunset. I will use [[https://github.com/tmalsburg/tango-plus-theme][Tango Plus]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night (with
+brightness of comments at 20%). Coordinates are for Southern France. **Note:**
+There is currently [[https://github.com/guidoschmidt/circadian.el/issues/9][a bug]] with the switch to Nord theme at night…
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq nord-comment-brightness 20)
 ;; (load-theme 'nord t)
 ;; Montpellier
@@ -213,19 +215,28 @@ for South Florida:
 (setq calendar-longitude 3.8767)
 (setq circadian-themes '((:sunrise . tango-plus)
                          (:sunset  . nord)))
+;; (setq circadian-themes '(
+;;                          (:sunrise . doom-one-light)
+;;                          (:sunset  . doom-one)
+;;                          ;; ("11:37" . doom-one-light)
+;;                          ;; ("11:38" . doom-one)
+;;                          ))
 (add-hook 'circadian-before-load-theme-hook
           #'(lambda (theme)
               (setq custom-face-attributes '())))
 (circadian-setup)
 #+END_SRC
 
-Alternatively with [[https://github.com/hadronzoo/theme-changer][Theme Changer]]:
+With [[https://github.com/LionyxML/auto-dark-emacs][auto-dark]], Emacs can switch to dark mode when the system itself switches to
+dark mode (consequently, dark mode needs to be enabled in the system; works for
+GNOME). I will use [[https://github.com/tmalsburg/tango-plus-theme][Tango Plus]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night (with
+brightness of comments at 20%).
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'theme-changer)
-;; Use color-theme package instead Emacs 24 color theme facility
-;; (setq theme-changer-mode "color-theme")
-(change-theme 'tango-plus 'nord)
+#+BEGIN_SRC emacs-lisp
+(setq nord-comment-brightness 20)
+(setq auto-dark-light-theme 'tango-plus)
+(setq auto-dark-dark-theme 'nord)
+(auto-dark-mode t)
 #+END_SRC
 
 
@@ -1784,7 +1795,7 @@ new pipe =|>= instead of magrittr's pipe =%>%=):
 
 (with-eval-after-load 'ess-r-mode
   (require 'ess-smart-equals)
-  (setq ess-smart-equals-extra-ops '(brace paren percent))
+  (setq ess-smart-equals-extra-ops '(brace percent)) ; no 'paren'
   (ess-smart-equals-activate))
 
 #+END_SRC
