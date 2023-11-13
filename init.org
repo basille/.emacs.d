@@ -35,6 +35,7 @@
   - [[#web][Web]]
   - [[#polymode][Polymode]]
 - [[#miscellaneous][Miscellaneous]]
+- [[#start-up-buffer][Start-up buffer]]
 - [[#postface][Postface]]
 
 * Emacs packages
@@ -108,6 +109,7 @@ repositories. We first list these packages:
                      format-sql
                      highlight 
                      highlight-indent-guides
+                     imenu-list
                      ivy-bibtex
                      ivy-prescient
                      ivy-rich
@@ -131,7 +133,8 @@ repositories. We first list these packages:
                      powerthesaurus
                      redacted
                      smex
-                     sql-indent
+                   sql-indent
+                   sqlite3
                      sqlup-mode
                      string-inflection
                      ;; sudden-death
@@ -179,10 +182,10 @@ folder of the Emacs profile:
 
 * Interface
 
-Disable the splash screen:
+Disable the splash screen, and open a specific note on startup:
 
 #+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t)
 #+END_SRC
 
 Menu disabled by default. Show it with ~C-S-F1~:
@@ -313,7 +316,7 @@ Swap buffers with =buffer-move= (~C-x <arrows>~):
 
 Mouse wheel does not accelerate:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq mouse-wheel-progressive-speed nil)
 #+END_SRC
 
@@ -489,6 +492,18 @@ Imenu to stay up to date automatically [NB: =counsel-mode= supersedes
 (global-set-key (kbd "C-M-=") #'imenu)
 (setq imenu-auto-rescan t)
 ;; (global-set-key [mouse-3] 'imenu)
+#+END_SRC
+
+=Imenu-list= does the same in a (right-hand) side buffer, with focus in it,
+loaded with ~C-F5 (=\= and =*= fold and unfold all headers): 
+
+#+BEGIN_SRC emacs-lisp
+  (setq imenu-list-focus-after-activation t)
+  (global-set-key [(ctrl f5)] #'imenu-list-smart-toggle)
+  (add-hook 'imenu-list-major-mode-hook (lambda ()
+                                          (define-key imenu-list-major-mode-map (kbd "\\") #'hs-hide-all)
+                                          (define-key imenu-list-major-mode-map (kbd "*") #'hs-show-all)
+                                          (setq-local hs-hide-comments-when-hiding-all nil)))
 #+END_SRC
 
 Bookmarks are saved in =<cache>/bookmarks=, are set with
@@ -953,16 +968,16 @@ Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer
 ~F5~; turn off wrapping long lines):
 
 #+BEGIN_SRC emacs-lisp
-(setq neo-theme 'ascii)
-(global-set-key [(f5)] 'neotree-toggle)
-;; (define-key neotree-mode-map (kb "RET")
-;;   (neotree-make-executor
-;;    :file-fn 'neo-open-file
-;;    :dir-fn 'neo-open-dir))
-(add-hook 'neo-after-create-hook
-          #'(lambda (_)
-              (with-current-buffer (get-buffer neo-buffer-name)
-                (setq truncate-lines t))))
+  (setq neo-theme 'ascii)
+  (global-set-key [(f5)] 'neotree-toggle)
+  ;; (define-key neotree-mode-map (kb "RET")
+  ;;   (neotree-make-executor
+  ;;    :file-fn 'neo-open-file
+  ;;    :dir-fn 'neo-open-dir))
+  (add-hook 'neo-after-create-hook
+            #'(lambda (_)
+                (with-current-buffer (get-buffer neo-buffer-name)
+                  (setq truncate-lines t))))
 #+END_SRC
 
 TRAMP history of connections in =<cache>/tramp=, make completion
@@ -2184,6 +2199,26 @@ same type:
 
 #+BEGIN_SRC emacs-lisp
 (setq xkcd-cache-dir (concat my-cache-dir "xkcd"))
+#+END_SRC
+
+
+* Start-up buffer
+
+Opens the =Start Here.md= file if no file is selected, with NeoTree on the left
+(a little bit buggy):
+
+#+BEGIN_SRC emacs-lisp
+  (defun start-here ()
+    (find-file "/home/mathieu/Public/Notes/Start Here.md")
+    (neotree-toggle)
+    ;; (other-window)
+    )
+
+  (setq initial-buffer-choice
+        (lambda ()
+          (if (buffer-file-name)
+              (current-buffer) ;; leave as-is
+            (start-here))))
 #+END_SRC
 
 
