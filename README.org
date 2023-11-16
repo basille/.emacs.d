@@ -130,7 +130,7 @@ file provided with this repository, which does the job the first time
 Emacs is loaded.
 
 The initial =init.el= file also adjusts =Xresources= for Emacs (start
-maximized and without scrollbars), and create the folder structure
+without toolbars and scrollbars), and create the folder structure
 necessary for the rest of the configuration.
 
 This file looks like that:
@@ -142,7 +142,6 @@ This file looks like that:
   (write-region "
   ! Emacs geometry
   !
-  emacs.fullscreen: maximized
   emacs.menuBar: off
   emacs.toolBar: off
   emacs.verticalScrollBars: off
@@ -208,6 +207,7 @@ status.showUntrackedFiles normal=)
 | ~C-TAB~        | Cycle through buffers with IVY |
 | ~C-x k~        | Kill THIS buffer               |
 | ~C-x +~        | Balance the sizes of windows   |
+| ~C-x C~        | Center the text horizontally   |
 
 *** Search and replace
 
@@ -252,7 +252,6 @@ status.showUntrackedFiles normal=)
 | ~M-q~     | Fill paragraph (indentation and lines)                  |
 | ~C-u M-q~ | Justifies text (fixed width)                            |
 | ~M-$~     | Check spelling of word at the cursor                    |
-| ~C-c C-d~ | Sudden death!                                           |
 
 *** Operations
 
@@ -533,7 +532,8 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 
 | Key name | Operation                                                 |
 |----------+-----------------------------------------------------------|
-| ~F5~     | NeoTree in side panel                                     |
+| ~F5~     | NeoTree in left-side panel                                |
+| ~C-F5~   | TOC in right-side panel (Markdown files)                  |
 | ~F6~     | Dired in current directory                                |
 | ~C-F6~   | Activate write mode in Dired (~C-c C-c~ to save and exit) |
 | ~F7~     | Run rmarkdown::render on current RMarkdown file           |
@@ -566,6 +566,7 @@ Use position registers (a sort of bookmark) with ~F1—F4~: ~C-F1~ to
 |--------------------+------------------------|
 | ~M-x lunar-phases~ | Display moon phases.   |
 | ~M-x zone~         | Screen saver. Sort of… |
+| ~C-S Esc~          | Redact the buffer      |
 
 
 * Screenshots (outdated)

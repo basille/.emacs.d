@@ -4,15 +4,14 @@
 (write-region "
 ! Emacs geometry
 !
-emacs.fullscreen: maximized
 emacs.menuBar: off
 emacs.toolBar: off
 emacs.verticalScrollBars: off
 emacs.horizontalScrollbars: off
-
+  
 " nil "~/.Xresources" 'append)
 (shell-command "xrdb -merge ~/.Xresources")
-
+  
 ;; Create necessary directories and save abbrev silently
 (mkdir (concat user-emacs-directory "cache") t)
 (mkdir (concat user-emacs-directory "functions") t)

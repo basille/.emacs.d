@@ -75,75 +75,70 @@ repositories. We first list these packages:
 
 #+BEGIN_SRC emacs-lisp
 (setq package-list '(
-                     2048-game
-                     anzu
-                     apropospriate-theme
-                     auctex
-                     auctex-latexmk
-                     auto-dark
-                     bonjourmadame
-                     buffer-move
-                     centered-window
-                     circadian
+                     anzu               ; current match and total matches information in the mode-line in various search modes.
+                     auctex             ; Write and format TeX files
+                     auctex-latexmk     ; Add LatexMk support to AUCTeX
+                     auto-dark          ; Switch from 2 themes following Gnome dark mode switch
+                     bonjourmadame      ; Say "Hello ma'am!"
+                     buffer-move        ; Move buffers to the left/top/right/bottom
+                     centered-window    ; Center the text of the window (if only one window)
+                     circadian          ; Switch from 2 themes following sunset/sunrise
                      ;; col-highlight    ; EmacsWiki not on MELPA anymore
-                     company
-                     company-auctex
-                     company-reftex
-                     company-math
-                     counsel
-                     counsel-world-clock
-                     color-theme-sanityinc-tomorrow 
-                     dimmer
-                     dired-narrow
-                     dired-quick-sort
-                     dired-single
-                     doom-themes
-                     eshell-git-prompt
-                     ess
-                     ess-smart-equals
-                     ess-view-data
-                     expand-region
-                     flycheck
-                     flx
-                     forge
-                     format-sql
-                     highlight 
-                     highlight-indent-guides
-                     imenu-list
-                     ivy-bibtex
-                     ivy-prescient
-                     ivy-rich
-                     magit
-                     magit-gitflow
-                     markdown-mode
-                     markdown-toc
-                     move-text
-                     multiple-cursors
-                     neotree
-                     nord-theme
-                     org-bullets
-                     org-contrib
-                     pandoc-mode
-                     pdf-tools
-                     polymode
-                     poly-R
-                     poly-markdown
-                     poly-noweb
-                     poly-org
-                     powerthesaurus
-                     redacted
-                     smex
-                   sql-indent
-                   sqlite3
-                     sqlup-mode
-                     string-inflection
-                     ;; sudden-death
-                     tango-plus-theme
-                     toc-org
-                     web-mode
-                     writeroom-mode
-                     xkcd
-                     yaml-mode
+                     company            ; "Complete anything"
+                     company-auctex     ; Company support for AUCTeX
+                     company-reftex     ; Company support for RefTeX
+                     company-math       ; Company support for math mode
+                     counsel            ; Various completion functions using Ivy
+                     counsel-world-clock ; Display world clock using Ivy
+                     dimmer             ; Visually highlight the selected buffer
+                     dired-narrow       ; Filter the listing produced by Dired
+                     dired-quick-sort   ; Persistent quick sorting of Dired buffers
+                     dired-single       ; Dired in a single buffer
+                     eshell-git-prompt  ; Themes for Emacs Shell (Eshell) prompt
+                     ess                ; Emacs Speaks Statistics
+                     ess-smart-equals   ; Flexible, context-sensitive assignment for R
+                     ess-view-data      ; Tidyverse-like view and manipulate data in R
+                     expand-region      ; Increase selected region by semantic units
+                     flycheck           ; On-the-fly syntax checking
+                     flx                ; Fuzzy matching
+                     forge              ; Access Git forges (GitHub/GitLab) from Magit
+                     format-sql         ; Reformat SQL code using sqlformat or pgformatter 
+                     highlight          ; Highlighting commands
+                     highlight-indent-guides ; Highlight indentation levels
+                     imenu-list         ; Show imenu entries in a separate buffer 
+                     ivy-bibtex         ; Search and manage bibliographies using Ivy
+                     ivy-prescient      ; Simple but effective sorting and filtering
+                     ivy-rich           ; More friendly interface for Ivy
+                     magit              ; Text-based user interface to Git
+                     magit-gitflow      ; GitFlow plugin for Magit
+                     markdown-mode      ; Edit Markdown-formatted text
+                     markdown-toc       ; Generate a TOC in Markdown file 
+                     move-text          ; Move current line or region up or down 
+                     multiple-cursors   ; Multiple cursors
+                     neotree            ; File tree plugin
+                     nord-theme         ; Arctic, north-bluish clean and elegant theme
+                     org-bullets        ; UTF-8 bullets for Org-mode 
+                     org-contrib        ; Org-mode contributed packages
+                     pandoc-mode        ; Interact with Pandoc
+                     pdf-tools          ; Support library for PDF files
+                     polymode           ; Multiple major modes inside a single buffer
+                     poly-R             ; R files support for Polymode
+                     poly-markdown      ; Markdown files support for Polymode
+                     poly-noweb         ; Noweb files support for Polymode
+                     poly-org           ; Org files support for Polymode
+                     powerthesaurus     ; Finding synonyms, antonyms, and related terms
+                     redacted           ; Hide current text
+                     smex               ; Smart M-x enhancement 
+                     sql-indent         ; Syntax based indentation for SQL files
+                     sqlite3            ; SQLite3 API
+                     sqlup-mode         ; Upcase SQL keyword and functions 
+                     string-inflection  ; underscore -> UPCASE -> CamelCase conversion of names 
+                     tango-plus-theme   ; Color theme loosely based on the tango palette
+                     toc-org            ; Up-to-date table of contents in Org files
+                     web-mode           ; Editing web templates
+                     writeroom-mode     ; Distraction-free writing
+                     xkcd               ; Read xkcd
+                     yaml-mode          ; Edit files in the YAML data serialization format
                      ))
 ;; Markdown-mode from MELPA, and not MELPA stable
 ;; (setq package-pinned-packages
@@ -249,7 +244,7 @@ Frames (generally called windows) have a title instead of
 =emacs25@<computer>=:
 
 #+BEGIN_SRC emacs-lisp
-(setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+  (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
 #+END_SRC
 
 
@@ -288,8 +283,11 @@ Visually highlight selected buffer, by dimming other buffers (package
 =dimmer=):
 
 #+BEGIN_SRC emacs-lisp
-(dimmer-activate)
-(setq dimmer-percent 0.15)
+(require 'dimmer)
+(setq dimmer-fraction 0.15)
+(dimmer-configure-which-key)
+(dimmer-configure-helm)
+(dimmer-mode t)
 #+END_SRC
 
 Use ~M-<arrows>~ to move between windows (package =windmove=, built in
@@ -352,10 +350,10 @@ window in the same frame:
 
 ** Buffers
 
-[[https://github.com/anler/centered-window-mode/][Center text]] when there is only one window (in the width of the frame):
+[[https://github.com/anler/centered-window-mode/][Center text]] (in the width of the frame) with ~C-x C~:
 
 #+BEGIN_SRC emacs-lisp
-(centered-window-mode t)
+(global-set-key (kbd "C-x C") 'centered-window-mode)
 #+END_SRC
 
 Empty scratch buffer:
@@ -364,7 +362,7 @@ Empty scratch buffer:
 (setq initial-scratch-message nil)
 #+END_SRC
 
-Lines soft wrapped at word boundary (with fringe indicators):
+Lines soft wrapped at word boundary (with fringe indicators in the fringe column):
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
@@ -427,7 +425,7 @@ Redacted with ~C-S-escape~; when in =redacted= mode, enable =read-only-mode= to
 ensure that we don't change what we can't read:
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [(ctrl shift escape)] 'redacted-mode)
+(global-set-key [(ctrl shift escape)] 'redacted-mode)
 (add-hook 'redacted-mode-hook (lambda () (read-only-mode (if redacted-mode 1 -1))))
 #+END_SRC
 
@@ -989,7 +987,7 @@ below:
 #+BEGIN_SRC emacs-lisp
 (setq
  tramp-persistency-file-name (concat my-cache-dir "tramp")
- tramp-completion-reread-directory-timeout nil
+ remote-file-name-inhibit-cache nil
  tramp-histfile-override nil
  )
 (add-to-list 'backup-directory-alist
@@ -1094,7 +1092,7 @@ Use PDF tools to view PDF (=libpoppler-glib-dev= required):
 (setq-default pdf-view-display-size 'fit-page) ; Start PDF in full page
 (setq pdf-annot-activate-created-annotations t) ; Automatically annotate highlights
 (add-hook 'pdf-view-mode-hook 
-          '(lambda ()
+          #'(lambda ()
              (pdf-misc-size-indication-minor-mode) ; Show Top/Bot number in mode line?
              ;; (pdf-links-minor-mode)                ; Activate links
              (pdf-isearch-minor-mode)              ; Incremental search using normal isearch
@@ -1770,7 +1768,7 @@ Automagically delete trailing whitespace when saving R script files:
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook
-            '(lambda()
+            #'(lambda()
                (add-hook 'write-contents-functions
                          (lambda ()
                            (ess-nuke-trailing-whitespace)))
