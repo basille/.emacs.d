@@ -79,6 +79,7 @@ repositories. We first list these packages:
                      auctex             ; Write and format TeX files
                      auctex-latexmk     ; Add LatexMk support to AUCTeX
                      auto-dark          ; Switch from 2 themes following Gnome dark mode switch
+                     beginend           ; Redefine ~M-<~ (=beginning-of-buffer=) and ~M->~ (=end-of-buffer=)
                      bonjourmadame      ; Say "Hello ma'am!"
                      buffer-move        ; Move buffers to the left/top/right/bottom
                      centered-window    ; Center the text of the window (if only one window)
@@ -445,9 +446,10 @@ Recenter with ~C-l~ starts with top, then middle, then bottom:
 (setq recenter-positions '(top middle bottom))
 #+END_SRC
 
-[[https://github.com/DamienCassou/beginend][Beginend]] (with Emacs 25.3):
+[[https://github.com/DamienCassou/beginend][Beginend]] (with Emacs 25.3) to redefine ~M-<~ (=beginning-of-buffer=) and ~M->~
+(=end-of-buffer=) so that point moves to meaningful beginning and end of buffers:
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (beginend-global-mode)
 #+END_SRC
 
