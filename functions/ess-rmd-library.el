@@ -1,3 +1,6 @@
+;; ESS utilities for RMarkdown
+;; Author: Mathieu Basille
+
 ;; Function rmd-pandoc-custom to use knitr::pandoc with options in
 ;; .pandoc/config.pandoc
 ;; Inspiration borrowed from ess-swv-run-in-R (ess-swv.el)

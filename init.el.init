@@ -4,7 +4,6 @@
 (write-region "
 ! Emacs geometry
 !
-emacs.fullscreen: maximized
 emacs.menuBar: off
 emacs.toolBar: off
 emacs.verticalScrollBars: off

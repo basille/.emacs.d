@@ -284,7 +284,7 @@ Visually highlight selected buffer, by dimming other buffers (package
 
 #+BEGIN_SRC emacs-lisp
 (require 'dimmer)
-(setq dimmer-fraction 0.15)
+(setq dimmer-fraction 0.25)
 (dimmer-configure-which-key)
 (dimmer-configure-helm)
 (dimmer-mode t)
@@ -362,18 +362,25 @@ Empty scratch buffer:
 (setq initial-scratch-message nil)
 #+END_SRC
 
-Lines soft wrapped at word boundary (with fringe indicators in the fringe column):
+Lines soft wrapped at word boundary (with fringe indicators in the fringe
+column), except for Grep and Imenu-list buffers; ~F10~ to toggle line wrapping
+(activated by default):
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
-#+END_SRC
-
-~F10~ to toggle line wrapping (activated by default):
-
-#+BEGIN_SRC emacs-lisp
+(defun my-truncate-lines-enable ()
+  "Disable line truncation, even in split windows."
+  (let ((inhibit-message t) ; No messages in the echo area - needs emacs 25+
+        message-log-max ; No messages in the *Messages* buffer
+        truncate-partial-width-windows) ; No truncation in split windows
+    (visual-line-mode 0)
+    (toggle-truncate-lines 1)))
+(add-hook 'imenu-list-major-mode-hook #'my-truncate-lines-enable)
+(add-hook 'grep-mode-hook #'my-truncate-lines-enable)
 (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
+
 
 Highlight current line globally (and toggle it with ~C-F10~):
 
@@ -1616,6 +1623,21 @@ tweaks:
  markdown-asymmetric-header t           ; Asymetric headers (only # on the left)
  markdown-enable-math t                 ; Enable mathematical expressions (LaTeX)
  )
+#+END_SRC
+
+Additional home-made functions to deal with to-do items in Markdown (~C-c t~ to
+insert =**TODO**= at point, ~C-c T~ to switch between
+**TODO**/**DONE**/<nothing> [not implemented], ~C-S-F5~ to display an
+interactive list of to-do items in a Grep top buffer [not implemented]):
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'markdown-mode-hook 
+          (lambda ()
+            (load-library "md-todo-library")
+            (local-set-key (kbd "C-c t") 'md-todo)
+            (local-set-key (kbd "C-c T") 'md-todo-switch)
+            (local-set-key [C-S-f5] 'md-todo-list)
+            ))
 #+END_SRC
 
 
