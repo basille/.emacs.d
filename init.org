@@ -1627,8 +1627,8 @@ tweaks:
  )
 #+END_SRC
 
-Additional home-made functions to deal with to-do items in Markdown (~C-c t~ to
-insert =**TODO**= at beginning of the line, ~C-c d~ to switch between
+Additional home-made functions to deal with to-do items in Markdown (~C-c C-t~
+to insert =**TODO**= at beginning of the line, ~C-c C-d~ to switch between
 **TODO**/**DONE**, ~C-S-F5~ to display an interactive list of to-do items in a
 Grep top buffer):
 
@@ -1636,8 +1636,8 @@ Grep top buffer):
 (add-hook 'markdown-mode-hook 
           (lambda ()
             (load-library "md-todo-library")
-            (local-set-key (kbd "C-c t") 'md-todo)
-            (local-set-key (kbd "C-c d") 'md-todo-done)
+            (local-set-key (kbd "C-c C-t") 'md-todo)
+            (local-set-key (kbd "C-c C-d") 'md-todo-done)
             (local-set-key [C-S-f5] 'md-todo-list)
             ))
 #+END_SRC
