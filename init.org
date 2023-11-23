@@ -1628,16 +1628,16 @@ tweaks:
 #+END_SRC
 
 Additional home-made functions to deal with to-do items in Markdown (~C-c t~ to
-insert =**TODO**= at point, ~C-c T~ to switch between
-**TODO**/**DONE**/<nothing> [not implemented], ~C-S-F5~ to display an
-interactive list of to-do items in a Grep top buffer [not implemented]):
+insert =**TODO**= at beginning of the line, ~C-c d~ to switch between
+**TODO**/**DONE**, ~C-S-F5~ to display an interactive list of to-do items in a
+Grep top buffer):
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'markdown-mode-hook 
           (lambda ()
             (load-library "md-todo-library")
             (local-set-key (kbd "C-c t") 'md-todo)
-            (local-set-key (kbd "C-c T") 'md-todo-switch)
+            (local-set-key (kbd "C-c d") 'md-todo-done)
             (local-set-key [C-S-f5] 'md-todo-list)
             ))
 #+END_SRC
