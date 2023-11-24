@@ -364,8 +364,8 @@ Empty scratch buffer:
 #+END_SRC
 
 Lines soft wrapped at word boundary (with fringe indicators in the fringe
-column), except for Grep and Imenu-list buffers; ~F10~ to toggle line wrapping
-(activated by default):
+column), except for Dired, Grep, and Imenu-list buffers; ~F10~ to toggle line
+wrapping (activated by default):
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
@@ -377,8 +377,9 @@ column), except for Grep and Imenu-list buffers; ~F10~ to toggle line wrapping
         truncate-partial-width-windows) ; No truncation in split windows
     (visual-line-mode 0)
     (toggle-truncate-lines 1)))
-(add-hook 'imenu-list-major-mode-hook #'my-truncate-lines-enable)
+(add-hook 'dired-mode-hook #'my-truncate-lines-enable)
 (add-hook 'grep-mode-hook #'my-truncate-lines-enable)
+(add-hook 'imenu-list-major-mode-hook #'my-truncate-lines-enable)
 (global-set-key [(f10)] 'toggle-truncate-lines)
 #+END_SRC
 
@@ -913,15 +914,20 @@ directory silently:
 
 ** File manager
 
-=Dired= (launched in current directory with with ~F6~) list
-directories first, refresh automatically directories, intelligently
-guess where to copy (other window), and does not ask for confirmation
-for recursive copies and deletes. Switch to WDired mode (to 'write'
-file names) with ~C-F6~, go to bookmarks with ~$~, dynamically filter
-files and folders with ~/~ (part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]), and =ediff= two
-marked files with ~e~ (with =dired-ediff-files=):
+=Dired= (launched in current directory with with ~F6~) lists directories first,
+use case-insensitive sorting, refreshes automatically directories, intelligently
+guesses where to copy (other window), and does not ask for confirmation for
+recursive copies and deletes. Switch to WDired mode (to 'write' file names) with
+~C-F6~, go to bookmarks with ~$~, dynamically filter files and folders with ~/~
+(part of [[https://github.com/Fuco1/dired-hacks#dired-narrow][Dired-narrow]]), and =ediff= two marked files with ~e~ (with
+=dired-ediff-files=):
 
 #+BEGIN_SRC emacs-lisp
+(setq
+ ls-lisp-use-insert-directory-program nil
+ ls-lisp-ignore-case t
+ ls-lisp-use-string-collate nil
+ dired-quick-sort-suppress-setup-warning t)
 (setq
  dired-listing-switches "-aBhl  --group-directories-first"
  ;; dired-omit-files "^\\.$"
@@ -971,11 +977,20 @@ Remove =.= from the list of files/folders (and be silent about it):
  dired-omit-extensions nil)
 #+END_SRC
 
-Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to
-~F5~; turn off wrapping long lines):
+Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to ~F5~; turn off
+wrapping long lines); NeoTree uses case-insensitive sorting:
 
 #+BEGIN_SRC emacs-lisp
   (setq neo-theme 'ascii)
+  (defadvice neo-buffer--get-nodes
+    (after neo-buffer--get-nodes-new-sorter activate)
+  (setq ad-return-value
+        (let ((nodes ad-return-value)
+              (comparator (lambda (s1 s2) (string< (downcase s1)
+                                              (downcase s2)))))
+          (apply 'cons (mapcar (lambda (x) (sort (apply x (list nodes))
+                                            comparator))
+                               '(car cdr))))))
   (global-set-key [(f5)] 'neotree-toggle)
   ;; (define-key neotree-mode-map (kb "RET")
   ;;   (neotree-make-executor
