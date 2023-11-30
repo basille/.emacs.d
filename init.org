@@ -1436,15 +1436,11 @@ configuring the LaTeX mode (notably RefTeX, fold LaTeX environments
             ))
 #+END_SRC
 
-The compilation by LatexMk (a single call to perform all necessary
-LaTeX/BibTeX compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]]
-package, which allows to have LatexMk as the default engine for LaTeX compilation:
+The compilation by LatexMk (a single call to perform all necessary LaTeX/BibTeX
+compilations) is performed through the [[https://github.com/tom-tan/auctex-latexmk][auctex-latexmk]] package, which allows to
+have LatexMk as the default engine for LaTeX compilation:
 
-UPDATE (July 2022): =auctex-latexmk= is no longer maintained. There's a bug with
-=tex-buf= being merged into =tex=, but still being called by =auctex-latexmk=
-(see [[https://github.com/tom-tan/auctex-latexmk/issues/39][bug report]] for possible fixes).
-
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (setq auctex-latexmk-inherit-TeX-PDF-mode t) ; LaTeXMk inherits PDF mode 
 (auctex-latexmk-setup)
 (add-hook 'TeX-mode-hook (lambda () (setq TeX-command-default "LatexMk")))
@@ -1689,8 +1685,8 @@ Run R dired with ~C-c r~:
 
 *** Layout
 
-All R buffers except code on the right side; R buffer dedicated at the
-bottom, R Dired and Help stick to the top:
+All R buffers (including R Dired) except code on the right side; Help, magit
+also on the right side; Grep sticks to the top:
 
 #+BEGIN_SRC emacs-lisp
 (setq display-buffer-alist
@@ -1730,6 +1726,12 @@ bottom, R Dired and Help stick to the top:
          (side . left)
          (slot . -1)
          (window-width . 0.5)
+         (reusable-frames . nil))
+        ("*grep"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . top)
+         (slot . -1)
+         (window-height . 0.33)
          (reusable-frames . nil))
         ))
 #+END_SRC

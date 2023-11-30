@@ -24,9 +24,6 @@
 (defun md-todo-list ()
   "Opens a top window with a list of all TODO items in the Notes folder."
   (interactive)
-  (split-window-below)
-  (other-window 1)
   (grep-compute-defaults)
   (rgrep "\\*\\*TODO\\*\\*" "*.md" "~/Public/Notes/./")
-  (other-window 1)
-  (shrink-window (round (* (frame-height) .2))))
+  (other-window 1))
