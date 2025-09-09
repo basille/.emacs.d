@@ -20,6 +20,30 @@
     (while (search-forward "**TODO**" (line-end-position) 0)
         (replace-match "**DONE**" 1))))
 
+;; Function md-todo-cancel to replace **TODO** in current line by **CANCEL**.
+(defun md-todo-cancel ()
+  "Switch from TODO to CANCEL."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (while (search-forward "**TODO**" (line-end-position) 0)
+        (replace-match "**CANCEL**" 1))))
+
+;; ;; Function md-todo-cycle to cycle between **TODO**, **DONE**, **CANCEL** and nothing in current line.
+;; (defun md-todo-cycle ()
+;;   "Cycle between TODO, DONE, CANCEL and nothing."
+;;   (interactive)
+;;   (save-excursion
+;;     (beginning-of-line)
+;;     (while (search-forward "**CANCEL**" (line-end-position) 0)
+;;         (replace-match "" 1))))
+;;     (while (search-forward "**DONE**" (line-end-position) 0)
+;;       (replace-match "**CANCEL**" 1))
+;;     (while (search-forward "**TODO**" (line-end-position) 0)
+;;         (replace-match "**DONE**" 1))))
+;;
+;;     ))
+
 ;; Function md-todo-list to display a TODO list with 'rgrep'
 (defun md-todo-list ()
   "Opens a top window with a list of all TODO items in the Notes folder."
