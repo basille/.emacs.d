@@ -1660,7 +1660,7 @@ Grep top buffer):
 (add-hook 'markdown-mode-hook 
           (lambda ()
             (load-library "md-todo-library")
-            (local-set-key (kbd "C-c C-t") 'md-todo)
+            (local-set-key (kbd "C-c C-t") 'md-todo-cycle)
             (local-set-key (kbd "C-c C-d") 'md-todo-done)
             (local-set-key (kbd "C-c C-r") 'md-todo-cancel)
             (local-set-key [C-S-f5] 'md-todo-list)
@@ -2257,21 +2257,26 @@ same type:
 
 * Start-up buffer
 
-Opens the =Bonjour.md= file if no file is selected, with NeoTree on the left (a
-little bit buggy):
+Opens the =Bonjour.md= file if no file is selected, with NeoTree on the left
+(function from ChatGPT):
 
 #+BEGIN_SRC emacs-lisp
-  (defun start-here ()
-    (find-file "/home/mathieu/Public/Notes/Bonjour.md")
-    (neotree-toggle)
-    ;; (other-window)
-    )
-
-  (setq initial-buffer-choice
-        (lambda ()
-          (if (buffer-file-name)
-              (current-buffer) ;; leave as-is
-            (start-here))))
+(defun start-here ()
+  "Open a specific file and launch NeoTree on the left, with the cursor in NeoTree."
+  (let ((main-buf (find-file "/home/mathieu/Public/Notes/Bonjour.md")))
+    ;; Ensure NeoTree is loaded
+    (require 'neotree)
+    ;; Show NeoTree if it's not already visible
+    (unless (neo-global--window-exists-p)
+      (neotree-show))
+    ;; Schedule cursor move to NeoTree window after startup
+    (run-at-time 0 nil
+                 (lambda ()
+                   (when-let ((neo-win (neo-global--get-window)))
+                     (select-window neo-win))))
+    ;; Return the main buffer to satisfy initial-buffer-choice
+    main-buf))
+(setq initial-buffer-choice #'start-here)  
 #+END_SRC
 
 
