@@ -1655,17 +1655,14 @@ markdown-unordered-list-item-prefix "- " ; Prefix for list items
 #+END_SRC
 
 Additional home-made functions to deal with to-do items in Markdown (~C-c C-t~
-to insert =**TODO**= at beginning of the line, ~C-c C-d~ to switch between
-**TODO**/**DONE**, ~C-S-F5~ to display an interactive list of to-do items in a
-Grep top buffer):
+to insert =**TODO**= and cycle between **TODO**/**CANCEL**/**DONE**/nothing,
+~C-S-F5~ to display an interactive list of to-do items in a Grep top buffer):
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'markdown-mode-hook 
           (lambda ()
             (load-library "md-todo-library")
             (local-set-key (kbd "C-c C-t") 'md-todo-cycle)
-            (local-set-key (kbd "C-c C-d") 'md-todo-done)
-            (local-set-key (kbd "C-c C-r") 'md-todo-cancel)
             (local-set-key [C-S-f5] 'md-todo-list)
             ))
 #+END_SRC
@@ -2279,7 +2276,11 @@ Opens the =Bonjour.md= file if no file is selected, with NeoTree on the left
                      (select-window neo-win))))
     ;; Return the main buffer to satisfy initial-buffer-choice
     main-buf))
-(setq initial-buffer-choice #'start-here)  
+(setq initial-buffer-choice
+      (lambda ()
+        (if (buffer-file-name)          ; If a file is selected, just open it
+            (current-buffer)
+          (start-here))))               ; Else run start-here
 #+END_SRC
 
 
