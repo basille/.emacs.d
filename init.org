@@ -1663,7 +1663,7 @@ to insert =**TODO**= and cycle between **TODO**/**CANCEL**/**DONE**/nothing,
           (lambda ()
             (load-library "md-todo-library")
             (local-set-key (kbd "C-c C-t") 'md-todo-cycle)
-            (local-set-key [C-S-f5] 'md-todo-list)
+            (local-set-key [C-S-f5] 'md-todo-dashboard)
             ))
 #+END_SRC
 
