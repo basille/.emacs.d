@@ -42,11 +42,19 @@ Cursor follows the text if a keyword is added or removed."
           ;; Restore cursor relative to text
           (goto-char (+ (point) offset)))))))
 
+;;; md-todo-dashboard.el --- Markdown TODO Dashboard
+
 (defun md--shorten-filename (filename max-len)
   "Return FILENAME shortened to MAX-LEN characters, ending with … if too long."
   (if (> (length filename) max-len)
       (concat (substring filename 0 (1- max-len)) "…")
     filename))
+
+(defvar md-todo-dashboard-link-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [mouse-1] #'md-todo-dashboard-visit)
+    map)
+  "Keymap used for clickable filename text in the TODO dashboard.")
 
 (defvar md-todo-dashboard-mode-map
   (let ((map (make-sparse-keymap)))
@@ -54,84 +62,106 @@ Cursor follows the text if a keyword is added or removed."
     (define-key map (kbd "Q") 'quit-window)
     (define-key map (kbd "n") 'md-todo-dashboard-next-section)
     (define-key map (kbd "p") 'md-todo-dashboard-previous-section)
+    (define-key map (kbd "TAB") 'md-todo-dashboard-toggle-section)
     map)
-  "Keymap for `md-todo-dashboard-mode`.")
+  "Keymap for `md-todo-dashboard-mode'.")
 
 (define-derived-mode md-todo-dashboard-mode special-mode "TODO-Dashboard"
   "Major mode for the Markdown TODO dashboard."
   (setq truncate-lines t))
 
 (defun md-todo-dashboard-open ()
-  "Open the TODO item at point."
+  "Open the TODO item at point (RET)."
   (interactive)
   (let ((file (get-text-property (point) 'file))
         (line (get-text-property (point) 'line)))
     (when file
       (find-file file)
-      (goto-line line))))
+      (goto-char (point-min))
+      (forward-line (1- (or line 1))))))
+
+(defun md-todo-dashboard-visit (event)
+  "Open the TODO clicked with the mouse (mouse-1)."
+  (interactive "e")
+  (let* ((posn (event-start event))
+         (win (posn-window posn))
+         (buf (window-buffer win))
+         (pt  (posn-point posn)))
+    (when (and pt buf)
+      (with-current-buffer buf
+        (goto-char pt)
+        (let ((file (get-text-property pt 'file))
+              (line (get-text-property pt 'line)))
+          (when file
+            (find-file file)
+            (goto-char (point-min))
+            (forward-line (1- (or line 1)))))))))
 
 (defun md-todo-dashboard-next-section ()
-  "Jump to the next section header (wrapping if needed)."
+  "Jump to the next section header (wraps)."
   (interactive)
-  (forward-line 1) ;; skip current line so we always move forward
-  (if (re-search-forward "^.*items left in .+ list:" nil t)
+  (forward-line 1)
+  (if (re-search-forward "^# .*items left in .+ list" nil t)
       (beginning-of-line)
-    ;; Wrap to top
     (goto-char (point-min))
-    (when (re-search-forward "^.*items left in .+ list:" nil t)
+    (when (re-search-forward "^# .*items left in .+ list" nil t)
       (beginning-of-line))))
 
 (defun md-todo-dashboard-previous-section ()
-  "Jump to the previous section header (wrapping if needed)."
+  "Jump to the previous section header (wraps)."
   (interactive)
-  (forward-line -1) ;; skip current line so we always move backward
-  (if (re-search-backward "^.*items left in .+ list:" nil t)
+  (forward-line -1)
+  (if (re-search-backward "^# .*items left in .+ list" nil t)
       (beginning-of-line)
-    ;; Wrap to bottom
     (goto-char (point-max))
-    (when (re-search-backward "^.*items left in .+ list:" nil t)
+    (when (re-search-backward "^# .*items left in .+ list" nil t)
       (beginning-of-line))))
 
 (defun md--collect-todos (notes-dir)
-  "Return an alist of categorized TODO items from NOTES-DIR."
-  (let ((todo-types '(("TODO"  . todo)
-                      ("SOON"  . soon)
-                      ("LATER" . later)))
-        (results '((todo . ()) (soon . ()) (later . ()))))
+  "Return an alist of categorized TODO items from NOTES-DIR.
+Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :line LINE :text TEXT)."
+  (let* ((todo-types '(("TODO"  . todo)
+                       ("SOON"  . soon)
+                       ("LATER" . later)))
+         (results (list (cons 'todo  nil)
+                        (cons 'soon  nil)
+                        (cons 'later nil))))
     (dolist (file (directory-files-recursively notes-dir "\\.md\\'"))
       (with-temp-buffer
         (insert-file-contents file)
         (goto-char (point-min))
         (let ((linenum 1))
           (while (not (eobp))
-            (let ((line (buffer-substring-no-properties
-                         (line-beginning-position)
-                         (line-end-position))))
+            (let ((line (buffer-substring-no-properties (line-beginning-position)
+                                                        (line-end-position))))
               (dolist (tt todo-types)
                 (when (string-match (format "\\*\\*%s\\*\\* *\\(.*\\)" (car tt)) line)
-                  (push (list :file file
-                              :line linenum
-                              :text (match-string 1 line))
-                        (cdr (assoc (cdr tt) results))))))
+                  (push (list :file file :line linenum :text (match-string 1 line))
+                        (alist-get (cdr tt) results)))))
             (forward-line 1)
             (setq linenum (1+ linenum))))))
-    ;; Reverse lists to preserve original file order
-    (dolist (key '(todo soon later))
-      (setf (alist-get key results) (nreverse (alist-get key results))))
+    ;; reverse each list to preserve order
+    (dolist (k '(todo soon later))
+      (setf (alist-get k results) (nreverse (alist-get k results))))
     results))
 
 (defun md--insert-section (items title notes-dir max-col-width)
-  "Insert a section with ITEMS, TITLE string, relative to NOTES-DIR.
-Shorten file names to MAX-COL-WIDTH."
+  "Insert a section for ITEMS with TITLE; use NOTES-DIR and MAX-COL-WIDTH."
   (let ((header-start (point)))
-    (insert (format "%d items left in the %s list:\n\n"
-                    (length items) title))
-    ;; Bold the section type (to-do / soon / later)
-    (save-excursion
-      (goto-char header-start)
-      (when (re-search-forward (regexp-quote title) (line-end-position) t)
-        (add-text-properties (match-beginning 0) (match-end 0)
-                             '(face bold)))))
+    ;; Insert header line with trailing colon
+    (insert (format "# %d items left in the %s list:" (length items) title))
+    (let ((header-end (point)))
+      ;; Markdown header face
+      (add-text-properties header-start header-end
+                           '(section-header t md-folded nil face markdown-header-face-1))
+      ;; Bold only the section word
+      (save-excursion
+        (goto-char header-start)
+        (when (re-search-forward "\\(to\\-do\\|soon\\|later\\)" header-end t)
+          (add-text-properties (match-beginning 0) (match-end 0)
+                               '(face (:inherit (bold markdown-header-face-1))))))))
+  ;; Newline (plain)
+  (insert "\n\n")
   ;; Insert items
   (dolist (item items)
     (let* ((file (plist-get item :file))
@@ -140,19 +170,76 @@ Shorten file names to MAX-COL-WIDTH."
            (relfile (file-relative-name file notes-dir))
            (shortname (md--shorten-filename relfile max-col-width))
            (start (point)))
-      ;; File name (link)
       (insert (format (format "%%-%ds" max-col-width) shortname))
       (add-text-properties start (+ start (length shortname))
                            `(file ,file line ,line mouse-face highlight
                                   help-echo ,file
-                                  face link))
-      ;; TODO text
-      (insert "  ")
+                                  face link
+                                  keymap ,md-todo-dashboard-link-map))
+      (insert " ")
       (let ((text-start (point)))
         (insert text "\n")
-        (add-text-properties text-start (point)
-                             '(face bold)))))
-  (insert "\n"))
+        (add-text-properties text-start (point) '(face bold)))))
+  ;; Ensure single blank line after section
+  (unless (looking-back "\n\n" nil)
+    (insert "\n")))
+
+(defun md-todo-dashboard-toggle-section ()
+  "Toggle visibility of section at point."
+  (interactive)
+  (when (get-text-property (point) 'section-header)
+    (save-excursion
+      (let* ((header-start (line-beginning-position))
+             (header-end   (line-end-position))
+             (content-start (progn (forward-line 1) (point)))
+             (section-end (or (and (re-search-forward "^# .*items left in .+ list" nil t)
+                                   (line-beginning-position))
+                              (point-max))))
+        ;; Keep blank line visible
+        (save-excursion
+          (goto-char section-end)
+          (forward-line -1)
+          (when (looking-at-p "^$")
+            (setq section-end (point))))
+        (let ((inhibit-read-only t))
+          (if (get-text-property header-start 'md-folded)
+              ;; Expand
+              (progn
+                (remove-overlays content-start section-end 'md-section t)
+                (put-text-property header-start header-end 'md-folded nil)
+                ;; Replace … → :
+                (save-excursion
+                  (goto-char header-end)
+                  (when (char-equal (char-before) ?…)
+                    (backward-char 1)
+                    (delete-char 1)
+                    (insert ":"))))
+            ;; Collapse
+            (remove-overlays content-start section-end 'md-section t)
+            (let ((ov (make-overlay content-start section-end)))
+              (overlay-put ov 'invisible t)
+              (overlay-put ov 'md-section t)
+              (overlay-put ov 'isearch-open-invisible
+                           (lambda (_ov) (delete-overlay _ov))))
+            (put-text-property header-start header-end 'md-folded t)
+            ;; Replace : → …
+            (save-excursion
+              (goto-char header-end)
+              (when (char-equal (char-before) ?:)
+                (backward-char 1)
+                (delete-char 1)
+                (insert "…"))))
+          ;; Reapply Markdown header face strictly to header line (excluding newline)
+          (save-excursion
+            (let ((line-start (line-beginning-position))
+                  (line-end (line-end-position))) ;; excludes newline
+              (add-text-properties line-start line-end
+                                   '(face markdown-header-face-1))
+              ;; Re-bold section word
+              (goto-char line-start)
+              (when (re-search-forward "\\(to\\-do\\|soon\\|later\\)" line-end t)
+                (add-text-properties (match-beginning 0) (match-end 0)
+                                     '(face (:inherit (bold markdown-header-face-1))))))))))))
 
 (defun md-todo-dashboard ()
   "Display a categorized TODO dashboard for all Markdown notes in ~/Public/Notes."
@@ -166,17 +253,10 @@ Shorten file names to MAX-COL-WIDTH."
         (erase-buffer)
         (md-todo-dashboard-mode)
         (setq truncate-lines t)
-
-        ;; Insert sections
+        ;; Sections
         (md--insert-section (alist-get 'todo todo-data) "to-do" notes-dir max-col-width)
         (md--insert-section (alist-get 'soon todo-data) "soon" notes-dir max-col-width)
         (md--insert-section (alist-get 'later todo-data) "later" notes-dir max-col-width)))
-
-    ;; Display buffer at top
-    (display-buffer-in-side-window buffer
-                                   '((side . top) (slot . 0) (window-height . 0.3)))
+    (display-buffer-in-side-window buffer '((side . top) (slot . 0) (window-height . 0.3)))
     (select-window (get-buffer-window buffer))
     (goto-char (point-min))))
-
-
-
