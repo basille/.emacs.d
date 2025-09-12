@@ -3,7 +3,7 @@
 
 (require 'cl-lib)
 
-(defcustom md-todo-states '("**TODO**" "**DONE**" "**CANCEL**" "")
+(defcustom md-todo-states '("**TODO**" "**DONE**" "**SOON**" "**LATER**" "**CANCEL**" "")
   "List of states cycled by `md-cycle-todo'."
   :type '(repeat string)
   :group 'markdown)
