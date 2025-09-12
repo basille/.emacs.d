@@ -44,6 +44,8 @@ Cursor follows the text if a keyword is added or removed."
 
 ;;; md-todo-dashboard.el --- Markdown TODO Dashboard
 
+;;; md-todo-dashboard.el --- Markdown TODO Dashboard
+
 (defun md--shorten-filename (filename max-len)
   "Return FILENAME shortened to MAX-LEN characters, ending with … if too long."
   (if (> (length filename) max-len)
@@ -63,6 +65,7 @@ Cursor follows the text if a keyword is added or removed."
     (define-key map (kbd "n") 'md-todo-dashboard-next-section)
     (define-key map (kbd "p") 'md-todo-dashboard-previous-section)
     (define-key map (kbd "TAB") 'md-todo-dashboard-toggle-section)
+    (define-key map (kbd "r") 'md-todo-dashboard-refresh)
     map)
   "Keymap for `md-todo-dashboard-mode'.")
 
@@ -189,57 +192,71 @@ Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :l
   (interactive)
   (when (get-text-property (point) 'section-header)
     (save-excursion
+      ;; Determine section bounds
       (let* ((header-start (line-beginning-position))
-             (header-end   (line-end-position))
+             (header-end (line-end-position))
              (content-start (progn (forward-line 1) (point)))
              (section-end (or (and (re-search-forward "^# .*items left in .+ list" nil t)
                                    (line-beginning-position))
-                              (point-max))))
-        ;; Keep blank line visible
+                              (point-max)))
+             (inhibit-read-only t)
+             (folded (get-text-property header-start 'md-folded)))
+        ;; Keep blank line visible at end of section
         (save-excursion
           (goto-char section-end)
           (forward-line -1)
           (when (looking-at-p "^$")
             (setq section-end (point))))
-        (let ((inhibit-read-only t))
-          (if (get-text-property header-start 'md-folded)
-              ;; Expand
-              (progn
-                (remove-overlays content-start section-end 'md-section t)
-                (put-text-property header-start header-end 'md-folded nil)
-                ;; Replace … → :
-                (save-excursion
-                  (goto-char header-end)
-                  (when (char-equal (char-before) ?…)
-                    (backward-char 1)
-                    (delete-char 1)
-                    (insert ":"))))
-            ;; Collapse
+        ;; Toggle fold/unfold
+        (if folded
+            ;; Expand
             (remove-overlays content-start section-end 'md-section t)
-            (let ((ov (make-overlay content-start section-end)))
-              (overlay-put ov 'invisible t)
-              (overlay-put ov 'md-section t)
-              (overlay-put ov 'isearch-open-invisible
-                           (lambda (_ov) (delete-overlay _ov))))
-            (put-text-property header-start header-end 'md-folded t)
-            ;; Replace : → …
-            (save-excursion
-              (goto-char header-end)
-              (when (char-equal (char-before) ?:)
-                (backward-char 1)
-                (delete-char 1)
-                (insert "…"))))
-          ;; Reapply Markdown header face strictly to header line (excluding newline)
-          (save-excursion
-            (let ((line-start (line-beginning-position))
-                  (line-end (line-end-position))) ;; excludes newline
-              (add-text-properties line-start line-end
-                                   '(face markdown-header-face-1))
-              ;; Re-bold section word
-              (goto-char line-start)
-              (when (re-search-forward "\\(to\\-do\\|soon\\|later\\)" line-end t)
-                (add-text-properties (match-beginning 0) (match-end 0)
-                                     '(face (:inherit (bold markdown-header-face-1))))))))))))
+          ;; Collapse
+          (let ((ov (make-overlay content-start section-end)))
+            (overlay-put ov 'invisible t)
+            (overlay-put ov 'md-section t)
+            (overlay-put ov 'isearch-open-invisible
+                         (lambda (_ov) (delete-overlay _ov)))))
+        ;; Rebuild header line string with correct trailing character
+        (let* ((line-text (buffer-substring-no-properties header-start header-end))
+               ;; Extract section word (to-do/soon/later)
+               (case-word (if (string-match "\\(to\\-do\\|soon\\|later\\)" line-text)
+                              (match-string 1 line-text)
+                            ""))
+               ;; Count number of items from the header (optional)
+               ;; Preserve folding state: use … if collapsed, : if expanded
+               (trailing-char (if folded "…" ":"))
+               ;; Rebuild header
+               (new-header (replace-regexp-in-string "[:…]$" trailing-char line-text)))
+          ;; Replace old header line
+          (goto-char header-start)
+          (delete-region header-start header-end)
+          (insert new-header)
+          ;; Apply Markdown header face to entire header line
+          (put-text-property header-start (point) 'face 'markdown-header-face-1)
+          ;; Bold the section word
+          (when (and case-word (not (string-empty-p case-word)))
+            (let ((start (+ header-start (string-match (regexp-quote case-word) new-header)))
+                  (end   (+ header-start (string-match (regexp-quote case-word) new-header) (length case-word))))
+              (put-text-property start end 'face '(:inherit (bold markdown-header-face-1)))))
+          ;; Store md-folded property
+          (put-text-property header-start (point) 'md-folded (not folded))
+          ;; Keep section-header property
+          (put-text-property header-start (point) 'section-header t))))))
+
+(defun md-todo-dashboard-refresh ()
+  "Refresh the TODO dashboard buffer."
+  (interactive)
+  (when (eq major-mode 'md-todo-dashboard-mode)
+    (let ((inhibit-read-only t)
+          (notes-dir "~/Public/Notes/")
+          (max-col-width 35))
+      (erase-buffer)
+      (let ((todo-data (md--collect-todos notes-dir)))
+        (md--insert-section (alist-get 'todo todo-data) "to-do" notes-dir max-col-width)
+        (md--insert-section (alist-get 'soon todo-data) "soon" notes-dir max-col-width)
+        (md--insert-section (alist-get 'later todo-data) "later" notes-dir max-col-width))
+      (goto-char (point-min)))))
 
 (defun md-todo-dashboard ()
   "Display a categorized TODO dashboard for all Markdown notes in ~/Public/Notes."
@@ -253,7 +270,6 @@ Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :l
         (erase-buffer)
         (md-todo-dashboard-mode)
         (setq truncate-lines t)
-        ;; Sections
         (md--insert-section (alist-get 'todo todo-data) "to-do" notes-dir max-col-width)
         (md--insert-section (alist-get 'soon todo-data) "soon" notes-dir max-col-width)
         (md--insert-section (alist-get 'later todo-data) "later" notes-dir max-col-width)))
