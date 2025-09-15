@@ -79,12 +79,10 @@ repositories. We first list these packages:
                      auctex             ; Write and format TeX files
                      auctex-latexmk     ; Add LatexMk support to AUCTeX
                      auto-dark          ; Switch from 2 themes following Gnome dark mode switch
-                     beginend           ; Redefine ~M-<~ (=beginning-of-buffer=) and ~M->~ (=end-of-buffer=)
                      bonjourmadame      ; Say "Hello ma'am!"
                      buffer-move        ; Move buffers to the left/top/right/bottom
                      centered-window    ; Center the text of the window (if only one window)
                      circadian          ; Switch from 2 themes following sunset/sunrise
-                     ;; col-highlight    ; EmacsWiki not on MELPA anymore
                      company            ; "Complete anything"
                      company-auctex     ; Company support for AUCTeX
                      company-reftex     ; Company support for RefTeX
@@ -396,8 +394,8 @@ Highlight current line globally (and toggle it with ~C-F10~):
 (global-set-key [(ctrl f10)] 'global-hl-line-mode)
 #+END_SRC
 
-Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-S-F10~ to toggle column highlight
-mode.
+Highlight columns ([[https://www.emacswiki.org/emacs/col-highlight.el][col-highlight]]): ~C-S-F10~ to toggle column highlight mode
+(NB: col-highlight loaded as a function as EmacsWiki is no longer on MELPA).
 
 #+BEGIN_SRC emacs-lisp
   (load-library "col-highlight")
@@ -452,14 +450,7 @@ Recenter with ~C-l~ starts with top, then middle, then bottom:
 (setq recenter-positions '(top middle bottom))
 #+END_SRC
 
-[[https://github.com/DamienCassou/beginend][Beginend]] (with Emacs 25.3) to redefine ~M-<~ (=beginning-of-buffer=) and ~M->~
-(=end-of-buffer=) so that point moves to meaningful beginning and end of buffers:
-
-#+BEGIN_SRC emacs-lisp
-(beginend-global-mode)
-#+END_SRC
-
-[[https://github.com/magnars/expand-region.el][Expand region]] with ~C-@~ (then continue to expand by pressing ~@~ or
+[[https://github.com/DamienCassou/beginend][Expand region]] with ~C-@~ (then continue to expand by pressing ~@~ or
 contract by pressing ~-~):
 
 #+BEGIN_SRC emacs-lisp
