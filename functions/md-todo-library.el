@@ -3,49 +3,144 @@
 
 (require 'cl-lib)
 
-(defcustom md-todo-states '("**TODO**" "**DONE**" "**SOON**" "**LATER**" "**CANCEL**" "")
-  "List of states cycled by `md-cycle-todo'."
-  :type '(repeat string)
-  :group 'markdown)
+;; ------------------------------
+;; 1. Tags and colors
+;; ------------------------------
+(defvar md-todo-tags '("TODO" "DONE" "SOON" "LATER" "CANCEL" "")
+  "List of tags cycled by `md-todo-cycle`. Includes empty string for removing a tag.")
 
+(defvar md-todo-colors
+  '(("TODO"   . (:bg "#e01b24" :fg "white"))
+    ("DONE"   . (:bg "#000000" :fg "white"))
+    ("SOON"   . (:bg "#ff7800" :fg "white"))
+    ("LATER"  . (:bg "#33d17a" :fg "white"))
+    ("CANCEL" . (:bg "#9a9996" :fg "white")))
+  "Mapping of tags to background and foreground colors.")
+
+;; ------------------------------
+;; 2. Flyspell ignores tags
+;; ------------------------------
+(defun md-todo-flyspell-ignore ()
+  "Return t if the word at point should be ignored by Flyspell."
+  (let ((word (thing-at-point 'word t)))
+    (and word (not (member word (butlast md-todo-tags))))))
+
+(defun md-todo-setup-flyspell ()
+  "Configure Flyspell to ignore TODO tags."
+  (setq-local flyspell-generic-check-word-predicate #'md-todo-flyspell-ignore)
+  ;; Only underline typos, no background
+  (face-spec-reset-face 'flyspell-incorrect)
+  (set-face-attribute 'flyspell-incorrect nil
+                      :underline '(:color "red" :style wave)
+                      :background nil)
+  (face-spec-reset-face 'flyspell-duplicate)
+  (set-face-attribute 'flyspell-duplicate nil
+                      :underline '(:color "orange" :style wave)
+                      :background nil))
+
+(add-hook 'markdown-mode-hook #'md-todo-setup-flyspell)
+(add-hook 'poly-markdown-mode-hook #'md-todo-setup-flyspell)
+
+;; ------------------------------
+;; 3. Cycle TODO tags
+;; ------------------------------
 (defun md-todo-cycle ()
-  "Cycle TODO states at the start of a Markdown list line.
-Cursor follows the text if a keyword is added or removed."
+  "Cycle tags at the start of a Markdown list line.
+Cursor follows the text:
+- At start → after tag
+- Elsewhere → same character in text
+- Handles cycling to empty tag correctly."
   (interactive)
-  (let* ((pos (point))
-         (line-beg (line-beginning-position)))
+  (let* ((line-beg (line-beginning-position))
+         (orig-pos (point))
+         content-start match next line-content char-at-cursor)
+    ;; Move to start of content after whitespace/list marker
+    (goto-char line-beg)
+    (skip-chars-forward " \t")
+    (when (looking-at "\\([*+-]\\|[0-9]+[.)]\\)\\s-+")
+      (goto-char (match-end 0)))
+    (setq content-start (point))
+    ;; record line content
+    (setq line-content (buffer-substring-no-properties content-start (line-end-position)))
+    ;; record character at cursor
+    (setq char-at-cursor (if (>= (- orig-pos content-start) (length line-content))
+                             nil
+                           (aref line-content (- orig-pos content-start))))
+    ;; detect existing tag (only uppercase)
+    (setq match (cl-find-if (lambda (s) (and (string-prefix-p s line-content)
+                                              (string= s (upcase s))))
+                            md-todo-tags))
+    ;; remove existing tag
+    (when match
+      (setq line-content (string-trim-left (substring line-content (length match)))))
+    ;; compute next tag
+    (setq next (if match
+                   (nth (mod (1+ (cl-position match md-todo-tags :test #'string=))
+                              (length md-todo-tags))
+                        md-todo-tags)
+                 (car md-todo-tags)))
+    ;; replace line content
+    (delete-region content-start (line-end-position))
+    (goto-char content-start)
+    (if (string= next "")
+        (insert line-content)
+      (insert next " " line-content))
+    ;; restore cursor
+    (goto-char
+     (cond
+      ((< orig-pos content-start)
+       ;; cursor at or before first character → after tag
+       (if (string= next "") content-start (+ content-start (length next) 1)))
+      (t
+       ;; cursor somewhere in text → try to find same character
+       (let ((search-start (if (string= next "") content-start (+ content-start (length next) 1))))
+         (or (and char-at-cursor
+                  (save-excursion
+                    (goto-char search-start)
+                    (let ((pos (search-forward (char-to-string char-at-cursor) (line-end-position) t)))
+                      (when pos (1- pos)))))
+             search-start)))))
+    ;; apply overlays
     (save-excursion
-      (goto-char line-beg)
-      (skip-chars-forward " \t")
-      ;; Skip list marker if present
-      (when (looking-at "\\([*+-]\\|[0-9]+[.)]\\)\\s-+")
-        (goto-char (match-end 0)))
-      ;; Compute cursor offset from current point
-      (let ((offset (- pos (point))))
-        ;; Check for existing keyword
-        (let ((match (cl-find-if (lambda (s) (looking-at (regexp-quote s)))
-                                 md-todo-states)))
-          (let ((next (if match
-                          (nth (mod (1+ (cl-position match md-todo-states :test #'string=))
-                                     (length md-todo-states))
-                               md-todo-states)
-                        (car md-todo-states))))
-            ;; Remove existing keyword + following space
-            (when match
-              (delete-region (match-beginning 0) (match-end 0))
-              (when (looking-at " ") (delete-char 1)))
-            ;; Insert next state if non-empty
-            (unless (string= next "")
-              (insert next)
-              (unless (or (eolp) (looking-at " "))
-                (insert " "))))
-          ;; Restore cursor relative to text
-          (goto-char (+ (point) offset)))))))
+      (let ((beg (line-beginning-position))
+            (end (line-end-position)))
+        (remove-overlays beg end 'md-todo-overlay t)
+        (goto-char beg)
+        ;; Only match uppercase tags at start of words
+        (while (re-search-forward (regexp-opt (butlast md-todo-tags) 'words) end t)
+          (let ((tag (match-string 0)))
+            (when (string= tag (upcase tag))
+              (let* ((colors (cdr (assoc tag md-todo-colors)))
+                     (bg (plist-get colors :bg))
+                     (fg (plist-get colors :fg))
+                     (ov (make-overlay (match-beginning 0) (match-end 0))))
+                (overlay-put ov 'md-todo-overlay t)
+                (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))))
 
-;;; md-todo-dashboard.el --- Markdown TODO Dashboard
+;; ------------------------------
+;; 4. Apply overlays on buffer load
+;; ------------------------------
+(defun md-todo-apply-overlay-highlighting ()
+  "Apply colored overlays to all uppercase tags in the buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward (regexp-opt (butlast md-todo-tags) 'words) nil t)
+      (let ((tag (match-string 0)))
+        (when (string= tag (upcase tag))
+          (let* ((colors (cdr (assoc tag md-todo-colors)))
+                 (bg (plist-get colors :bg))
+                 (fg (plist-get colors :fg))
+                 (ov (make-overlay (match-beginning 0) (match-end 0))))
+            (overlay-put ov 'md-todo-overlay t)
+            (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))
 
-;;; md-todo-dashboard.el --- Markdown TODO Dashboard
+(add-hook 'markdown-mode-hook #'md-todo-apply-overlay-highlighting)
+(add-hook 'poly-markdown-mode-hook #'md-todo-apply-overlay-highlighting)
 
+
+;; ------------------------------
+;; 5. Dashboard (updated for new tags)
+;; ------------------------------
 (defun md--shorten-filename (filename max-len)
   "Return FILENAME shortened to MAX-LEN characters, ending with … if too long."
   (if (> (length filename) max-len)
@@ -122,7 +217,8 @@ Cursor follows the text if a keyword is added or removed."
 
 (defun md--collect-todos (notes-dir)
   "Return an alist of categorized TODO items from NOTES-DIR.
-Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :line LINE :text TEXT)."
+Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :line LINE :text TEXT).
+Only matches upper-case tags at the beginning of a line (after optional Markdown list markers)."
   (let* ((todo-types '(("TODO"  . todo)
                        ("SOON"  . soon)
                        ("LATER" . later)))
@@ -137,10 +233,16 @@ Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :l
           (while (not (eobp))
             (let ((line (buffer-substring-no-properties (line-beginning-position)
                                                         (line-end-position))))
-              (dolist (tt todo-types)
-                (when (string-match (format "\\*\\*%s\\*\\* *\\(.*\\)" (car tt)) line)
-                  (push (list :file file :line linenum :text (match-string 1 line))
-                        (alist-get (cdr tt) results)))))
+              ;; Case-sensitive match
+              (let ((case-fold-search nil))
+                (dolist (tt todo-types)
+                  ;; Only match at beginning of line after optional list marker
+                  ;; List marker can be "-", "*", "+", or numbered "1." etc.
+                  (when (string-match (format "^\\s-*\\(?:[*+-]\\|[0-9]+[.)]\\)?\\s-*%s\\s-+\\(.*\\)"
+                                            (car tt))
+                                    line)
+                    (push (list :file file :line linenum :text (match-string 1 line))
+                          (alist-get (cdr tt) results))))))
             (forward-line 1)
             (setq linenum (1+ linenum))))))
     ;; reverse each list to preserve order
@@ -223,7 +325,6 @@ Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :l
                (case-word (if (string-match "\\(to\\-do\\|soon\\|later\\)" line-text)
                               (match-string 1 line-text)
                             ""))
-               ;; Count number of items from the header (optional)
                ;; Preserve folding state: use … if collapsed, : if expanded
                (trailing-char (if folded "…" ":"))
                ;; Rebuild header
