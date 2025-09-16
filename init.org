@@ -817,13 +817,14 @@ sort-fold-case [RETURN] nil [RETURN]~):
 
 ** Spell check and syntax check
 
-Emacs built-in spell check package is Ispell. A good approach is to
-use =Hunspell= as the spell check engine (needs to be installed), with
-"en_US" as the default dictionary (~C-S-F12~ to change
-dictionary). =Flyspell= (spell check on the fly) is enabled by default
-in all text files (~C-F12~ to toggle Flyspell), and in programming
-mode (only in the comments) in programming files. ~F12~ (or middle
-click) opens the list of correction suggestions:
+Emacs built-in spell check package is Ispell. A good approach is to use
+=Hunspell= as the spell check engine (needs to be installed), with "en_US" as
+the default dictionary (~C-S-F12~ to change dictionary). =Flyspell= (spell check
+on the fly) is enabled by default in all text files (~C-F12~ to toggle
+Flyspell), and in programming mode (only in the comments) in programming files,
+and font face is customized so that it only underlines typos without adding
+background color. ~F12~ (or middle click) opens the list of correction
+suggestions:
 
 #+BEGIN_SRC emacs-lisp
 (setq ispell-program-name "hunspell"
@@ -831,6 +832,10 @@ click) opens the list of correction suggestions:
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(custom-set-faces
+ '(flyspell-incorrect ((t (:underline (:color "red" :style wave) :background nil))))
+ '(flyspell-duplicate ((t (:underline (:color "orange" :style wave) :background nil)))))
 
 (global-set-key [f12] 'flyspell-correct-word-before-point)
 (global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
