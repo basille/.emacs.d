@@ -46,76 +46,76 @@
 ;; ------------------------------
 (defun md-todo-cycle ()
   "Cycle tags at the start of a Markdown list line.
-Cursor follows the text:
+Cursor follows the text relative to content:
 - At start → after tag
-- Elsewhere → same character in text
-- Handles cycling to empty tag correctly."
+- Middle → same character relative to text
+- End → stays at end
+Handles cycling to empty tag correctly."
   (interactive)
   (let* ((line-beg (line-beginning-position))
          (orig-pos (point))
-         content-start match next line-content char-at-cursor)
-    ;; Move to start of content after whitespace/list marker
+         content-start content-line text-offset match next)
+    ;; Move to content after whitespace/list marker
     (goto-char line-beg)
     (skip-chars-forward " \t")
     (when (looking-at "\\([*+-]\\|[0-9]+[.)]\\)\\s-+")
       (goto-char (match-end 0)))
     (setq content-start (point))
-    ;; record line content
-    (setq line-content (buffer-substring-no-properties content-start (line-end-position)))
-    ;; record character at cursor
-    (setq char-at-cursor (if (>= (- orig-pos content-start) (length line-content))
-                             nil
-                           (aref line-content (- orig-pos content-start))))
-    ;; detect existing tag (only uppercase)
-    (setq match (cl-find-if (lambda (s) (and (string-prefix-p s line-content)
-                                              (string= s (upcase s))))
-                            md-todo-tags))
-    ;; remove existing tag
+    ;; Current content text (without any tag)
+    (setq content-line (buffer-substring-no-properties content-start (line-end-position)))
+    ;; Detect existing tag at start of line
+    (setq match (cl-find-if (lambda (s) (string-prefix-p s content-line)) md-todo-tags))
+    ;; Remove existing tag from content-line for offset calculation
     (when match
-      (setq line-content (string-trim-left (substring line-content (length match)))))
-    ;; compute next tag
+      (setq content-line (string-trim-left (substring content-line (length match)))))
+    ;; Compute cursor offset relative to content-line
+    (setq text-offset (max 0 (- orig-pos content-start)))
+    (when (and match (>= text-offset (length match)))
+      ;; Adjust for removed tag (subtract 1 only if next tag is not the first one)
+      (unless (string= (car md-todo-tags) (nth (mod (1+ (cl-position match md-todo-tags :test #'string=))
+                                                   (length md-todo-tags))
+                                               md-todo-tags))
+        (setq text-offset (- text-offset (length match) 1))))
+    (when (< text-offset 0) (setq text-offset 0))
+    (when (> text-offset (length content-line)) (setq text-offset (length content-line)))
+    ;; Compute next tag
     (setq next (if match
                    (nth (mod (1+ (cl-position match md-todo-tags :test #'string=))
                               (length md-todo-tags))
                         md-todo-tags)
                  (car md-todo-tags)))
-    ;; replace line content
+    ;; Replace line content
     (delete-region content-start (line-end-position))
     (goto-char content-start)
     (if (string= next "")
-        (insert line-content)
-      (insert next " " line-content))
-    ;; restore cursor
+        (insert content-line)
+      (insert next " " content-line))
+    ;; Restore cursor relative to text
     (goto-char
      (cond
-      ((< orig-pos content-start)
-       ;; cursor at or before first character → after tag
+      ((<= orig-pos content-start)
+       ;; cursor at or before content → after tag
        (if (string= next "") content-start (+ content-start (length next) 1)))
+      ((>= orig-pos (line-end-position))
+       ;; cursor at end → stay at end of line
+       (line-end-position))
       (t
-       ;; cursor somewhere in text → try to find same character
-       (let ((search-start (if (string= next "") content-start (+ content-start (length next) 1))))
-         (or (and char-at-cursor
-                  (save-excursion
-                    (goto-char search-start)
-                    (let ((pos (search-forward (char-to-string char-at-cursor) (line-end-position) t)))
-                      (when pos (1- pos)))))
-             search-start)))))
-    ;; apply overlays
+       ;; cursor in middle → maintain offset in text
+       (+ content-start (if (string= next "") 0 (+ (length next) 1)) text-offset))))
+    ;; Apply overlays
     (save-excursion
       (let ((beg (line-beginning-position))
             (end (line-end-position)))
         (remove-overlays beg end 'md-todo-overlay t)
         (goto-char beg)
-        ;; Only match uppercase tags at start of words
-        (while (re-search-forward (regexp-opt (butlast md-todo-tags) 'words) end t)
-          (let ((tag (match-string 0)))
-            (when (string= tag (upcase tag))
-              (let* ((colors (cdr (assoc tag md-todo-colors)))
-                     (bg (plist-get colors :bg))
-                     (fg (plist-get colors :fg))
-                     (ov (make-overlay (match-beginning 0) (match-end 0))))
-                (overlay-put ov 'md-todo-overlay t)
-                (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))))
+        (while (re-search-forward (regexp-opt (butlast md-todo-tags)) end t)
+          (let* ((tag (match-string 0))
+                 (colors (cdr (assoc tag md-todo-colors)))
+                 (bg (plist-get colors :bg))
+                 (fg (plist-get colors :fg))
+                 (ov (make-overlay (match-beginning 0) (match-end 0))))
+            (overlay-put ov 'md-todo-overlay t)
+            (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))
 
 ;; ------------------------------
 ;; 4. Apply overlays on buffer load
