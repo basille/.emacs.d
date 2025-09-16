@@ -108,14 +108,18 @@ Handles cycling to empty tag correctly."
             (end (line-end-position)))
         (remove-overlays beg end 'md-todo-overlay t)
         (goto-char beg)
-        (while (re-search-forward (regexp-opt (butlast md-todo-tags)) end t)
-          (let* ((tag (match-string 0))
-                 (colors (cdr (assoc tag md-todo-colors)))
-                 (bg (plist-get colors :bg))
-                 (fg (plist-get colors :fg))
-                 (ov (make-overlay (match-beginning 0) (match-end 0))))
-            (overlay-put ov 'md-todo-overlay t)
-            (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))
+        ;; Only uppercase tags, case-sensitive
+        (let ((uppercase-tags (cl-remove-if-not (lambda (tag) (string= tag (upcase tag)))
+                                                (butlast md-todo-tags))))
+          (let ((case-fold-search nil))  ;; ensure case-sensitive search
+            (while (re-search-forward (regexp-opt uppercase-tags) end t)
+              (let* ((tag (match-string 0))
+                     (colors (cdr (assoc tag md-todo-colors)))
+                     (bg (plist-get colors :bg))
+                     (fg (plist-get colors :fg))
+                     (ov (make-overlay (match-beginning 0) (match-end 0))))
+                (overlay-put ov 'md-todo-overlay t)
+                (overlay-put ov 'face `(:background ,bg :foreground ,fg :weight bold))))))))))
 
 ;; ------------------------------
 ;; 4. Apply overlays on buffer load
