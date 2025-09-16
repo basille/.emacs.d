@@ -254,21 +254,27 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
       (setf (alist-get k results) (nreverse (alist-get k results))))
     results))
 
-(defun md--insert-section (items title notes-dir max-col-width)
-  "Insert a section for ITEMS with TITLE; use NOTES-DIR and MAX-COL-WIDTH."
-  (let ((header-start (point)))
+(defun md--insert-section (items tag-name notes-dir max-col-width)
+  "Insert a section for ITEMS with TAG-NAME; use NOTES-DIR and MAX-COL-WIDTH."
+  (let ((header-start (point))
+        (tag (upcase tag-name)))
     ;; Insert header line with trailing colon
-    (insert (format "# %d items left in the %s list:" (length items) title))
+    (insert (format "# %d items left in the %s list:" (length items) tag))
     (let ((header-end (point)))
       ;; Markdown header face
       (add-text-properties header-start header-end
                            '(section-header t md-folded nil face markdown-header-face-1))
-      ;; Bold only the section word
-      (save-excursion
-        (goto-char header-start)
-        (when (re-search-forward "\\(to\\-do\\|soon\\|later\\)" header-end t)
-          (add-text-properties (match-beginning 0) (match-end 0)
-                               '(face (:inherit (bold markdown-header-face-1))))))))
+      ;; Highlight the tag word like a TODO tag
+      (let ((colors (cdr (assoc tag md-todo-colors))))
+        (when colors
+          (save-excursion
+            (goto-char header-start)
+            (when (re-search-forward (regexp-quote tag) header-end t)
+              (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
+                (overlay-put ov 'face `(:background ,(plist-get colors :bg)
+                                                   :foreground ,(plist-get colors :fg)
+                                                   :weight bold))
+                (overlay-put ov 'md-todo-overlay t))))))))
   ;; Newline (plain)
   (insert "\n\n")
   ;; Insert items
@@ -358,9 +364,9 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
           (max-col-width 35))
       (erase-buffer)
       (let ((todo-data (md--collect-todos notes-dir)))
-        (md--insert-section (alist-get 'todo todo-data) "to-do" notes-dir max-col-width)
-        (md--insert-section (alist-get 'soon todo-data) "soon" notes-dir max-col-width)
-        (md--insert-section (alist-get 'later todo-data) "later" notes-dir max-col-width))
+        (md--insert-section (alist-get 'todo todo-data) "TODO" notes-dir max-col-width)
+        (md--insert-section (alist-get 'soon todo-data) "SOON" notes-dir max-col-width)
+        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width))
       (goto-char (point-min)))))
 
 (defun md-todo-dashboard ()
@@ -375,9 +381,9 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
         (erase-buffer)
         (md-todo-dashboard-mode)
         (setq truncate-lines t)
-        (md--insert-section (alist-get 'todo todo-data) "to-do" notes-dir max-col-width)
-        (md--insert-section (alist-get 'soon todo-data) "soon" notes-dir max-col-width)
-        (md--insert-section (alist-get 'later todo-data) "later" notes-dir max-col-width)))
+        (md--insert-section (alist-get 'todo todo-data) "TODO" notes-dir max-col-width)
+        (md--insert-section (alist-get 'soon todo-data) "SOON" notes-dir max-col-width)
+        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width)))
     (display-buffer-in-side-window buffer '((side . top) (slot . 0) (window-height . 0.3)))
     (select-window (get-buffer-window buffer))
     (goto-char (point-min))))
