@@ -304,7 +304,7 @@ Emacs; see Org section to remove conflicts with Org):
 Next window with ~C-~~ (key above TAB):
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [C-dead-grave] 'other-window)
+(global-set-key (kbd "C-²") 'other-window)
 #+END_SRC
 
 Swap buffers with =buffer-move= (~C-x <arrows>~):
