@@ -1205,13 +1205,18 @@ with other settings]]); ~RET~ follows links.
  org-return-follows-link t)
 #+END_SRC
 
-Turn on indent mode, and use nice UTF-8 bullet points:
+Turn on indent mode, and use nice UTF-8 bullet points, and display emphasis
+over multiple lines:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented 1)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(with-eval-after-load 'org
+  ;; Allow multiple line Org emphasis markup.
+  ;; http://emacs.stackexchange.com/a/13828/115
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 20) ; Up to 20 lines, default is just 1
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 #+END_SRC
-
 
 
 # (setq org-catch-invisible-edits smart)
