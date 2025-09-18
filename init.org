@@ -229,16 +229,17 @@ There is currently [[https://github.com/guidoschmidt/circadian.el/issues/9][a bu
 With [[https://github.com/LionyxML/auto-dark-emacs][auto-dark]], Emacs can switch to dark mode when the system itself switches to
 dark mode (consequently, dark mode needs to be enabled in the system). I will
 use [[https://github.com/tmalsburg/tango-plus-theme][Tango Plus]] during the day, and [[https://github.com/arcticicestudio/nord-emacs][Nord Emacs]] at night (with brightness of
-comments at 20%). **Note:** There is currently [[https://github.com/LionyxML/auto-dark-emacs/issues/90][a bug]] with GNOME.
+comments at 20%). **Notes:** There is currently [[https://github.com/LionyxML/auto-dark-emacs/issues/90][a bug]] with GNOME that requires
+inverting dark and light themes. Another bug in Emacs (maybe) makes incomplete
+color theme change in unselected windows: only the background color changes, and
+not font faces, until the window is visited.
 
 #+BEGIN_SRC emacs-lisp
+(setq nord-comment-brightness 20)
 (setq custom-safe-themes t)
-(load-theme 'tango-plus t)
-
-;; (setq nord-comment-brightness 20)
-;; (setq custom-safe-themes t)
 ;; (setq auto-dark-themes '((tango-plus) (nord)))
-;; (auto-dark-mode)
+(setq auto-dark-themes '((nord) (tango-plus)))
+(auto-dark-mode)
 #+END_SRC
 
 
