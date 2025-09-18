@@ -4,9 +4,13 @@
 (require 'cl-lib)
 
 ;; ------------------------------
-;; 1. Tags and colors
+;; 1. Note folder, tags and colors
 ;; ------------------------------
-(defvar md-todo-tags '("TODO" "DONE" "SOON" "LATER" "CANCEL" "")
+
+(defvar md-todo-folder "~/Public/Notes/"
+  "Folder of the Markdown notes.")
+
+(defvar md-todo-tags '("TODO" "DONE" "SOON" "LATER" "PERSO" "CANCEL" "")
   "List of tags cycled by `md-todo-cycle`. Includes empty string for removing a tag.")
 
 (defvar md-todo-colors
@@ -14,6 +18,7 @@
     ("DONE"   . (:bg "#000000" :fg "white"))
     ("SOON"   . (:bg "#ff7800" :fg "white"))
     ("LATER"  . (:bg "#33d17a" :fg "white"))
+    ("PERSO"  . (:bg "#3584e4" :fg "white"))
     ("CANCEL" . (:bg "#9a9996" :fg "white")))
   "Mapping of tags to background and foreground colors.")
 
@@ -225,10 +230,12 @@ Lists keyed by symbols 'todo, 'soon, 'later. Each item is a plist (:file FILE :l
 Only matches upper-case tags at the beginning of a line (after optional Markdown list markers)."
   (let* ((todo-types '(("TODO"  . todo)
                        ("SOON"  . soon)
-                       ("LATER" . later)))
+                       ("LATER" . later)
+                       ("PERSO" . perso)))
          (results (list (cons 'todo  nil)
                         (cons 'soon  nil)
-                        (cons 'later nil))))
+                        (cons 'later nil)
+                        (cons 'perso nil))))
     (dolist (file (directory-files-recursively notes-dir "\\.md\\'"))
       (with-temp-buffer
         (insert-file-contents file)
@@ -360,20 +367,21 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
   (interactive)
   (when (eq major-mode 'md-todo-dashboard-mode)
     (let ((inhibit-read-only t)
-          (notes-dir "~/Public/Notes/")
+          (notes-dir md-todo-folder)
           (max-col-width 35))
       (erase-buffer)
       (let ((todo-data (md--collect-todos notes-dir)))
         (md--insert-section (alist-get 'todo todo-data) "TODO" notes-dir max-col-width)
         (md--insert-section (alist-get 'soon todo-data) "SOON" notes-dir max-col-width)
-        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width))
+        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width)
+        (md--insert-section (alist-get 'perso todo-data) "PERSO" notes-dir max-col-width))
       (goto-char (point-min)))))
 
 (defun md-todo-dashboard ()
   "Display a categorized TODO dashboard for all Markdown notes in ~/Public/Notes."
   (interactive)
   (let* ((buffer (get-buffer-create "*TODO Dashboard*"))
-         (notes-dir "~/Public/Notes/")
+         (notes-dir md-todo-folder)
          (todo-data (md--collect-todos notes-dir))
          (max-col-width 35))
     (with-current-buffer buffer
@@ -383,7 +391,8 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
         (setq truncate-lines t)
         (md--insert-section (alist-get 'todo todo-data) "TODO" notes-dir max-col-width)
         (md--insert-section (alist-get 'soon todo-data) "SOON" notes-dir max-col-width)
-        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width)))
+        (md--insert-section (alist-get 'later todo-data) "LATER" notes-dir max-col-width)
+        (md--insert-section (alist-get 'perso todo-data) "PERSO" notes-dir max-col-width)))
     (display-buffer-in-side-window buffer '((side . top) (slot . 0) (window-height . 0.3)))
     (select-window (get-buffer-window buffer))
     (goto-char (point-min))))
