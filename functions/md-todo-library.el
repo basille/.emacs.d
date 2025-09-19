@@ -63,7 +63,7 @@ Handles cycling to empty tag correctly."
     ;; Move to content after whitespace/list marker
     (goto-char line-beg)
     (skip-chars-forward " \t")
-    (when (looking-at "\\([*+-]\\|[0-9]+[.)]\\)\\s-+")
+    (when (looking-at "\\([*+-]\\|[0-9]+[.)]\\|#+\\)\\s-+")
       (goto-char (match-end 0)))
     (setq content-start (point))
     ;; Current content text (without any tag)
@@ -249,7 +249,7 @@ Only matches upper-case tags at the beginning of a line (after optional Markdown
                 (dolist (tt todo-types)
                   ;; Only match at beginning of line after optional list marker
                   ;; List marker can be "-", "*", "+", or numbered "1." etc.
-                  (when (string-match (format "^\\s-*\\(?:[*+-]\\|[0-9]+[.)]\\)?\\s-*%s\\s-+\\(.*\\)"
+                  (when (string-match (format "^\\s-*\\(?:[*+-]\\|[0-9]+[.)]\\|#+\\)?\\s-*%s\\s-+\\(.*\\)"
                                             (car tt))
                                     line)
                     (push (list :file file :line linenum :text (match-string 1 line))
