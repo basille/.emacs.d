@@ -92,7 +92,6 @@ repositories. We first list these packages:
                      dimmer             ; Visually highlight the selected buffer
                      dired-narrow       ; Filter the listing produced by Dired
                      dired-quick-sort   ; Persistent quick sorting of Dired buffers
-                     dired-single       ; Dired in a single buffer
                      eshell-git-prompt  ; Themes for Emacs Shell (Eshell) prompt
                      ess                ; Emacs Speaks Statistics
                      ess-smart-equals   ; Flexible, context-sensitive assignment for R
@@ -285,7 +284,24 @@ Emacs will split horizontally preferably, instead of vertically:
 #+END_SRC
 
 Visually highlight selected buffer, by dimming other buffers (package
-=dimmer=):
+=dimmer=). Note: There is a unfixed bug in =dimmer= that requires modifying the
+definitions of variables in the function =dimmer-face-color= in =dimmer.el=:
+
+#+BEGIN_SRC
+(defun dimmer-face-color (f frac)
+  "Compute a dimmed version of the foreground color of face F.
+If `dimmer-adjust-background-color` is true, adjust the
+background color as well.  FRAC is the amount of dimming where
+0.0 is no change and 1.0 is maximum change.  Returns a plist
+containing the new foreground (and if needed, new background)
+suitable for use with `face-remap-add-relative`."
+  (let* (
+		 (fg-original (face-foreground f))
+		 (fg (if (eq 'reset fg-original) 'unspecified  fg-original))
+		 (bg-original (face-background f))
+		 (bg (if (eq 'reset bg-original) 'unspecified  bg-original))
+  […]
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (require 'dimmer)
@@ -925,6 +941,7 @@ recursive copies and deletes. Switch to WDired mode (to 'write' file names) with
 =dired-ediff-files=):
 
 #+BEGIN_SRC emacs-lisp
+(setf dired-kill-when-opening-new-dired-buffer t)
 (setq
  ls-lisp-use-insert-directory-program nil
  ls-lisp-ignore-case t
