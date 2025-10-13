@@ -815,6 +815,17 @@ sort-fold-case [RETURN] nil [RETURN]~):
 )
 #+END_SRC
 
+=revert-buffer= requires confirmation. Here is the same function without
+confirmation, bound to ~C-S-r~:
+
+#+BEGIN_SRC emacs-lisp
+;; Source: https://www.emacswiki.org/emacs/misc-cmds.el
+(defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive)
+    (revert-buffer :ignore-auto :noconfirm))
+(global-set-key (kbd "C-S-r") 'revert-buffer-no-confirm)
+#+END_SRC
 
 ** Spell check and syntax check
 
