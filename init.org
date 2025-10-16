@@ -605,10 +605,10 @@ between letters, except for Swiper (search)):
  ivy-initial-inputs-alist nil)
 #+END_SRC
 
-Ivy-resume (go back to state of last search) with ~C-S-s~:
+Ivy-resume (go back to state of last search) with ~C-S-c~:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-S-s") 'ivy-resume)
+(global-set-key (kbd "C-S-c") 'ivy-resume)
 #+END_SRC
 
 Cycle through buffers with =Ivy= with ~C-TAB~ (see Magit section to
@@ -664,6 +664,11 @@ as a dependency):
 (global-set-key (kbd "C-s") 'swiper)
 #+END_SRC
 
+Use Counsel (=counsel-rg=) for recursive Swiper-like search with ~C-S-s~:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-S-s") 'councel-rg)
+#+END_SRC
 
 * Buffer editing
 
