@@ -667,7 +667,7 @@ as a dependency):
 Use Counsel (=counsel-rg=) for recursive Swiper-like search with ~C-S-s~:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-S-s") 'councel-rg)
+(global-set-key (kbd "C-S-s") 'counsel-rg)
 #+END_SRC
 
 * Buffer editing
@@ -755,15 +755,28 @@ C-u~:
     (string-inflection-underscore-function str))))
 #+END_SRC
 
-Complete anything (=company=), with ~TAB~ (=(kbd "TAB")= for terminal;
-=[tab]= for graphical mode) to complete immediately, no delay and
-aggressive completion:
+Auto-completion in the buffer with Complete Anything (=company=), with no delay
+and aggressive completion. Note that ~TAB~ complete the current word if there is
+only one suggestion or complete the common part and cycle through suggestions if
+there are several; ~RET~ is only active after interaction with the selection;
+~SPC~ is disabled with respect to completion:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook 'global-company-mode)
 (with-eval-after-load 'company
-  (define-key company-active-map (kbd "TAB") #'company-complete-common)
-  (define-key company-active-map [tab] #'company-complete-common))
+  ;; <return> is for windowed Emacs; RET is for terminal Emacs
+  (dolist (key '("<return>" "RET"))
+    (define-key company-active-map (kbd key)
+      `(menu-item nil company-complete
+                  :filter ,(lambda (cmd)
+                             (when (company-explicit-action-p)
+                               cmd)))))
+  (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+  (define-key company-active-map (kbd "SPC") nil)
+  ;; Company appears to override the above keymap based on company-auto-complete-chars.
+  ;; Turning it off ensures we have full control.
+  (setq company-auto-complete-chars nil)
+  )
 (setq company-idle-delay 0
       company-echo-delay 0
       company-dabbrev-downcase nil
