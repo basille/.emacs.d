@@ -212,7 +212,8 @@ Handles cycling to empty tag correctly."
       (beginning-of-line)
     (goto-char (point-min))
     (when (re-search-forward "^# .*items left in .+ list" nil t)
-      (beginning-of-line))))
+      (beginning-of-line)))
+  (recenter-top-bottom 0))
 
 (defun md-todo-dashboard-previous-section ()
   "Jump to the previous section header (wraps)."
@@ -222,7 +223,8 @@ Handles cycling to empty tag correctly."
       (beginning-of-line)
     (goto-char (point-max))
     (when (re-search-backward "^# .*items left in .+ list" nil t)
-      (beginning-of-line))))
+      (beginning-of-line)))
+  (recenter-top-bottom 0))
 
 (defun md--collect-todos (notes-dir)
   "Return an alist of categorized TODO items from NOTES-DIR.
