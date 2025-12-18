@@ -383,13 +383,15 @@ Empty scratch buffer:
 (setq initial-scratch-message nil)
 #+END_SRC
 
-Lines soft wrapped at word boundary (with fringe indicators in the fringe
-column), except for Dired, Grep, and Imenu-list buffers; ~F10~ to toggle line
-wrapping (activated by default):
+By default, lines soft wrapped at word boundary (visual line mode), with fringe
+indicators in the fringe column, except for Dired, Grep, and Imenu-list buffers;
+~F10~ toggles between word wrapping (i.e. visual line mode), line truncation and
+regular wrapping:
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
 (defun my-truncate-lines-enable ()
   "Disable line truncation, even in split windows."
   (let ((inhibit-message t) ; No messages in the echo area - needs emacs 25+
@@ -400,9 +402,27 @@ wrapping (activated by default):
 (add-hook 'dired-mode-hook #'my-truncate-lines-enable)
 (add-hook 'grep-mode-hook #'my-truncate-lines-enable)
 (add-hook 'imenu-list-major-mode-hook #'my-truncate-lines-enable)
-(global-set-key [(f10)] 'toggle-truncate-lines)
-#+END_SRC
 
+(defun my-toggle-line-display ()
+  "Cycle between truncate lines, regular wrapping, and visual-line-mode."
+  (interactive)
+  (cond
+   ;; Case 1: Currently visual-line-mode -> switch to truncate
+   (visual-line-mode
+    (visual-line-mode -1)
+    (setq truncate-lines t)
+    (message "Line display: Truncate lines"))
+   ;; Case 2: Currently truncating -> switch to regular wrapping
+   (truncate-lines
+    (setq truncate-lines nil)
+    (message "Line display: Regular wrapping"))
+   ;; Case 3: Regular wrapping -> switch to visual-line-mode
+   (t
+    (visual-line-mode 1)
+    (message "Line display: Word wrapping (visual-line-mode)"))))
+
+(global-set-key (kbd "<f10>") #'my-toggle-line-display)
+#+END_SRC
 
 Highlight current line globally (and toggle it with ~C-F10~):
 
