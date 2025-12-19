@@ -798,28 +798,83 @@ there are several; ~RET~ is only active after interaction with the selection;
 ~SPC~ is disabled with respect to completion:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook 'global-company-mode)
-(with-eval-after-load 'company
-  ;; <return> is for windowed Emacs; RET is for terminal Emacs
-  (dolist (key '("<return>" "RET"))
-    (define-key company-active-map (kbd key)
-      `(menu-item nil company-complete
-                  :filter ,(lambda (cmd)
-                             (when (company-explicit-action-p)
-                               cmd)))))
-  (define-key company-active-map (kbd "TAB") #'company-complete-selection)
-  (define-key company-active-map (kbd "SPC") nil)
-  ;; Company appears to override the above keymap based on company-auto-complete-chars.
-  ;; Turning it off ensures we have full control.
-  (setq company-auto-complete-chars nil)
-  )
+
+;; (add-hook 'after-init-hook 'global-company-mode)
+;; (with-eval-after-load 'company
+;;   ;; <return> is for windowed Emacs; RET is for terminal Emacs
+;;   (dolist (key '("<return>" "RET"))
+;;     (define-key company-active-map (kbd key)
+;;       `(menu-item nil company-complete
+;;                   :filter ,(lambda (cmd)
+;;                              (when (company-explicit-action-p)
+;;                                cmd)))))
+;;   (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+;;   (define-key company-active-map (kbd "SPC") nil)
+;;   ;; Company appears to override the above keymap based on company-auto-complete-chars.
+;;   ;; Turning it off ensures we have full control.
+;;   (setq company-auto-complete-chars nil)
+;;   )
+
+;; (setq company-idle-delay 0
+;;       company-echo-delay 0
+;;       company-dabbrev-downcase nil
+;;       company-minimum-prefix-length 2
+;;       company-selection-wrap-around t
+;;       company-transformers '(company-sort-by-occurrence
+;;                              company-sort-by-backend-importance))
+
+
+
+
+
+(add-hook 'after-init-hook #'global-company-mode)
+
+(defun my/company-smart-tab ()
+  "If company popup is active, expand common prefix or complete selection.
+Otherwise, indent the current line or region."
+  (interactive)
+  (if (company--active-p)
+      ;; Company popup is active
+      (let ((before (buffer-string)))
+        (company-complete-common)
+        (when (string= (buffer-string) before)
+          (company-complete-selection)))
+    ;; No popup → fallback to normal indentation
+    (indent-for-tab-command)))
+
 (setq company-idle-delay 0
       company-echo-delay 0
-      company-dabbrev-downcase nil
       company-minimum-prefix-length 2
       company-selection-wrap-around t
+      company-dabbrev-downcase nil
+      company-auto-complete nil
+      company-auto-complete-chars nil
       company-transformers '(company-sort-by-occurrence
                              company-sort-by-backend-importance))
+
+(with-eval-after-load 'company
+  ;; Remove all default TAB variants
+  (dolist (key '("TAB" "<tab>" "C-i"))
+    (define-key company-active-map (kbd key) nil))
+
+  ;; Bind smart TAB
+  (define-key company-active-map (kbd "TAB") #'my/company-smart-tab)
+
+  ;; RET inserts newline
+  (define-key company-active-map (kbd "RET")
+    (lambda ()
+      (interactive)
+      (company-abort)
+      (newline)))
+  (define-key company-active-map (kbd "<return>")
+    (lambda ()
+      (interactive)
+      (company-abort)
+      (newline)))
+
+  ;; Optional: prevent SPACE from triggering completion
+  (define-key company-active-map (kbd "SPC") nil))
+
 #+END_SRC
 
 Multiple cursors (=multiple-cursors=), choices are saved in the
@@ -1369,11 +1424,11 @@ Give the correct path to the Ditaa java library:
 (setq org-ditaa-jar-path (expand-file-name "/usr/share/ditaa/ditaa.jar"))
 #+END_SRC
 
-Integration of [[http://taskjuggler.org/][TaskJuggler]] with =org-mode=, as to export projects to
-Gantt charts:
+# Integration of [[http://taskjuggler.org/][TaskJuggler]] with =org-mode=, as to export projects to
+# Gantt charts:
 
 #+BEGIN_SRC emacs-lisp  
-(require 'ox-taskjuggler)
+;; (require 'ox-taskjuggler)
 #+END_SRC
 
 
