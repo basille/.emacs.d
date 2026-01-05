@@ -464,10 +464,10 @@ Count words in region using ~C-+~:
 (global-set-key (kbd "C-+") 'count-words)
 #+END_SRC
 
-Kill THIS buffer with ~C-x k~:
+Kill current buffer with ~C-x k~:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 #+END_SRC
 
 Redacted with ~C-S-escape~; when in =redacted= mode, enable =read-only-mode= to
