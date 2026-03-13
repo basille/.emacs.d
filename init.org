@@ -936,6 +936,11 @@ confirmation, bound to ~C-S-r~:
 (global-set-key (kbd "C-S-r") 'revert-buffer-no-confirm)
 #+END_SRC
 
+Email addresses: replace =[email](mailto:email)= with =<email>=, and vice-versa:
+#+BEGIN_SRC emacs-lisp
+(load-library "format-mailto")
+#+END_SRC
+
 ** Spell check and syntax check
 
 Emacs built-in spell check package is Ispell. A good approach is to use
