@@ -943,19 +943,34 @@ Email addresses: replace =[email](mailto:email)= with =<email>=, and vice-versa:
 
 ** Spell check and syntax check
 
-Emacs built-in spell check package is Ispell. A good approach is to use
-=Hunspell= as the spell check engine (needs to be installed), with "en_US" as
-the default dictionary (~C-S-F12~ to change dictionary). =Flyspell= (spell check
-on the fly) is enabled by default in all text files (~C-F12~ to toggle
-Flyspell), and in programming mode (only in the comments) in programming files,
-and font face is customized so that it only underlines typos without adding
-background color. ~F12~ (or middle click) opens the list of correction
-suggestions:
+Emacs built-in spell check package is Ispell.  =Hunspell= is used as the spell
+check engine (needs to be installed first), with =en_US= as the default
+dictionary (~C-S-F12~ to change dictionary). In addition to =en_US= used by
+default, two dictionaries are set as safe local variables: =en_GB= and =fr_FR=
+(they do not require confirmation on loading) and can be set on a file basis
+with ~M-X add-file-local-variable~ then ~RET~ then ~ispell-local-dictionary~ and
+the value of the dictionary.
 
 #+BEGIN_SRC emacs-lisp
 (setq ispell-program-name "hunspell"
       ispell-local-dictionary "en_US")
 
+(custom-set-variables
+ '(safe-local-variable-values
+   '((ispell-local-dictionary . en_GB)
+     (ispell-local-dictionary . fr_FR)))
+ )
+
+(global-set-key [C-S-f12] 'ispell-change-dictionary)
+#+END_SRC
+
+=Flyspell= (spell check on the fly) is enabled by default in all text files
+(~C-F12~ to toggle Flyspell), and in programming mode (only in the comments) in
+programming files, and font face is customized so that it only underlines typos
+without adding background color. ~F12~ (or middle click) opens the list of
+correction suggestions:
+
+#+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
@@ -965,7 +980,6 @@ suggestions:
 
 (global-set-key [f12] 'flyspell-correct-word-before-point)
 (global-set-key [C-f12] 'flyspell-mode) ; + flyspell-buffer when on!
-(global-set-key [C-S-f12] 'ispell-change-dictionary)
 #+END_SRC
 
 Syntax can be checked with the [[https://github.com/flycheck/flycheck][Flycheck]] package (need to install
