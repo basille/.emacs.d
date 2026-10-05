@@ -536,7 +536,8 @@ Imenu to stay up to date automatically [NB: =counsel-mode= supersedes
 #+END_SRC
 
 =Imenu-list= does the same in a (right-hand) side buffer, with focus in it,
-loaded with ~C-F5 (=\= and =*= fold and unfold all headers): 
+loaded with ~C-F5, while =\= and =*= fold and unfold all headers (note that ~F5~
+cycles between =Neotree= and =Imenu-list=, see below): 
 
 #+BEGIN_SRC emacs-lisp
   (setq imenu-list-focus-after-activation t)
@@ -944,20 +945,22 @@ Email addresses: replace =[email](mailto:email)= with =<email>=, and vice-versa:
 ** Spell check and syntax check
 
 Emacs built-in spell check package is Ispell.  =Hunspell= is used as the spell
-check engine (needs to be installed first), with =en_US= as the default
-dictionary (~C-S-F12~ to change dictionary). In addition to =en_US= used by
-default, two dictionaries are set as safe local variables: =en_GB= and =fr_FR=
-(they do not require confirmation on loading) and can be set on a file basis
-with ~M-X add-file-local-variable~ then ~RET~ then ~ispell-local-dictionary~ and
-the value of the dictionary.
+check engine (needs to be installed first), with =fr_FR= as the default
+dictionary (~C-S-F12~ to change dictionary). In addition to =fr_FR=, two
+dictionaries are set as safe local variables: =en_GB= and =en_US= (they do not
+require confirmation on loading) and can be set on a file basis with ~M-X
+add-file-local-variable~ then ~RET~ then ~ispell-local-dictionary~ and the value
+of the dictionary.
 
 #+BEGIN_SRC emacs-lisp
 (setq ispell-program-name "hunspell"
-      ispell-local-dictionary "en_US")
+      ispell-really-hunspell t          ; Pour les extensions d'Hunspell
+      ispell-dictionary "fr_FR")
 
 (custom-set-variables
  '(safe-local-variable-values
    '((ispell-local-dictionary . en_GB)
+     (ispell-local-dictionary . en_US)
      (ispell-local-dictionary . fr_FR)))
  )
 
@@ -989,7 +992,7 @@ flycheck-mode=).
 Thesaurus using [[https://www.powerthesaurus.org/][Power Thesaurus]] with ~C-'~:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-'") 'powerthesaurus-lookup-word-dwim)
+(global-set-key (kbd "C-'") 'powerthesaurus-lookup-word-dwim) ; Conflit Markdown
 #+END_SRC
 
 
@@ -1119,8 +1122,8 @@ Remove =.= from the list of files/folders (and be silent about it):
  dired-omit-extensions nil)
 #+END_SRC
 
-Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side (bound to ~F5~; turn off
-wrapping long lines); NeoTree uses case-insensitive sorting:
+Use [[https://github.com/jaypei/emacs-neotree][NeoTree]] to have a tree explorer on the side, with wrapping long lines turned
+off and case-insensitive sorting:
 
 #+BEGIN_SRC emacs-lisp
   (setq neo-theme 'ascii)
@@ -1133,15 +1136,82 @@ wrapping long lines); NeoTree uses case-insensitive sorting:
           (apply 'cons (mapcar (lambda (x) (sort (apply x (list nodes))
                                             comparator))
                                '(car cdr))))))
-  (global-set-key [(f5)] 'neotree-toggle)
-  ;; (define-key neotree-mode-map (kb "RET")
-  ;;   (neotree-make-executor
-  ;;    :file-fn 'neo-open-file
-  ;;    :dir-fn 'neo-open-dir))
   (add-hook 'neo-after-create-hook
             #'(lambda (_)
                 (with-current-buffer (get-buffer neo-buffer-name)
                   (setq truncate-lines t))))
+#+END_SRC
+
+~F5~ cycles between =Neotree= and =Imenu-list=, with only one open at a time
+(through a state variable) and ~RET~ which closes any of them if hit:
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-neotree-imenu-cycle-state 0
+  "État du cycle pour Neotree et Imenu.
+0 = rien d'ouvert, 1 = Neotree ouvert, 2 = Imenu ouvert.")
+
+(defun my-close-neotree-and-reset ()
+  "Ferme Neotree et réinitialise l'état du cycle."
+  (neotree-toggle)
+  (setq my-neotree-imenu-cycle-state 0)
+  (message "Neotree fermé automatiquement"))
+
+(defun my-close-imenu-and-reset ()
+  "Ferme Imenu et réinitialise l'état du cycle."
+  (imenu-list-smart-toggle)
+  (setq my-neotree-imenu-cycle-state 0)
+  (message "Imenu fermé automatiquement"))
+
+(defun my-toggle-neotree-imenu-cycle ()
+  "Cycle entre Neotree et Imenu avec F5."
+  (interactive)
+  (cond
+   ((= my-neotree-imenu-cycle-state 0)
+    (neotree-toggle)
+    (setq my-neotree-imenu-cycle-state 1)
+    (message "Neotree ouvert (F5 pour passer à Imenu)"))
+   ((= my-neotree-imenu-cycle-state 1)
+    (neotree-toggle)
+    (imenu-list-smart-toggle)
+    (setq my-neotree-imenu-cycle-state 2)
+    (message "Imenu ouvert (F5 pour tout fermer)"))
+   ((= my-neotree-imenu-cycle-state 2)
+    (imenu-list-smart-toggle)
+    (setq my-neotree-imenu-cycle-state 0)
+    (message "Tout fermé (F5 pour ouvrir Neotree)"))))
+
+;; Remplace les raccourcis existants
+(global-set-key [(f5)] 'my-toggle-neotree-imenu-cycle)
+(global-unset-key [(ctrl f5)])
+
+;; Hook pour Neotree : gère Entrée pour les dossiers et fichiers
+(with-eval-after-load 'neotree
+  (define-key neotree-mode-map (kbd "RET") 'my-neotree-enter-handler))
+
+(defun my-neotree-enter-handler ()
+  "Gère l'appui sur Entrée dans Neotree :
+- Si c'est un dossier, déplie/replie (comportement par défaut).
+- Si c'est un fichier, ouvre le fichier et ferme Neotree."
+  (interactive)
+  (let ((line-content (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+    ;; Vérifie si la ligne contient un marqueur de dossier (ex: "📁", "/", ou se termine par "/")
+    (if (or (string-match-p "📁\\|📂\\|/" line-content)
+            (string-match-p "/$" line-content))
+        ;; C'est un dossier : comportement par défaut (déplier/replier)
+        (call-interactively 'neotree-enter)
+      ;; C'est un fichier : ouvre le fichier et ferme Neotree
+      (call-interactively 'neotree-enter)
+      (my-close-neotree-and-reset))))
+
+;; Hook pour Imenu : ferme Imenu après sélection d'une section
+(with-eval-after-load 'imenu-list
+  (define-key imenu-list-major-mode-map (kbd "RET") 'my-imenu-select-and-close))
+
+(defun my-imenu-select-and-close ()
+  "Sélectionne une section dans Imenu et ferme Imenu."
+  (interactive)
+  (call-interactively 'imenu-list-ret-dwim)
+  (my-close-imenu-and-reset))
 #+END_SRC
 
 TRAMP history of connections in =<cache>/tramp=, make completion
@@ -1784,7 +1854,7 @@ tweaks:
  markdown-asymmetric-header t        ; Asymetric headers (only # on the left)
  markdown-enable-math t              ; Enable mathematical expressions (LaTeX)
  markdown-list-indent-width 2        ; Depth of indentation for lists
-markdown-unordered-list-item-prefix "- " ; Prefix for list items
+ markdown-unordered-list-item-prefix "- " ; Prefix for list items
 )
 (custom-set-faces                       ; Polices plus grosses pour les titres
  '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 2.0 :weight extra-bold))))
@@ -1808,7 +1878,6 @@ to insert =**TODO**= and cycle between **TODO**/**CANCEL**/**DONE**/nothing,
             (local-set-key [C-S-f5] 'md-todo-dashboard)
             ))
 #+END_SRC
-
 
 ** ESS
 
@@ -2416,6 +2485,8 @@ Opens the =Bonjour.md= file if no file is selected, with NeoTree on the left
                  (lambda ()
                    (when-let ((neo-win (neo-global--get-window)))
                      (select-window neo-win))))
+    ;; Set the Neotree/Imenu state to 1 (Neotree open)
+    (setq my-neotree-imenu-cycle-state 1)
     ;; Return the main buffer to satisfy initial-buffer-choice
     main-buf))
 (setq initial-buffer-choice
