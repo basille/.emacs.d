@@ -1142,76 +1142,139 @@ off and case-insensitive sorting:
                   (setq truncate-lines t))))
 #+END_SRC
 
-~F5~ cycles between =Neotree= and =Imenu-list=, with only one open at a time
+~F5~ cycles between =NeoTree= and =Imenu-list=, with only one open at a time
 (through a state variable) and ~RET~ which closes any of them if hit:
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-neotree-imenu-cycle-state 0
-  "État du cycle pour Neotree et Imenu.
-0 = rien d'ouvert, 1 = Neotree ouvert, 2 = Imenu ouvert.")
+  "State of cycle: 0 = nothing, 1 = NeoTree ope, 2 = Imenu open.")
 
+;; Variables to store buffer names for NeoTree and Imenu
+(defvar my-neotree-buffer-name nil)
+(defvar my-imenu-buffer-name nil)
+
+;; Function to closer NeoTree and reset the state
 (defun my-close-neotree-and-reset ()
-  "Ferme Neotree et réinitialise l'état du cycle."
+  "Close NeoTree and reset the state of the cycle."
   (neotree-toggle)
   (setq my-neotree-imenu-cycle-state 0)
-  (message "Neotree fermé automatiquement"))
+  (setq my-neotree-buffer-name nil))
 
+;; Function to close Imenu and reset the state
 (defun my-close-imenu-and-reset ()
-  "Ferme Imenu et réinitialise l'état du cycle."
+  "Close Imenu and reset the state of the cycle."
   (imenu-list-smart-toggle)
   (setq my-neotree-imenu-cycle-state 0)
-  (message "Imenu fermé automatiquement"))
+  (setq my-imenu-buffer-name nil))
 
-(defun my-toggle-neotree-imenu-cycle ()
-  "Cycle entre Neotree et Imenu avec F5."
-  (interactive)
-  (cond
-   ((= my-neotree-imenu-cycle-state 0)
-    (neotree-toggle)
-    (setq my-neotree-imenu-cycle-state 1)
-    (message "Neotree ouvert (F5 pour passer à Imenu)"))
-   ((= my-neotree-imenu-cycle-state 1)
-    (neotree-toggle)
-    (imenu-list-smart-toggle)
-    (setq my-neotree-imenu-cycle-state 2)
-    (message "Imenu ouvert (F5 pour tout fermer)"))
-   ((= my-neotree-imenu-cycle-state 2)
-    (imenu-list-smart-toggle)
+;; Function to reset the state if NeoTree or Imenu is manually closed
+(defun my-reset-cycle-state-on-close (&optional buffer)
+  "Reset the state of the cycle if NeoTree or Imenu is manually closed."
+  (let ((buffer (or buffer (current-buffer)))
+        (buffer-name (buffer-name buffer)))
+    (when (or (and my-neotree-buffer-name (string= buffer-name my-neotree-buffer-name))
+              (string= buffer-name "*NeoTree*")
+              (and my-imenu-buffer-name (string= buffer-name my-imenu-buffer-name))
+              (string= buffer-name "*Imenu*"))
+      (setq my-neotree-imenu-cycle-state 0)
+      (setq my-neotree-buffer-name nil)
+      (setq my-imenu-buffer-name nil))))
+
+;; Add hook to detect when buffers are closed
+(add-hook 'kill-buffer-hook 'my-reset-cycle-state-on-close)
+
+;; Additional hook to detect when windows are closed
+(defun my-reset-cycle-state-on-window-change ()
+  "Reset the state if NeoTree or Imenu is not visible in a window any more."
+  (unless (or (and my-neotree-buffer-name (get-buffer-window my-neotree-buffer-name))
+              (get-buffer-window "*NeoTree*")
+              (and my-imenu-buffer-name (get-buffer-window my-imenu-buffer-name))
+              (get-buffer-window "*Imenu*"))
     (setq my-neotree-imenu-cycle-state 0)
-    (message "Tout fermé (F5 pour ouvrir Neotree)"))))
+    (setq my-neotree-buffer-name nil)
+    (setq my-imenu-buffer-name nil)))
 
-;; Remplace les raccourcis existants
-(global-set-key [(f5)] 'my-toggle-neotree-imenu-cycle)
-(global-unset-key [(ctrl f5)])
+(add-hook 'window-configuration-change-hook 'my-reset-cycle-state-on-window-change)
 
-;; Hook pour Neotree : gère Entrée pour les dossiers et fichiers
+;; Redefines 'q' in NeoTree to reset the state
+(with-eval-after-load 'neotree
+  (define-key neotree-mode-map (kbd "q") 'my-neotree-quit-and-reset))
+
+(defun my-neotree-quit-and-reset ()
+  "Close Neotree and reset the state of the cycle."
+  (interactive)
+  (neotree-toggle)
+  (setq my-neotree-imenu-cycle-state 0)
+  (setq my-neotree-buffer-name nil))
+
+;; Hook for Neotree: Handles RETURN for folders and files
 (with-eval-after-load 'neotree
   (define-key neotree-mode-map (kbd "RET") 'my-neotree-enter-handler))
 
 (defun my-neotree-enter-handler ()
-  "Gère l'appui sur Entrée dans Neotree :
-- Si c'est un dossier, déplie/replie (comportement par défaut).
-- Si c'est un fichier, ouvre le fichier et ferme Neotree."
+  "Handles RETURN key in NeoTree:
+- If it is a folder, fold/unfold (default behavior).
+- If it is a file, open the file and close NeoTree."
   (interactive)
   (let ((line-content (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-    ;; Vérifie si la ligne contient un marqueur de dossier (ex: "📁", "/", ou se termine par "/")
+    ;; Check if the line contains un folder indicator
     (if (or (string-match-p "📁\\|📂\\|/" line-content)
             (string-match-p "/$" line-content))
-        ;; C'est un dossier : comportement par défaut (déplier/replier)
+        ;; It is a folder: Default behavior (fold/unfold)
         (call-interactively 'neotree-enter)
-      ;; C'est un fichier : ouvre le fichier et ferme Neotree
+      ;; It is a file: Open the file and close NeoTree
       (call-interactively 'neotree-enter)
       (my-close-neotree-and-reset))))
 
-;; Hook pour Imenu : ferme Imenu après sélection d'une section
+;; Hook for Imenu: Close Imenu after selection of a section OR un button
 (with-eval-after-load 'imenu-list
-  (define-key imenu-list-major-mode-map (kbd "RET") 'my-imenu-select-and-close))
+  ;; 1. For classical Imenu elements (variables, etc.)
+  (define-key imenu-list-major-mode-map (kbd "RET") 'my-imenu-select-and-close)
 
+  ;; 2. For buttons (functions, etc.)
+  (define-key button-map (kbd "RET") 'my-button-press-and-close-imenu))
+
+;; Function for classical Imenu elements
 (defun my-imenu-select-and-close ()
-  "Sélectionne une section dans Imenu et ferme Imenu."
+  "Select a section in Imenu and close Imenu."
   (interactive)
   (call-interactively 'imenu-list-ret-dwim)
   (my-close-imenu-and-reset))
+
+;; Function for buttons (functions, etc.)
+(defun my-button-press-and-close-imenu ()
+  "Hit a button in Imenu and close Imenu."
+  (interactive)
+  (call-interactively 'push-button)  ;; Execute button action
+  (my-close-imenu-and-reset))       ;; Then close Imenu
+
+;; Primary function for F5 cycle
+(defun my-toggle-neotree-imenu-cycle ()
+  (interactive)
+  (cond
+   ((= my-neotree-imenu-cycle-state 0)
+    ;; Open Neotree
+    (neotree-toggle)
+    (setq my-neotree-buffer-name (buffer-name (get-buffer "*NeoTree*")))
+    (setq my-neotree-imenu-cycle-state 1)
+    (message "Neotree ouvert (F5 pour passer à Imenu)"))
+   ((= my-neotree-imenu-cycle-state 1)
+    ;; Close Neotree and open Imenu
+    (neotree-toggle)
+    (imenu-list-smart-toggle)
+    (setq my-imenu-buffer-name (buffer-name (get-buffer "*Imenu*")))
+    (setq my-neotree-imenu-cycle-state 2)
+    (message "Imenu ouvert (F5 pour tout fermer)"))
+   ((= my-neotree-imenu-cycle-state 2)
+    ;; Close Imenu
+    (imenu-list-smart-toggle)
+    (setq my-neotree-imenu-cycle-state 0)
+    (setq my-neotree-buffer-name nil)
+    (setq my-imenu-buffer-name nil)
+    (message "Tout fermé (F5 pour ouvrir Neotree)"))))
+
+;; Associe F5 au cycle
+(global-set-key [(f5)] 'my-toggle-neotree-imenu-cycle)
 #+END_SRC
 
 TRAMP history of connections in =<cache>/tramp=, make completion
@@ -2473,27 +2536,29 @@ Opens the =Bonjour.md= file if no file is selected, with NeoTree on the left
 
 #+BEGIN_SRC emacs-lisp
 (defun start-here ()
-  "Open a specific file and launch NeoTree on the left, with the cursor in NeoTree."
+  "Open a specific file and launch NeoTree to the left, with sync'd state and cursor in NeoTree."
   (let ((main-buf (find-file "/home/mathieu/Public/Notes/Bonjour.md")))
-    ;; Ensure NeoTree is loaded
+    ;; Launch Neotree
     (require 'neotree)
-    ;; Show NeoTree if it's not already visible
+    ;; Open Neotree
     (unless (neo-global--window-exists-p)
-      (neotree-show))
-    ;; Schedule cursor move to NeoTree window after startup
-    (run-at-time 0 nil
+      (neotree-toggle))
+    ;; Wait for Neotree to be completely initialized
+    (run-at-time 0.2 nil
                  (lambda ()
+                   (setq my-neotree-buffer-name (buffer-name (get-buffer "*NeoTree*")))
+                   (setq my-neotree-imenu-cycle-state 1)
                    (when-let ((neo-win (neo-global--get-window)))
                      (select-window neo-win))))
-    ;; Set the Neotree/Imenu state to 1 (Neotree open)
-    (setq my-neotree-imenu-cycle-state 1)
-    ;; Return the main buffer to satisfy initial-buffer-choice
+    ;; Returns main buffer
     main-buf))
+
+;; Definition of initial-buffer-choice
 (setq initial-buffer-choice
       (lambda ()
-        (if (buffer-file-name)          ; If a file is selected, just open it
+        (if (buffer-file-name)          ; If a file is selected, simply open it
             (current-buffer)
-          (start-here))))               ; Else run start-here
+          (start-here))))
 #+END_SRC
 
 
