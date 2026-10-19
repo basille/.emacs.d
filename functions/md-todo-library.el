@@ -178,14 +178,15 @@ Handles cycling to empty tag correctly."
   (setq truncate-lines t))
 
 (defun md-todo-dashboard-open ()
-  "Open the TODO item at point (RET)."
+  "Open the TODO item at point (RET) and close the dashboard."
   (interactive)
   (let ((file (get-text-property (point) 'file))
         (line (get-text-property (point) 'line)))
     (when file
       (find-file file)
       (goto-char (point-min))
-      (forward-line (1- (or line 1))))))
+      (forward-line (1- (or line 1)))
+      (delete-window (get-buffer-window "*TODO Dashboard*")))))
 
 (defun md-todo-dashboard-visit (event)
   "Open the TODO clicked with the mouse (mouse-1)."
@@ -202,7 +203,8 @@ Handles cycling to empty tag correctly."
           (when file
             (find-file file)
             (goto-char (point-min))
-            (forward-line (1- (or line 1)))))))))
+            (forward-line (1- (or line 1)))
+            (delete-window (get-buffer-window "*TODO Dashboard*"))))))))
 
 (defun md-todo-dashboard-next-section ()
   "Jump to the next section header (wraps)."
