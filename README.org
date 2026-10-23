@@ -261,7 +261,8 @@ status.showUntrackedFiles normal=)
 | ~M-x~     | SMEX                                             |
 | ~M-!~     | Shell-command in the minibuffer                  |
 | ~C-h m~   | Check modes in a buffer                          |
-| ~C-x C-e~ | Evaluate lisp expression                         |
+| ~M-:~     | Evaluate lisp expression from minibuffer         |
+| ~C-x C-e~ | Evaluate lisp expression at point                |
 | ~C-x C-y~ | Evaluate lisp expression and replace with result |
 | ~M-g M-g~ | Go to a given line number                        |
 

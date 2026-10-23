@@ -30,7 +30,7 @@
   - [[#latex][LaTeX]]
   - [[#bibtex][BibTeX]]
   - [[#markdown][Markdown]]
-  - [[#ess][ESS]]
+  - [[#ress][R/ESS]]
   - [[#sql][SQL]]
   - [[#web][Web]]
   - [[#polymode][Polymode]]
@@ -1942,7 +1942,7 @@ to insert =**TODO**= and cycle between **TODO**/**CANCEL**/**DONE**/nothing,
             ))
 #+END_SRC
 
-** ESS
+** R/ESS
 
 ESS to use R, edit R script, edit R documentation (Roxygen) and
 prepare packages. R is not a =prog-mode=, so it needs its own settings
@@ -1967,8 +1967,6 @@ Run R dired with ~C-c r~:
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c r") 'ess-rdired)
 #+END_SRC
-
-
 
 
 *** Layout
@@ -2200,6 +2198,44 @@ Data viewer (launch with ~C-c v~; many operations available via =ess-view-data-f
                 #'ess-view-data-print)
               (define-key inferior-ess-r-mode-map (kbd "C-c v")
                 #'ess-view-data-print))))
+#+END_SRC
+
+R sections (à-la RStudio):
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ess-r-mode
+  ;; Ajouter les sections de code R à ess-imenu-S-generic-expression
+  (setq ess-imenu-S-generic-expression
+        (append
+         ess-imenu-S-generic-expression
+         '(("Sections" "^#+[ \t]*\\(.*?\\)[ \t]*[=]*[-=#]\\{4\\}$" 1))))
+
+  (defun ess-r-add-section ()
+    "Ajoute une section de code R à la ligne courante."
+    (interactive)
+    (save-excursion
+      (let* ((line-start (progn (beginning-of-line) (point)))
+             (line-end (progn (end-of-line) (point)))
+             (line (buffer-substring-no-properties line-start line-end))
+             ;; Nettoyer la ligne : supprimer les '#' et espaces en début/fin
+             (cleaned-line (replace-regexp-in-string "^[ \t]*#*\\(.*?\\)[ \t]*$" "\\1" line))
+             ;; Construire la nouvelle ligne : '### ' + texte + espace
+             (new-line (concat "### " cleaned-line " ")))
+        ;; Remplacer la ligne courante par la nouvelle version
+        (delete-region line-start line-end)
+        (goto-char line-start)
+        (insert new-line)
+        ;; Calculer la longueur actuelle (après '### ' + texte + espace)
+        (let ((current-length (length new-line)))
+          ;; Si la ligne dépasse déjà 66 caractères, ajouter 4 '='
+          (if (> current-length 66)
+              (insert "====")
+            ;; Sinon, ajouter des '=' pour atteindre 70 caractères
+            (insert (make-string (- 70 current-length) ?=))
+            )))))
+
+  (define-key ess-r-mode-map (kbd "C-c s")
+              #'ess-r-add-section))
 #+END_SRC
 
 
