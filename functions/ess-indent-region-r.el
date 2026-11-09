@@ -28,7 +28,6 @@ options(oo)})\n"
 
 ;; From Walmes Zeviani
 ;; https://github.com/basille/.emacs.d/issues/1
-
 (defun ess-indent-region-with-formatr (beg end)
   "Format region of code R using formatR::tidy_source()."
   (interactive "r")
@@ -54,7 +53,7 @@ options(oo)})\n"
 	))
     (delete-region beg end)
     (insert string)
-    (delete-char -1)
+    ;; (delete-char -1)
     ))
 
 (defun ess-indent-region-with-styler (beg end)
@@ -70,7 +69,7 @@ options(oo)})\n"
     (ess-force-buffer-current "Process to load into:")
     (ess-command
      (format
-      "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
+      "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", strict = FALSE, reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
       string) buf)
     (with-current-buffer buf
       (goto-char (point-max))
@@ -82,5 +81,5 @@ options(oo)})\n"
 	))
     (delete-region beg end)
     (insert string)
-    (delete-char -1)
+    ;; (delete-char -1)
     ))
