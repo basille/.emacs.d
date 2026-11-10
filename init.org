@@ -383,13 +383,16 @@ Empty scratch buffer:
 (setq initial-scratch-message nil)
 #+END_SRC
 
-By default, lines soft wrapped at word boundary (visual line mode), with fringe
-indicators in the fringe column, except for Dired, Grep, and Imenu-list buffers;
-~F10~ toggles between word wrapping (i.e. visual line mode), line truncation and
-regular wrapping:
+By default, lines soft wrapped at word boundary (visual line mode with wrap
+prefix for contextual indentation and 4 extra spaces), with fringe indicators in
+the fringe column, except for Dired, Grep, and Imenu-list buffers; ~F10~ toggles
+between word wrapping (i.e. visual line mode), line truncation and regular
+wrapping:
 
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
+(setq visual-wrap-extra-indent 4)
+(global-visual-wrap-prefix-mode 1)
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (defun my-truncate-lines-enable ()
