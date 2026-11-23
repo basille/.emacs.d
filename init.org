@@ -704,9 +704,18 @@ as a dependency):
 (global-set-key (kbd "C-s") 'swiper)
 #+END_SRC
 
-Use Counsel (=counsel-rg=) for recursive Swiper-like search with ~C-S-s~:
+Use Counsel (=counsel-rg=) for recursive Swiper-like search with ~C-S-s~, with
+the addition of sorting and smart case (see the [[https://iepathos.github.io/ripgrep/][ripgrep doc]] for more details):
 
 #+BEGIN_SRC emacs-lisp
+(setq counsel-rg-base-command
+      '("rg" "--max-columns" "240" "--with-filename" "--no-heading" "--line-number"
+        "--color" "never" "--sort" "path" "--smart-case" "%s"))  
+;; Default is :
+;; ("rg" "--max-columns" "240" "--with-filename" "--no-heading" "--line-number"
+;; "--color" "never" "%s")
+(with-eval-after-load 'ivy
+  (add-to-list 'ivy-sort-functions-alist '(counsel-rg . nil)))
 (global-set-key (kbd "C-S-s") 'counsel-rg)
 #+END_SRC
 
@@ -1786,7 +1795,7 @@ the list of potential extensions used there (PDF, DJVU, ZIP, etc.):
  ;; bibtex-completion-bibliography '("/home/mathieu/Work/Bibliography/BiblioMB.bib")
  bibtex-completion-bibliography '("/home/mathieu/.biblio.bib")
  ;; bibtex-completion-library-path '("/home/mathieu/Work/Bibliography/PDF/")
- bibtex-completion-library-path '("/home/mathieu/Public/Bibliographie/PDF")
+ bibtex-completion-library-path '("/home/mathieu/Documents/Travail/Bibliographie/PDF")
  bibtex-completion-find-additional-pdfs t
  bibtex-completion-pdf-extension '(".pdf" ".djvu" ".ps" ".epub" ".mobi" ".zip")
  )
@@ -2143,10 +2152,10 @@ new pipe =|>= instead of magrittr's pipe =%>%=):
 
 #+END_SRC
 
-~C-=~ to insert =<-= and then cycle between =<-=, =|>= and =->=:
+~C-=~ to insert =<-= and then cycle between =<-=, =|>=, =->= and ===:
 
 #+BEGIN_SRC emacs-lisp
-(setq ess-assign-list '(" <- " " |> " " -> "))
+(setq ess-assign-list '(" <- " " |> " " -> " " = "))
 (with-eval-after-load "ess" 
   (add-hook 'ess-mode-hook 
             (lambda ()
