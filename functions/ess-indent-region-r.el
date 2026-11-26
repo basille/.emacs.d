@@ -69,7 +69,7 @@ options(oo)})\n"
     (ess-force-buffer-current "Process to load into:")
     (ess-command
      (format
-      "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", strict = FALSE, reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
+      "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", strict = TRUE, reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
       string) buf)
     (with-current-buffer buf
       (goto-char (point-max))
